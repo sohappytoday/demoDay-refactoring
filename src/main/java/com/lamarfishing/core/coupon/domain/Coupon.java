@@ -21,6 +21,7 @@ public class Coupon {
     @Column(name = "coupon_expires_at")
     private LocalDateTime expiresAt;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "coupon_type")
     private Type type;
 

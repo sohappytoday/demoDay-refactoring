@@ -27,6 +27,7 @@ public class Reservation {
     @Column(name = "reservation_total_price")
     private int totalPrice;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "reservation_status")
     private Process process;
 

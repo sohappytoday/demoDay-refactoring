@@ -33,12 +33,14 @@ public class Schedule {
     @Column(name = "schedule_tide")
     private int tide;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "schedule_status")
     private Status status;
 
     @Column(name = "schedule_pivot")
     private int pivot;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "schedule_type")
     private Type type;
 

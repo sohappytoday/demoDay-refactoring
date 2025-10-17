@@ -29,6 +29,7 @@ public class Manifest {
     @Column(name = "manifest_birth_date")
     private LocalDate birthDate;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "manifest_sex")
     private Sex sex;
 
