@@ -47,26 +47,42 @@ public class Schedule {
     private Ship ship;
 
     @Builder
-    private Schedule(LocalDateTime departure, int currentHeadCount, int tide, Status status, int pivot, Type type, Ship ship) {
+    private Schedule(LocalDateTime departure, int currentHeadCount, int tide, Status status, Type type, Ship ship) {
         this.departure = departure;
         this.currentHeadCount = currentHeadCount;
         this.tide = tide;
         this.status = status;
-        this.pivot = pivot;
         this.type = type;
         this.ship = ship;
     }
 
-    public static Schedule create(LocalDateTime departure, int currentHeadCount, int tide, Status status, int pivot, Type type, Ship ship) {
+    public static Schedule create(LocalDateTime departure, int currentHeadCount, int tide, Status status, Type type, Ship ship) {
         return Schedule.builder()
                 .departure(departure)
                 .currentHeadCount(currentHeadCount)
                 .tide(tide)
                 .status(status)
-                .pivot(pivot)
                 .type(type)
                 .ship(ship)
                 .build();
     }
 
+    public void changeDeparture(LocalDateTime departure) {
+        this.departure = departure;
+    }
+
+    public void changeHeadCount(int count) {
+        if (currentHeadCount + count > ship.getMaxHeadCount()) {
+            // 예외 발생
+        }
+        this.currentHeadCount += count;
+    }
+
+    public void changeStatus(Status status) {
+        this.status = status;
+    }
+
+    public void changeType(Type type) {
+        this.type = type;
+    }
 }

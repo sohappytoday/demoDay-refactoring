@@ -37,4 +37,11 @@ public class Ship {
     public static Ship create(int maxHeadCount, String fishType, int price, String notification) {
         return new Ship(maxHeadCount, fishType, price, notification);
     }
+
+    public void change(int newMaxHeadCount, String newFishType, int newPrice, String newNotification) {
+        this.maxHeadCount = newMaxHeadCount;
+        this.fishType = newFishType;
+        this.price = newPrice;
+        this.notification = newNotification;
+    }
 }

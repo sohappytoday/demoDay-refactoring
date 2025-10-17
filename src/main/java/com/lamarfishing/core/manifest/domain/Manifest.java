@@ -49,7 +49,7 @@ public class Manifest {
     private Schedule schedule;
 
     @Builder
-    private Manifest(String username, String nickname, LocalDate birthDate, Sex sex, String address, String phone, String emergencyContact, LocalDateTime expiresAt) {
+    private Manifest(String username, String nickname, LocalDate birthDate, Sex sex, String address, String phone, String emergencyContact, LocalDateTime expiresAt, Schedule schedule) {
         this.username = username;
         this.nickname = nickname;
         this.birthDate = birthDate;
@@ -58,9 +58,10 @@ public class Manifest {
         this.phone = phone;
         this.emergencyContact = emergencyContact;
         this.expiresAt = expiresAt;
+        this.schedule = schedule;
     }
 
-    public static Manifest create(String username, String nickname, LocalDate birthDate, Sex sex, String address, String phone, String emergencyContact) {
+    public static Manifest create(String username, String nickname, LocalDate birthDate, Sex sex, String address, String phone, String emergencyContact, Schedule schedule) {
         return Manifest.builder()
                 .username(username)
                 .nickname(nickname)
@@ -70,6 +71,17 @@ public class Manifest {
                 .phone(phone)
                 .emergencyContact(emergencyContact)
                 .expiresAt(LocalDateTime.now().plusDays(30))
+                .schedule(schedule)
                 .build();
+    }
+
+    public void change(String username, String nickname, LocalDate birthDate, Sex sex, String address, String phone, String emergencyContact) {
+        this.username = username;
+        this.nickname = nickname;
+        this.birthDate = birthDate;
+        this.sex = sex;
+        this.address = address;
+        this.phone = phone;
+        this.emergencyContact = emergencyContact;
     }
 }
