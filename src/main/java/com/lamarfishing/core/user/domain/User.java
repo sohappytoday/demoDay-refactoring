@@ -26,6 +26,10 @@ public class User {
     @Column(name = "user_nickname", unique = true)
     private String nickname;
 
+    public enum Grade {
+        BASIC, VIP, ADMIN
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "user_grade")
     private Grade grade;

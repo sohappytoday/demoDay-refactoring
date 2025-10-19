@@ -21,6 +21,11 @@ public class Coupon {
     @Column(name = "coupon_expires_at")
     private LocalDateTime expiresAt;
 
+    public enum Type {
+        WEEKDAY, // 평일
+        WEEKEND, // 주말
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "coupon_type")
     private Type type;
@@ -38,4 +43,5 @@ public class Coupon {
     public static Coupon create(Type type, User user) {
         return new Coupon(LocalDateTime.now().plusDays(30), type, user);
     }
+
 }

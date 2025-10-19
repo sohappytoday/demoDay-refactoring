@@ -33,12 +33,25 @@ public class Schedule {
     @Column(name = "schedule_tide")
     private int tide;
 
+    public enum Status {
+        WAITING, // 출항 전
+        CONFIRMED, // 출항 확정
+        DELAYED, // 출항 보류
+        CANCELED, // 출항 취소
+    }
+
     @Enumerated(EnumType.STRING)
     @Column(name = "schedule_status")
     private Status status;
 
     @Column(name = "schedule_pivot")
     private int pivot;
+
+    public enum Type {
+        EARLY, // 선 예약 오픈
+        DRAWN, // 선 예약 추첨 완료
+        NORMAL, // 일반 예약 오픈
+    }
 
     @Enumerated(EnumType.STRING)
     @Column(name = "schedule_type")
@@ -73,6 +86,7 @@ public class Schedule {
         this.departure = departure;
     }
 
+    // 문제 발생 가능성 존재
     public void changeHeadCount(int count) {
         if (currentHeadCount + count > ship.getMaxHeadCount()) {
             // 예외 발생
