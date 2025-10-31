@@ -49,9 +49,6 @@ public class Schedule {
     @Column(name = "schedule_status")
     private Status status;
 
-    @Column(name = "schedule_pivot")
-    private int pivot;
-
     public enum Type {
         EARLY, // 선 예약 오픈
         DRAWN, // 선 예약 추첨 완료
