@@ -1,5 +1,6 @@
 package com.lamarfishing.core.schedule.domain;
 
+import com.lamarfishing.core.common.uuid.Uuid;
 import com.lamarfishing.core.manifest.domain.Manifest;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.ship.domain.Ship;
@@ -13,6 +14,7 @@ import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Table(name = "schedules")
@@ -23,6 +25,9 @@ public class Schedule {
     @Id @GeneratedValue
     @Column(name = "schedule_id")
     private Long id;
+
+    @Column(name = "schedule_public_id", unique = true, nullable = false, updatable = false)
+    private String publicId;
 
     @Column(name = "schedule_departure")
     private LocalDateTime departure;
@@ -63,6 +68,7 @@ public class Schedule {
 
     @Builder
     private Schedule(LocalDateTime departure, int currentHeadCount, int tide, Status status, Type type, Ship ship) {
+        this.publicId = "sch"+Uuid.generateShortUUID();
         this.departure = departure;
         this.currentHeadCount = currentHeadCount;
         this.tide = tide;

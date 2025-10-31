@@ -20,7 +20,7 @@ public class Coupon {
 
     @Column(name = "coupon_expires_at")
     private LocalDateTime expiresAt;
-
+    
     public enum Type {
         WEEKDAY, // 평일
         WEEKEND, // 주말

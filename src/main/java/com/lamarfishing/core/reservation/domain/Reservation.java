@@ -1,5 +1,6 @@
 package com.lamarfishing.core.reservation.domain;
 
+import com.lamarfishing.core.common.uuid.Uuid;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.user.domain.User;
 import jakarta.persistence.*;
@@ -7,6 +8,8 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -17,6 +20,9 @@ public class Reservation {
     @Id @GeneratedValue
     @Column(name = "reservation_id")
     private Long id;
+
+    @Column(name = "reservation_public_id", unique = true, nullable = false, updatable = false)
+    private String publicId;
 
     @Column(name = "reservation_head_count")
     private int headCount;
@@ -48,6 +54,7 @@ public class Reservation {
 
     @Builder
     private Reservation(int headCount, String request, int totalPrice, Process process, User user, Schedule schedule) {
+        this.publicId = "res"+Uuid.generateShortUUID();
         this.headCount = headCount;
         this.request = request;
         this.totalPrice = totalPrice;
