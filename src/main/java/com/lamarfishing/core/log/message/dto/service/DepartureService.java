@@ -1,5 +1,6 @@
 package com.lamarfishing.core.log.message.dto.service;
 
+import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;
 import com.lamarfishing.core.log.message.dto.exception.InvalidDepartureRequest;
 import com.lamarfishing.core.log.message.dto.request.DepartureRequest;
 import com.lamarfishing.core.log.message.dto.response.DepartureResponse;
@@ -42,9 +43,9 @@ public class DepartureService {
             phones.add(user.getPhone());
         }
 
-        messageService.sendDepartureConfirmationMessages(phones);
+        List<MessageCommonDto> messageCommonDto = messageService.sendDepartureConfirmationMessages(phones);
 
+        return DepartureResponse.from(messageCommonDto);
     }
 
-    private
 }
