@@ -6,4 +6,5 @@ import lombok.Data;
 @Data
 public class DepartureRequest {
     private Schedule.Status scheduleStatus;
+
 }

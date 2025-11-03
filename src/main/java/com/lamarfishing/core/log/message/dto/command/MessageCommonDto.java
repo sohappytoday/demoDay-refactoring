@@ -11,4 +11,5 @@ public class MessageCommonDto {
     private LocalDateTime timeStamp;
     private String recipientPhone;
     private String content;
+
 }

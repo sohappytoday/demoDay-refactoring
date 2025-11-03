@@ -13,7 +13,7 @@ public class MessageService {
 
     public DepartureResponse confirmation(String publicId, DepartureRequest departureRequest) {
         if(!publicId.startsWith("sch")){
-            throw new
+            throw new d
         }
     }
 }
