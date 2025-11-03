@@ -1,8 +1,8 @@
 package com.lamarfishing.core.log.message.dto.service;
 
-import com.lamarfishing.core.log.message.dto.exception.InvalidPublicId;
 import com.lamarfishing.core.log.message.dto.request.DepartureRequest;
 import com.lamarfishing.core.log.message.dto.response.DepartureResponse;
+import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +15,7 @@ public class MessageService {
 
     public DepartureResponse confirmation(String publicId, DepartureRequest departureRequest) {
         if(!publicId.startsWith("sch")){
-            throw new InvalidPublicId();
+            throw new ScheduleInvalidPublicId();
         }
 
         scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
