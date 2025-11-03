@@ -1,4 +1,4 @@
-package com.lamarfishing.core.log.message.dto.service;
+package com.lamarfishing.core.log.message.service;
 
 import com.lamarfishing.core.log.message.domain.MessageLog;
 import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;

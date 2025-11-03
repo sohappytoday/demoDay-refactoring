@@ -1,4 +1,4 @@
-package com.lamarfishing.core.log.message.dto.exception;
+package com.lamarfishing.core.schedule.exception;
 
 import com.lamarfishing.core.common.exception.BusinessException;
 import com.lamarfishing.core.common.exception.ErrorCode;

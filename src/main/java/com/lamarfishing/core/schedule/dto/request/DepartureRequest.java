@@ -1,4 +1,4 @@
-package com.lamarfishing.core.log.message.dto.request;
+package com.lamarfishing.core.schedule.dto.request;
 
 import com.lamarfishing.core.schedule.domain.Schedule;
 import lombok.Data;

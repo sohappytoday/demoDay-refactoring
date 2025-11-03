@@ -1,9 +1,10 @@
-package com.lamarfishing.core.log.message.dto.service;
+package com.lamarfishing.core.schedule.service;
 
 import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;
-import com.lamarfishing.core.log.message.dto.exception.InvalidDepartureRequest;
-import com.lamarfishing.core.log.message.dto.request.DepartureRequest;
-import com.lamarfishing.core.log.message.dto.response.DepartureResponse;
+import com.lamarfishing.core.schedule.exception.InvalidDepartureRequest;
+import com.lamarfishing.core.schedule.dto.request.DepartureRequest;
+import com.lamarfishing.core.schedule.dto.response.DepartureResponse;
+import com.lamarfishing.core.log.message.service.MessageService;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
@@ -11,7 +12,6 @@ import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.user.domain.User;
-import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
