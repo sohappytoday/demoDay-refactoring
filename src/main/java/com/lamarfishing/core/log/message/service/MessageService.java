@@ -64,4 +64,32 @@ public class MessageService {
         }
         return results;
     }
+
+    public List<MessageCommonDto> sendDepartureCancelMessages(List<String> phones) {
+        String content = "아 배고프다~ 밥 먹고 코딩할까 (출항취소)";
+        List<String> sendFailedPhones = new ArrayList<>();
+        List<MessageCommonDto> results = new ArrayList<>();
+
+        for (String to : phones) {
+
+            Message msg = new Message();
+            msg.setFrom(senderNumber);
+            msg.setTo(to);
+            msg.setText(content);
+
+            try {
+                messageService.send(msg);
+                MessageLog messageLog = MessageLog.create(to,content);
+                messageLogRepository.save(messageLog);
+                results.add(MessageMapper.toMessage(messageLog));
+            } catch (SolapiMessageNotReceivedException e) {
+                sendFailedPhones.add(to);
+                throw new MessageSendFailedException("문자 전송 실패: " + e.getFailedMessageList());
+            } catch (Exception e) {
+                sendFailedPhones.add(to);
+                throw new MessageSendFailedException("오류: " + e.getMessage());
+            }
+        }
+        return results;
+    }
 }

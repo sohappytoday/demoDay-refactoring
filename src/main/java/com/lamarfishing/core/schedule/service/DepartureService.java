@@ -48,4 +48,27 @@ public class DepartureService {
         return DepartureResponse.from(messageCommonDto);
     }
 
+    public DepartureResponse cancel(String publicId, DepartureRequest departureRequest) {
+        Schedule.Status scheduleStatus = departureRequest.getScheduleStatus();
+        if (scheduleStatus != Schedule.Status.CANCELED) {
+            throw new InvalidDepartureRequest();
+        }
+        if (!publicId.startsWith("sch")) {
+            throw new ScheduleInvalidPublicId();
+        }
+
+        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
+
+        List<String> phones = new ArrayList<>();
+        for (Reservation reservation : reservations) {
+            User user = reservation.getUser();
+            phones.add(user.getPhone());
+        }
+
+        List<MessageCommonDto> messageCommonDto = messageService.sendDepartureCancelMessages(phones);
+
+        return DepartureResponse.from(messageCommonDto);
+    }
+
 }

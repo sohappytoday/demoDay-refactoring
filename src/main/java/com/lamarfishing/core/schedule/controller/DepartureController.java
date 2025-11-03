@@ -22,4 +22,14 @@ public class DepartureController {
 
         return ResponseEntity.ok(ApiResponse.success("출항 확정 메시지를 보냈습니다.",response));
     }
+
+    @PostMapping("/{schedule_public_id}/departure/cancel")
+    public ResponseEntity<ApiResponse<DepartureResponse>> departureCancel(@PathVariable("schedule_public_id") String publicId,
+                                                                                @RequestBody DepartureRequest request){
+        DepartureResponse response = departureService.cancel(publicId, request);
+
+        return ResponseEntity.ok(ApiResponse.success("출항 취소 메시지를 보냈습니다.",response));
+    }
+
+
 }
