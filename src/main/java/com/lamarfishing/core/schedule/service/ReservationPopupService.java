@@ -14,8 +14,10 @@ import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.User;
+import com.lamarfishing.core.user.dto.command.ReservationUserDto;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
+import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -32,6 +34,11 @@ public class ReservationPopupService {
     private final CouponRepository couponRepository;
 
     public ReservationPopupResponse getReservationPopup(Long userId, String grade, String publicId) {
+
+        List<Coupon> coupons;
+        List<CouponCommonDto> couponCommonDtos = new ArrayList<>();
+        ReservationUserDto reservationUserDto;
+
         if (!publicId.startsWith("sch")) {
             throw new ScheduleInvalidPublicId();
         }
@@ -46,17 +53,21 @@ public class ReservationPopupService {
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
         ShipDetailDto shipDetailDto = ShipMapper.toShipDetailResponse(ship);
-        List<Coupon> coupons;
 
         //유저라면
         if (userGrade != User.Grade.GUEST) {
             User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
             coupons = couponRepository.findByUser(user);
+            for(Coupon coupon : coupons) {
+                CouponCommonDto couponCommonDto = CouponMapper.toCouponCommonDto(coupon);
+                couponCommonDtos.add(couponCommonDto);
+            }
+            reservationUserDto = UserMapper.toReservationUserDto(user, couponCommonDtos);
         } else {
-            coupons = new ArrayList<>();
+            reservationUserDto = UserMapper.toReservationUserDto();
         }
 
-        return ReservationPopupResponse.from(schedule, shipDetailDto, coupons);
+        return ReservationPopupResponse.from(schedule, reservationUserDto,shipDetailDto);
     }
 
     public ReservationCreateResponse getReservationCreateResponse(Long userId, String grade, String publicId) {
