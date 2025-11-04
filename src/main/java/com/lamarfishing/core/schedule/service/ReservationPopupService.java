@@ -13,6 +13,7 @@ import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.User;
+import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -33,15 +34,17 @@ public class ReservationPopupService {
         if (!publicId.startsWith("sch")) {
             throw new ScheduleInvalidPublicId();
         }
+
         User.Grade userGrade;
         try {
             userGrade = User.Grade.valueOf(grade.toUpperCase());
         } catch (IllegalArgumentException e) {
-            throw new InvalidGradeException();
+            throw new InvalidUserGrade();
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
+        if(userGrade == User.Grade.ADMIN)
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         List<Coupon> coupons = couponRepository.findByUser(user);
 

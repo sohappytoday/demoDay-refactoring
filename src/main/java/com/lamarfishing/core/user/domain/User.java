@@ -27,7 +27,7 @@ public class User {
     private String nickname;
 
     public enum Grade {
-        BASIC, VIP, ADMIN
+        GUEST, BASIC, VIP, ADMIN
     }
 
     @Enumerated(EnumType.STRING)
