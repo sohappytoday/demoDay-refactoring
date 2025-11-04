@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class ShipDetailDto {
+public class ReservationShipDto {
     private Long shipId;
     private String fishType;
     private Integer price;

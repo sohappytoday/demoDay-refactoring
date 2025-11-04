@@ -1,17 +1,15 @@
 package com.lamarfishing.core.schedule.service;
 
-import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.coupon.dto.CouponCommonDto;
 import com.lamarfishing.core.coupon.mapper.CouponMapper;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationPopupResponse;
 import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
-import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
+import com.lamarfishing.core.ship.dto.command.ReservationShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.ReservationUserDto;
@@ -22,7 +20,6 @@ import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -50,7 +47,11 @@ public class ReservationPopupService {
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
-        ShipDetailDto shipDetailDto = ShipMapper.toShipDetailResponse(ship);
+
+        int currentHeadCount = schedule.getCurrentHeadCount();
+        int remainHeadCount = ship.getMaxHeadCount() - currentHeadCount;
+
+        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipResponse(ship,remainHeadCount);
 
         //유저라면
         if (userGrade != User.Grade.GUEST) {
@@ -66,7 +67,7 @@ public class ReservationPopupService {
             reservationUserDto = UserMapper.toReservationUserDto();
         }
 
-        return ReservationPopupResponse.from(schedule, reservationUserDto,shipDetailDto);
+        return ReservationPopupResponse.from(schedule, reservationUserDto, reservationShipDto);
     }
 
 //    public ReservationCreateResponse getReservationCreateResponse(Long userId, String grade, String publicId) {

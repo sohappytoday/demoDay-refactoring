@@ -2,7 +2,7 @@ package com.lamarfishing.core.ship.mapper;
 
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ShipCommonDto;
-import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
+import com.lamarfishing.core.ship.dto.command.ReservationShipDto;
 
 public class ShipMapper {
 
@@ -14,12 +14,12 @@ public class ShipMapper {
                 .build();
     }
 
-    public static ShipDetailDto toShipDetailResponse(Ship ship){
-        return ShipDetailDto.builder()
+    public static ReservationShipDto toReservationShipResponse(Ship ship, Integer remainHeadCount){
+        return ReservationShipDto.builder()
                 .shipId(ship.getId())
                 .fishType(ship.getFishType())
                 .price(ship.getPrice())
-                .maxHeadCount(ship.getMaxHeadCount())
+                .remainHeadCount(remainHeadCount)
                 .notification(ship.getNotification())
                 .build();
     }

@@ -112,7 +112,7 @@ class ReservationPopupServiceTest {
         Ship ship = Ship.create(20, "쭈갑", 90000, "주의사항 없음");
 
         Schedule schedule = Schedule.create(LocalDateTime.of(2025,11,5,0,0),
-                10, 3, Schedule.Status.WAITING, Schedule.Type.NORMAL, ship);
+                5, 3, Schedule.Status.WAITING, Schedule.Type.NORMAL, ship);
 
         Long userId = 1L;
         String grade = "BASIC";
@@ -133,7 +133,9 @@ class ReservationPopupServiceTest {
         assertThat(response.getShip().getShipId()).isEqualTo(ship.getId());
         assertThat(response.getShip().getFishType()).isEqualTo(ship.getFishType());
         assertThat(response.getShip().getPrice()).isEqualTo(ship.getPrice());
-        a
+        assertThat(response.getShip().getRemainHeadCount()).isEqualTo(15);  // 20 - 5
+
+
 
     }
 }
