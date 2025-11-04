@@ -8,6 +8,5 @@ import lombok.Data;
 public class ReservationShipDto {
     private String fishType;
     private Integer price;
-    private Integer remainHeadCount;
     private String notification;
 }

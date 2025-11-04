@@ -51,7 +51,7 @@ public class ReservationPopupService {
         int currentHeadCount = schedule.getCurrentHeadCount();
         int remainHeadCount = ship.getMaxHeadCount() - currentHeadCount;
 
-        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipResponse(ship,remainHeadCount);
+        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipResponse(ship);
 
         //유저라면
         if (userGrade != User.Grade.GUEST) {
@@ -67,7 +67,7 @@ public class ReservationPopupService {
             reservationUserDto = UserMapper.toReservationUserDto();
         }
 
-        return ReservationPopupResponse.from(schedule, reservationUserDto, reservationShipDto);
+        return ReservationPopupResponse.from(schedule, remainHeadCount, reservationUserDto, reservationShipDto);
     }
 
 //    public ReservationCreateResponse getReservationCreateResponse(Long userId, String grade, String publicId) {

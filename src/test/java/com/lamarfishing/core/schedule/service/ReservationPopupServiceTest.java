@@ -1,6 +1,8 @@
 package com.lamarfishing.core.schedule.service;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
+import com.lamarfishing.core.coupon.dto.CouponCommonDto;
+import com.lamarfishing.core.coupon.mapper.CouponMapper;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.schedule.controller.ReservationPopupController;
@@ -60,7 +62,7 @@ class ReservationPopupServiceTest {
 
     @DisplayName("getReservationPopup: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
     @Test
-    void getReservationPopup_userGrade가_Grade_type으로_변환_불가시_예외(){
+    void getReservationPopup_userGrade가_Grade_type으로_변환_불가시_예외() {
         // given
         Long userId = 1L;
         String grade = "HELLO";
@@ -74,7 +76,7 @@ class ReservationPopupServiceTest {
 
     @DisplayName("getReservationPopup: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
     @Test
-    void getReservationPopup_InvalidUserGrade(){
+    void getReservationPopup_InvalidUserGrade() {
         // given
         Long userId = 1L;
         String grade = "HELLO";
@@ -111,19 +113,27 @@ class ReservationPopupServiceTest {
         //given
         Ship ship = Ship.create(20, "쭈갑", 90000, "주의사항 없음");
 
-        Schedule schedule = Schedule.create(LocalDateTime.of(2025,11,5,0,0),
+        Schedule schedule = Schedule.create(LocalDateTime.of(2025, 11, 5, 0, 0),
                 5, 3, Schedule.Status.WAITING, Schedule.Type.NORMAL, ship);
+
+        User user = User.create("김지오", "geooeg", User.Grade.BASIC, "01012345678");
+        Coupon coupon1 = Coupon.create(Coupon.Type.WEEKDAY, user);
+        Coupon coupon2 = Coupon.create(Coupon.Type.WEEKEND, user);
+
+        List<Coupon> couponEntities = List.of(coupon1, coupon2);
+        List<CouponCommonDto> coupons = couponEntities.stream()
+                .map(CouponMapper::toCouponCommonDto)
+                .toList();
 
         Long userId = 1L;
         String grade = "BASIC";
         String publicId = schedule.getPublicId();
 
-        User user = mock(User.class);
+        //when
         when(scheduleRepository.findByPublicId(publicId)).thenReturn(Optional.of(schedule));
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
-        when(couponRepository.findByUser(user)).thenReturn(List.of(mock(Coupon.class)));
+        when(couponRepository.findByUser(user)).thenReturn(couponEntities);
 
-        //when
         ReservationPopupResponse response =
                 reservationPopupService.getReservationPopup(userId, grade, publicId);
 
@@ -132,11 +142,20 @@ class ReservationPopupServiceTest {
         //ship
         assertThat(response.getShip().getFishType()).isEqualTo(ship.getFishType());
         assertThat(response.getShip().getPrice()).isEqualTo(ship.getPrice());
-        assertThat(response.getShip().getRemainHeadCount()).isEqualTo(15);  // 20 - 5
         assertThat(response.getShip().getNotification()).isEqualTo(ship.getNotification());
         //user
-        assertThat(response.get)
-
+        assertThat(response.getUser().getUsername()).isEqualTo(user.getUsername());
+        assertThat(response.getUser().getNickname()).isEqualTo(user.getNickname());
+        assertThat(response.getUser().getGrade()).isEqualTo(user.getGrade());
+        assertThat(response.getUser().getPhone()).isEqualTo(user.getPhone());
+        assertThat(response.getUser().getCoupons()).isEqualTo(coupons);
+        //schedule
+        assertThat(response.getSchedulePublicId()).isEqualTo(publicId);
+        assertThat(response.getDeparture()).isEqualTo(schedule.getDeparture());
+        assertThat(response.getTide()).isEqualTo(schedule.getTide());
+        assertThat(response.getRemainHeadCount()).isEqualTo(ship.getMaxHeadCount() - schedule.getCurrentHeadCount());
+        assertThat(response.getDayOfWeek()).isEqualTo((schedule.getDeparture().getDayOfWeek()));
+        assertThat(response.getTide()).isEqualTo(schedule.getTide());
 
     }
 }

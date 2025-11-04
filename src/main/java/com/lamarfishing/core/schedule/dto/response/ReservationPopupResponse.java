@@ -15,15 +15,17 @@ public class ReservationPopupResponse {
     private ReservationShipDto ship;
     private ReservationUserDto user;
     private String schedulePublicId;
+    private Integer remainHeadCount;
     private LocalDateTime departure;
     private DayOfWeek dayOfWeek;
     private Integer tide;
 
-    public static ReservationPopupResponse from(Schedule schedule, ReservationUserDto user, ReservationShipDto ship) {
+    public static ReservationPopupResponse from(Schedule schedule,Integer remainHeadCount, ReservationUserDto user, ReservationShipDto ship) {
         return ReservationPopupResponse.builder()
                 .ship(ship)
-                .schedulePublicId(schedule.getPublicId())
                 .user(user)
+                .schedulePublicId(schedule.getPublicId())
+                .remainHeadCount(remainHeadCount)
                 .departure(schedule.getDeparture())
                 .dayOfWeek(schedule.getDeparture().getDayOfWeek())
                 .tide(schedule.getTide())

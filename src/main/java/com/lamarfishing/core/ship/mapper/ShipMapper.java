@@ -14,11 +14,10 @@ public class ShipMapper {
                 .build();
     }
 
-    public static ReservationShipDto toReservationShipResponse(Ship ship, Integer remainHeadCount){
+    public static ReservationShipDto toReservationShipResponse(Ship ship){
         return ReservationShipDto.builder()
                 .fishType(ship.getFishType())
                 .price(ship.getPrice())
-                .remainHeadCount(remainHeadCount)
                 .notification(ship.getNotification())
                 .build();
     }
