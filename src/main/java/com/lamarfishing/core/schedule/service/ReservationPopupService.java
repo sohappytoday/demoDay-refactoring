@@ -57,4 +57,6 @@ public class ReservationPopupService {
 
         return ReservationPopupResponse.from(schedule, shipDetailDto, coupons);
     }
+
+    public
 }
