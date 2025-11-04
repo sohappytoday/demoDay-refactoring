@@ -1,6 +1,8 @@
 package com.lamarfishing.core.user.service;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
+import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
+import com.lamarfishing.core.coupon.mapper.CouponMapper;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.MyProfileDto;
@@ -25,8 +27,11 @@ public class UserQueryService {
         String phone = "1";// 인증 후 수정
         User user = userRepository.findByPhone(phone);
         List<Coupon> coupons = couponRepository.findByUser(user);
+        List<ProfileCouponDto> profileCoupons = coupons.stream()
+                .map(CouponMapper::toProfileCouponDto)
+                .toList();
 
-        return UserMapper.toMyProfileDto(user, coupons);
+        return UserMapper.toMyProfileDto(user, profileCoupons);
     }
 
 }
