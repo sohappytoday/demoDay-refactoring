@@ -2,6 +2,7 @@ package com.lamarfishing.core.user.domain;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.reservation.domain.Reservation;
+import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -50,7 +51,7 @@ public class User {
 
     public void updateGuestInfo(String username, String nickname, String phone){
         if (this.grade != Grade.GUEST) {
-            throw new IllegalStateException("게스트 회원만 이 메서드를 사용할 수 있습니다.");
+            throw new InvalidUserGrade();
         }
         this.username = username;
         this.nickname = nickname;
