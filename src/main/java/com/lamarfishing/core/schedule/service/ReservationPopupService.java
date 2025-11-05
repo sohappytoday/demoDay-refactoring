@@ -95,25 +95,15 @@ public class ReservationPopupService {
             String username = reservationPopupRequest.getUsername();
             String nickname = reservationPopupRequest.getNickname();
             String phone = reservationPopupRequest.getPhone();
-            u
-
-            Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule);
-            reservationRepository.save(reservation);
-            schedule.decreaseCurrentHeadCount(headCount);
-
-            String reservationPublicId = reservation.getPublicId();
-            return new ReservationCreateResponse(reservationPublicId);
+            //게스트 업데이트
+            user.updateGuestInfo(username, nickname, phone);
         }
-        String username = user.getUsername();
-        String nickname = user.getNickname();
-        String phone = user.getPhone();
 
         Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule);
         reservationRepository.save(reservation);
         schedule.decreaseCurrentHeadCount(headCount);
 
-        String reservationPublicId = reservation.getPublicId();
-        return new ReservationCreateResponse(reservationPublicId);
+        return new ReservationCreateResponse(reservation.getPublicId());
     }
 
     private User.Grade parseUserGrade(String grade) {
