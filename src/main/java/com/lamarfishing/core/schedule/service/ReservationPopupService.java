@@ -86,9 +86,8 @@ public class ReservationPopupService {
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
-        int price = ship.getPrice();
         int headCount = reservationPopupRequest.getHeadCount();
-        int totalPrice = price * headCount;
+        int totalPrice = ship.getPrice() * headCount;
         String userRequest = reservationPopupRequest.getRequest();
 
         //비회원이라면
@@ -96,12 +95,13 @@ public class ReservationPopupService {
             String username = reservationPopupRequest.getUsername();
             String nickname = reservationPopupRequest.getNickname();
             String phone = reservationPopupRequest.getPhone();
+            u
 
             Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule);
             reservationRepository.save(reservation);
-            /////////////////////schedule.changeHeadCount(headCount);
-            String reservationPublicId = reservation.getPublicId();
+            schedule.decreaseCurrentHeadCount(headCount);
 
+            String reservationPublicId = reservation.getPublicId();
             return new ReservationCreateResponse(reservationPublicId);
         }
         String username = user.getUsername();
@@ -110,8 +110,9 @@ public class ReservationPopupService {
 
         Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule);
         reservationRepository.save(reservation);
-        String reservationPublicId = reservation.getPublicId();
+        schedule.decreaseCurrentHeadCount(headCount);
 
+        String reservationPublicId = reservation.getPublicId();
         return new ReservationCreateResponse(reservationPublicId);
     }
 

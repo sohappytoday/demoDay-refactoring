@@ -47,4 +47,13 @@ public class User {
     public static User create(String username, String nickname, Grade grade, String phone) {
         return new User(username, nickname, grade, phone);
     }
+
+    public void updateGuestInfo(String username, String nickname, String phone){
+        if (this.grade != Grade.GUEST) {
+            throw new IllegalStateException("게스트 회원만 이 메서드를 사용할 수 있습니다.");
+        }
+        this.username = username;
+        this.nickname = nickname;
+        this.phone = phone;
+    }
 }
