@@ -7,4 +7,8 @@ import lombok.Data;
 @Builder
 public class ReservationCreateResponse {
     private String reservationPublicId;
+
+    public ReservationCreateResponse(String reservationPublicId) {
+        this.reservationPublicId = reservationPublicId;
+    }
 }

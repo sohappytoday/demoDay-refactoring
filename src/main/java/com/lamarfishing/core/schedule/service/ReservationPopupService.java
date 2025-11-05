@@ -3,6 +3,8 @@ package com.lamarfishing.core.schedule.service;
 import com.lamarfishing.core.coupon.dto.CouponCommonDto;
 import com.lamarfishing.core.coupon.mapper.CouponMapper;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
+import com.lamarfishing.core.reservation.domain.Reservation;
+import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
@@ -33,6 +35,7 @@ public class ReservationPopupService {
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final CouponRepository couponRepository;
+    private final ReservationRepository reservationRepository;
 
     public ReservationPopupResponse getReservationPopup(Long userId, String grade, String publicId) {
 
@@ -76,13 +79,40 @@ public class ReservationPopupService {
         }
 
         User.Grade userGrade = parseUserGrade(grade);
+        /**
+         * user 불러오기 (수정 가능성 o)
+         */
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        Ship ship = schedule.getShip();
+        int price = ship.getPrice();
+        int headCount = reservationPopupRequest.getHeadCount();
+        int totalPrice = price * headCount;
+        String userRequest = reservationPopupRequest.getRequest();
 
         //비회원이라면
         if (userGrade == User.Grade.GUEST) {
+            String username = reservationPopupRequest.getUsername();
+            String nickname = reservationPopupRequest.getNickname();
+            String phone = reservationPopupRequest.getPhone();
 
+            Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule);
+            reservationRepository.save(reservation);
+            /////////////////////schedule.changeHeadCount(headCount);
+            String reservationPublicId = reservation.getPublicId();
+
+            return new ReservationCreateResponse(reservationPublicId);
         }
+        String username = user.getUsername();
+        String nickname = user.getNickname();
+        String phone = user.getPhone();
+
+        Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule);
+        reservationRepository.save(reservation);
+        String reservationPublicId = reservation.getPublicId();
+
+        return new ReservationCreateResponse(reservationPublicId);
     }
 
     private User.Grade parseUserGrade(String grade) {
