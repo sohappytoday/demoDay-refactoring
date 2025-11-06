@@ -58,12 +58,22 @@ class ScheduleServiceTest {
                 .thenReturn(List.of(reservation1, reservation2,reservation3));
 
         //when
-        ScheduleDetailResponse scheduleDetailResponse = scheduleService.getScheduleDetail(publicId);
+        ScheduleDetailResponse response = scheduleService.getScheduleDetail(publicId);
 
         //then
 
         //common
-        assertThat(scheduleDetailResponse).isNotNull();
-        assertThat(scheduleDetailResponse.)
+        assertThat(response).isNotNull();
+
+        //shipCommonDto
+        assertThat(response.getShip().getShipId()).isEqualTo(ship.getId());
+        assertThat(response.getShip().getFishType()).isEqualTo(ship.getFishType());
+        assertThat(response.getShip().getPrice()).isEqualTo(ship.getPrice());
+
+        //scheduleCommonDto
+        assertThat(response.getSchedule().getSchedulePublicId()).isEqualTo(publicId);
+        assertThat(response.getSchedule().getDeparture()).isEqualTo(schedule.getDeparture());
+        assertThat(response.getSchedule().getTide()).isEqualTo(schedule.getTide());
+        assertThat(response.getSchedule().getRemainCount()).
     }
 }
