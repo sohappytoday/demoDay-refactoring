@@ -7,6 +7,7 @@ import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.schedule.controller.ReservationPopupController;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.ReservationPopupResponse;
 import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
@@ -46,6 +47,9 @@ class ReservationPopupServiceTest {
     @Mock
     private CouponRepository couponRepository;
 
+    /**
+     * getReservationPopup
+     */
     @DisplayName("getReservationPopup: publicId가 schedule이 아니면 ScheduleInvalidPublicId 예외를 발생시킨다.")
     @Test
     void getReservationPopup_publicId가_schedule_것이_아니면_예외() {
@@ -63,20 +67,6 @@ class ReservationPopupServiceTest {
     @DisplayName("getReservationPopup: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
     @Test
     void getReservationPopup_userGrade가_Grade_type으로_변환_불가시_예외() {
-        // given
-        Long userId = 1L;
-        String grade = "HELLO";
-        String invalidPublicId = "sch-123123";
-
-        // when, then
-        assertThatThrownBy(() ->
-                reservationPopupService.getReservationPopup(userId, grade, invalidPublicId)
-        ).isInstanceOf(InvalidUserGrade.class);
-    }
-
-    @DisplayName("getReservationPopup: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
-    @Test
-    void getReservationPopup_InvalidUserGrade() {
         // given
         Long userId = 1L;
         String grade = "HELLO";
@@ -204,5 +194,61 @@ class ReservationPopupServiceTest {
         assertThat(response.getDayOfWeek()).isEqualTo((schedule.getDeparture().getDayOfWeek()));
         assertThat(response.getTide()).isEqualTo(schedule.getTide());
 
+    }
+
+    /**
+     * createReservation
+     */
+    @DisplayName("createReservation: publicId가 schedule이 아니면 ScheduleInvalidPublicId 예외를 발생시킨다.")
+    @Test
+    void createReservation_publicId가_schedule_것이_아니면_예외() {
+        // given
+        Long userId = 1L;
+        String grade = "BASIC";
+        String invalidPublicId = "res-123";
+
+        // when, then
+        assertThatThrownBy(() ->
+                reservationPopupService.createReservation(userId, grade, invalidPublicId,null)
+        ).isInstanceOf(ScheduleInvalidPublicId.class);
+    }
+
+    @DisplayName("createReservation: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
+    @Test
+    void createReservation_userGrade가_Grade_type으로_변환_불가시_예외() {
+        // given
+        Long userId = 1L;
+        String grade = "HELLO";
+        String invalidPublicId = "sch-123123";
+
+        // when, then
+        assertThatThrownBy(() ->
+                reservationPopupService.createReservation(userId, grade, invalidPublicId,null)
+        ).isInstanceOf(InvalidUserGrade.class);
+    }
+
+    @DisplayName("createReservation: 회원 정상 로직")
+    @Test
+    void createReservation_BASIC(){
+        // given
+        Long userId = 1L;
+        String grade = "BASIC";
+        String publicId = "sch-001";
+
+        //mock 객체
+        User mockUser = mock(User.class);
+        Ship mockShip = mock(Ship.class);
+        Schedule mockSchedule = mock(Schedule.class);
+        Coupon mockCoupon = mock(Coupon.class);
+
+        // 더미 요청 객체 생성
+        ReservationPopupRequest request = ReservationPopupRequest.builder()
+                .username(null)
+                .nickname(null)
+                .phone(null)
+                .headCount(2)
+                .request("내가 왕이다.")
+                .couponId(1L)
+                .build();
     }
 }
