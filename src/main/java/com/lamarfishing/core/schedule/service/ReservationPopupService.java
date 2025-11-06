@@ -7,6 +7,7 @@ import com.lamarfishing.core.coupon.exception.UnauthorizedCouponAccess;
 import com.lamarfishing.core.coupon.mapper.CouponMapper;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.reservation.domain.Reservation;
+import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
@@ -117,7 +118,9 @@ public class ReservationPopupService {
         reservationRepository.save(reservation);
         schedule.decreaseCurrentHeadCount(headCount);
 
-        return new ReservationCreateResponse(reservation.getPublicId());
+        ReservationCreateResponse reservationCreateResponse = ReservationMapper.toReservationCreateResponse(reservation);
+
+        return reservationCreateResponse;
     }
 
     private User.Grade parseUserGrade(String grade) {
