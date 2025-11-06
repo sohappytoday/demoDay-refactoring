@@ -5,9 +5,11 @@ import com.lamarfishing.core.reservation.dto.command.ReservationCommonDto;
 import com.lamarfishing.core.schedule.dto.command.ScheduleCommonDto;
 import com.lamarfishing.core.ship.dto.command.ShipCommonDto;
 import lombok.Builder;
+import lombok.Data;
 
 import java.util.List;
 
+@Data
 @Builder
 public class ScheduleDetailResponse {
 
