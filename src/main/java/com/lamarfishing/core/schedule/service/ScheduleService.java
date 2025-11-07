@@ -6,7 +6,7 @@ import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
-import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
+import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.mapper.ScheduleMapper;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
@@ -28,7 +28,7 @@ public class ScheduleService {
 
     public ScheduleDetailResponse getScheduleDetail(String publicId){
         if (!publicId.startsWith("sch")) {
-            throw new ScheduleInvalidPublicId();
+            throw new InvalidSchedulePublicId();
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);

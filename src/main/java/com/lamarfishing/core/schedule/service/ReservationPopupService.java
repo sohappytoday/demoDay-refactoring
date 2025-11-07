@@ -13,7 +13,7 @@ import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationPopupResponse;
-import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
+import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
@@ -49,7 +49,7 @@ public class ReservationPopupService {
         ReservationUserDto reservationUserDto;
 
         if (!publicId.startsWith("sch")) {
-            throw new ScheduleInvalidPublicId();
+            throw new InvalidSchedulePublicId();
         }
 
         User.Grade userGrade = parseUserGrade(grade);
@@ -82,7 +82,7 @@ public class ReservationPopupService {
     @Transactional
     public ReservationCreateResponse createReservation(Long userId, String grade, String publicId, ReservationPopupRequest reservationPopupRequest) {
         if (!publicId.startsWith("sch")) {
-            throw new ScheduleInvalidPublicId();
+            throw new InvalidSchedulePublicId();
         }
 
         User.Grade userGrade = parseUserGrade(grade);

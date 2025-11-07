@@ -8,7 +8,7 @@ import com.lamarfishing.core.log.message.service.MessageService;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
+import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.user.domain.User;
@@ -34,7 +34,7 @@ public class DepartureService {
             throw new InvalidDepartureRequest();
         }
         if (!publicId.startsWith("sch")) {
-            throw new ScheduleInvalidPublicId();
+            throw new InvalidSchedulePublicId();
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
@@ -62,7 +62,7 @@ public class DepartureService {
             throw new InvalidDepartureRequest();
         }
         if (!publicId.startsWith("sch")) {
-            throw new ScheduleInvalidPublicId();
+            throw new InvalidSchedulePublicId();
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
@@ -91,7 +91,7 @@ public class DepartureService {
             throw new InvalidDepartureRequest();
         }
         if (!publicId.startsWith("sch")) {
-            throw new ScheduleInvalidPublicId();
+            throw new InvalidSchedulePublicId();
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);

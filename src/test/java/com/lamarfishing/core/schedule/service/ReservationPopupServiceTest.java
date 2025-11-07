@@ -10,7 +10,7 @@ import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationPopupResponse;
-import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
+import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.user.domain.User;
@@ -53,7 +53,7 @@ class ReservationPopupServiceTest {
     /**
      * getReservationPopup
      */
-    @DisplayName("getReservationPopup: publicId가 schedule이 아니면 ScheduleInvalidPublicId 예외를 발생시킨다.")
+    @DisplayName("getReservationPopup: publicId가 schedule이 아니면 InvalidSchedulePublicId 예외를 발생시킨다.")
     @Test
     void getReservationPopup_publicId가_schedule_것이_아니면_예외() {
         // given
@@ -64,7 +64,7 @@ class ReservationPopupServiceTest {
         // when, then
         assertThatThrownBy(() ->
                 reservationPopupService.getReservationPopup(userId, grade, invalidPublicId)
-        ).isInstanceOf(ScheduleInvalidPublicId.class);
+        ).isInstanceOf(InvalidSchedulePublicId.class);
     }
 
     @DisplayName("getReservationPopup: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
@@ -202,7 +202,7 @@ class ReservationPopupServiceTest {
     /**
      * createReservation
      */
-    @DisplayName("createReservation: publicId가 schedule이 아니면 ScheduleInvalidPublicId 예외를 발생시킨다.")
+    @DisplayName("createReservation: publicId가 schedule이 아니면 InvalidSchedulePublicId 예외를 발생시킨다.")
     @Test
     void createReservation_publicId가_schedule_것이_아니면_예외() {
         // given
@@ -213,7 +213,7 @@ class ReservationPopupServiceTest {
         // when, then
         assertThatThrownBy(() ->
                 reservationPopupService.createReservation(userId, grade, invalidPublicId, null)
-        ).isInstanceOf(ScheduleInvalidPublicId.class);
+        ).isInstanceOf(InvalidSchedulePublicId.class);
     }
 
     @DisplayName("createReservation: userGrade가 Grade에 없으면 InvalidUserGrade 예외를 발생시킨다.")
