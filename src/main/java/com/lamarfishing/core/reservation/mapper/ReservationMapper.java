@@ -13,6 +13,7 @@ public class ReservationMapper {
         String nickname = reservation.getUser().getNickname();
 
         return ReservationCommonDto.builder()
+                .reservationId(reservation.getId())
                 .reservationPublicId(reservation.getPublicId())
                 .nickname(nickname)
                 .grade(grade)
