@@ -22,6 +22,10 @@ public enum ErrorCode {
      */
     SCHEDULE_NOT_FOUND(HttpStatus.NOT_FOUND, "Schedule not found"),
     /**
+     * reservation
+     */
+    RESERVATION_NOT_FOUND(HttpStatus.NOT_FOUND, "Reservation not found"),
+    /**
      * coupon
      */
     INVALID_COUPON_STATUS(HttpStatus.BAD_REQUEST, "Invalid coupon status"),

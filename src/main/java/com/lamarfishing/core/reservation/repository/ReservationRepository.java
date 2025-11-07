@@ -10,4 +10,5 @@ import java.util.Optional;
 public interface ReservationRepository extends JpaRepository<Reservation, Long> {
     Boolean existsBySchedule(Schedule schedule);
     List<Reservation> findBySchedule(Schedule schedule);
+    Optional<Reservation> findByPublicId(String publicId);
 }
