@@ -35,7 +35,7 @@ public class ScheduleService {
         ScheduleDetailDto scheduleDetailDto = ScheduleMapper.toScheduleDetailDto(schedule);
 
         Ship ship = schedule.getShip();
-        ShipDetailDto shipDetailDto = ShipMapper.toShipDetailResponse(ship);
+        ShipDetailDto shipDetailDto = ShipMapper.toShipDetailDto(ship);
 
         List<ReservationCommonDto> reservations =
                 reservationRepository.findBySchedule(schedule)

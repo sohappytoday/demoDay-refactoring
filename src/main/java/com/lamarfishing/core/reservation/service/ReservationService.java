@@ -1,10 +1,17 @@
 package com.lamarfishing.core.reservation.service;
 
 import com.lamarfishing.core.reservation.domain.Reservation;
+import com.lamarfishing.core.reservation.dto.command.ReservationDetailDto;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
 import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;
+import com.lamarfishing.core.reservation.exception.ReservationNotFound;
+import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
+import com.lamarfishing.core.ship.domain.Ship;
+import com.lamarfishing.core.ship.dto.command.ReservationDetailShipDto;
+import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.User;
+import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +30,15 @@ public class ReservationService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow()
-        if(!(user.getGrade().equals(User.Grade.ADMIN) || ){
-
+        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
+        //관리자나 예약자가 아니면 거부
+        if (!user.getGrade().equals(User.Grade.ADMIN) && !reservation.getUser().equals(user)){
+            throw new InvalidUserGrade();
         }
+        //아~~~~~ QueryDsl 써보고 싶다. 공부하고 써봐야지
+        Ship ship = reservation.getSchedule().getShip();
+        ReservationDetailShipDto reservationDetailShipDto = ShipMapper.toReservationDetailShipDto(ship);
+        ReservationDetailDto reservationDetailDto = ReservationMapper.toReservationDetailDto(reservation);
+
     }
 }

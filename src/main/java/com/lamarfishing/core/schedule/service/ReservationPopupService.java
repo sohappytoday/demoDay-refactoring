@@ -60,7 +60,7 @@ public class ReservationPopupService {
         int currentHeadCount = schedule.getCurrentHeadCount();
         int remainHeadCount = ship.getMaxHeadCount() - currentHeadCount;
 
-        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipResponse(ship);
+        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipDto(ship);
 
         //비회원이라면
         if (userGrade == User.Grade.GUEST){
