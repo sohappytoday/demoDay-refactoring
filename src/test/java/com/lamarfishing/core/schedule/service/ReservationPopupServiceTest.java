@@ -250,13 +250,15 @@ class ReservationPopupServiceTest {
         );
 
         Coupon coupon = Coupon.create(Coupon.Type.WEEKDAY, user);
+        ReflectionTestUtils.setField(coupon, "id", 10L);
+        Long couponId = coupon.getId();
 
         // repository mock stubbing
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(scheduleRepository.findByPublicId(publicId)).thenReturn(Optional.of(schedule));
         when(reservationRepository.save(any()))
                 .thenAnswer(invocation -> invocation.getArgument(0));
-
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
         ReservationPopupRequest request = ReservationPopupRequest.builder()
                 .headCount(2)
                 .request("내가 왕이다.")
