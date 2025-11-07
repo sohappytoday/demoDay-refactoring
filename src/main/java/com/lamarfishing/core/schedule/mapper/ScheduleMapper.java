@@ -1,6 +1,7 @@
 package com.lamarfishing.core.schedule.mapper;
 
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.dto.command.ReservationDetailScheduleDto;
 import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
 import lombok.Builder;
 import lombok.Getter;
@@ -16,6 +17,14 @@ public class ScheduleMapper {
                 .departure(schedule.getDeparture())
                 .tide(schedule.getTide())
                 .remainCount(maxHeadCount-schedule.getCurrentHeadCount())
+                .build();
+    }
+
+    public static ReservationDetailScheduleDto toReservationDetailScheduleDto(Schedule schedule) {
+        return ReservationDetailScheduleDto.builder()
+                .departure(schedule.getDeparture())
+                .dayOfWeek(schedule.getDeparture().getDayOfWeek())
+                .tide(schedule.getTide())
                 .build();
     }
 }
