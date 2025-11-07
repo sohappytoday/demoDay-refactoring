@@ -7,6 +7,9 @@ import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
+import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.dto.command.ReservationDetailScheduleDto;
+import com.lamarfishing.core.schedule.mapper.ScheduleMapper;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ReservationDetailShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
@@ -35,10 +38,16 @@ public class ReservationService {
         if (!user.getGrade().equals(User.Grade.ADMIN) && !reservation.getUser().equals(user)){
             throw new InvalidUserGrade();
         }
-        //아~~~~~ QueryDsl 써보고 싶다. 공부하고 써봐야지
-        Ship ship = reservation.getSchedule().getShip();
+
+        Schedule schedule = reservation.getSchedule();
+        Ship ship = schedule.getShip();
+
         ReservationDetailShipDto reservationDetailShipDto = ShipMapper.toReservationDetailShipDto(ship);
         ReservationDetailDto reservationDetailDto = ReservationMapper.toReservationDetailDto(reservation);
+        ReservationDetailScheduleDto reservationDetailScheduleDto = ScheduleMapper.toReservationDetailScheduleDto(schedule);
 
+        ReservationDetailResponse response = ReservationDetailResponse.from(reservationDetailShipDto, reservationDetailDto, reservationDetailScheduleDto);
+
+        return response;
     }
 }
