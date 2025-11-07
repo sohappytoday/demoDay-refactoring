@@ -31,6 +31,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * parameter userId만 받게 fix 필요
+ */
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
