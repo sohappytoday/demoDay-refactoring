@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Builder
-public class ScheduleCommonDto {
+public class ScheduleDetailDto {
     private String schedulePublicId;
     private LocalDateTime departure;
     private Integer tide;

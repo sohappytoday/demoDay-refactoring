@@ -1,11 +1,10 @@
 package com.lamarfishing.core.schedule.service;
 
-import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationCommonDto;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.dto.command.ScheduleCommonDto;
+import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.exception.ScheduleInvalidPublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
@@ -33,7 +32,7 @@ public class ScheduleService {
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        ScheduleCommonDto scheduleCommonDto = ScheduleMapper.toScheduleCommonDto(schedule);
+        ScheduleDetailDto scheduleDetailDto = ScheduleMapper.toScheduleDetailDto(schedule);
 
         Ship ship = schedule.getShip();
         ShipCommonDto shipCommonDto = ShipMapper.toShipCommonResponse(ship);
@@ -44,7 +43,7 @@ public class ScheduleService {
                         .map(ReservationMapper::toReservationCommonDto)
                         .toList();
 
-        ScheduleDetailResponse scheduleDetailResponse = ScheduleDetailResponse.from(shipCommonDto, scheduleCommonDto, reservations);
+        ScheduleDetailResponse scheduleDetailResponse = ScheduleDetailResponse.from(shipCommonDto, scheduleDetailDto, reservations);
 
         return scheduleDetailResponse;
     }

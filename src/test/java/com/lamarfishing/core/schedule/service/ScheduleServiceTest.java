@@ -74,7 +74,7 @@ class ScheduleServiceTest {
         assertThat(response.getShip().getShipId()).isEqualTo(ship.getId());
         assertThat(response.getShip().getFishType()).isEqualTo(ship.getFishType());
         assertThat(response.getShip().getPrice()).isEqualTo(ship.getPrice());
-        //scheduleCommonDto
+        //scheduleDetailDto
         assertThat(response.getSchedule().getSchedulePublicId()).isEqualTo(publicId);
         assertThat(response.getSchedule().getDeparture()).isEqualTo(schedule.getDeparture());
         assertThat(response.getSchedule().getTide()).isEqualTo(schedule.getTide());
