@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 import jakarta.annotation.PostConstruct;
 
 @Component
-@Order(2)
+@Order(3)
 @RequiredArgsConstructor
 public class ShipDummy {
 
