@@ -65,11 +65,9 @@ public class ReservationPopupService {
 
         //비회원이라면
         if (userGrade == User.Grade.GUEST){
-            reservationUserDto = UserMapper.toReservationUserDto(); //비회원용 User.grade
+            reservationUserDto = UserMapper.toReservationUserDto(); //비회원용
             return ReservationPopupResponse.from(schedule, remainHeadCount, reservationUserDto, reservationShipDto);
         }
-
-
 
         List<CouponCommonDto> couponCommonDtos = couponRepository.findByUserAndStatus(user, Coupon.Status.AVAILABLE)
                 .stream()
@@ -81,16 +79,13 @@ public class ReservationPopupService {
     }
 
     @Transactional
-    public ReservationCreateResponse createReservation(Long userId, String grade, String publicId, ReservationPopupRequest reservationPopupRequest) {
+    public ReservationCreateResponse createReservation(Long userId, String publicId, ReservationPopupRequest reservationPopupRequest) {
         if (!publicId.startsWith("sch")) {
             throw new InvalidSchedulePublicId();
         }
 
-        User.Grade userGrade = parseUserGrade(grade);
-        /**
-         * user 불러오기 (수정 가능성 o)
-         */
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        User.Grade userGrade = user.getGrade();
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
@@ -125,13 +120,5 @@ public class ReservationPopupService {
         ReservationCreateResponse reservationCreateResponse = ReservationMapper.toReservationCreateResponse(reservation);
 
         return reservationCreateResponse;
-    }
-
-    private User.Grade parseUserGrade(String grade) {
-        try {
-            return User.Grade.valueOf(grade.toUpperCase());
-        } catch (IllegalArgumentException e) {
-            throw new InvalidUserGrade();
-        }
     }
 }
