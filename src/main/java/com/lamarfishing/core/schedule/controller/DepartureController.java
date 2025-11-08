@@ -40,17 +40,17 @@ public class DepartureController {
     /**
      * 출항 취소
      */
-//    @PostMapping("/{schedule_public_id}/departure/cancel")
+//    @PostMapping("/{schedulePublicId}/departure/cancel")
 //    public ResponseEntity<ApiResponse<DepartureResponse>> departureCancel(@RequestAttribute(name = "수정필요1") Long userId,
-//                                                                          @PathVariable("schedule_public_id") String publicId,
+//                                                                          @PathVariable("schedulePublicId") String publicId,
 //                                                                          @RequestBody DepartureRequest request){
 //        DepartureResponse response = departureService.cancel(userId, publicId, request);
 //
 //        return ResponseEntity.ok(ApiResponse.success("출항 취소 메시지를 보냈습니다.",response));
 //    }
 
-    @PostMapping("/{schedule_public_id}/departure/cancel")
-    public ResponseEntity<ApiResponse<DepartureResponse>> departureCancel(@PathVariable("schedule_public_id") String publicId,
+    @PostMapping("/{schedulePublicId}/departure/cancel")
+    public ResponseEntity<ApiResponse<DepartureResponse>> departureCancel(@PathVariable("schedulePublicId") String publicId,
                                                                           @RequestBody DepartureRequest request){
         Long userId = 2L;
         DepartureResponse response = departureService.cancel(userId, publicId, request);
@@ -61,17 +61,17 @@ public class DepartureController {
     /**
      * 출항 연기
      */
-//    @PostMapping("/{schedule_public_id}/departure/delay")
+//    @PostMapping("/{schedulePublicId}/departure/delay")
 //    public ResponseEntity<ApiResponse<DepartureResponse>> departureDelay(@RequestAttribute(name = "수정필요1") Long userId,
-//                                                                         @PathVariable("schedule_public_id") String publicId,
+//                                                                         @PathVariable("schedulePublicId") String publicId,
 //                                                                         @RequestBody DepartureRequest request){
 //        DepartureResponse response = departureService.cancel(userId, publicId, request);
 //
 //        return ResponseEntity.ok(ApiResponse.success("출항 보류 메시지를 보냈습니다.",response));
 //    }
 
-    @PostMapping("/{schedule_public_id}/departure/delay")
-    public ResponseEntity<ApiResponse<DepartureResponse>> departureDelay(@PathVariable("schedule_public_id") String publicId,
+    @PostMapping("/{schedulePublicId}/departure/delay")
+    public ResponseEntity<ApiResponse<DepartureResponse>> departureDelay(@PathVariable("schedulePublicId") String publicId,
                                                                          @RequestBody DepartureRequest request){
         Long userId = 2L;
         DepartureResponse response = departureService.cancel(userId, publicId, request);
