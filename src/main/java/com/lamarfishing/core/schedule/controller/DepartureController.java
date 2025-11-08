@@ -15,6 +15,9 @@ public class DepartureController {
 
     private final DepartureService departureService;
 
+    /**
+     *
+     */
     @PostMapping("/{schedule_public_id}/departure/confirmation")
     public ResponseEntity<ApiResponse<DepartureResponse>> departureConfirm(@PathVariable("schedule_public_id") String publicId,
                                                                                 @RequestBody DepartureRequest request){
