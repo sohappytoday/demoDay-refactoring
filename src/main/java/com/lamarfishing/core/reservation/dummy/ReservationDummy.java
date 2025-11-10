@@ -13,10 +13,7 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import com.lamarfishing.core.user.domain.User;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Component
@@ -53,20 +50,25 @@ public class ReservationDummy {
 
         for (Schedule schedule : schedules) {
 
-            // 스케줄마다 5개의 예약 생성
-            for (int i = 0; i < 5; i++) {
+            List<User> shuffledUsers = new ArrayList<>(users);
+            Collections.shuffle(shuffledUsers);
 
-                User user = users.get(random.nextInt(users.size()));
+            List<User> selectedUsers = shuffledUsers.subList(0, Math.min(5, shuffledUsers.size()));
 
-                // headCount 1~3명 랜덤
+            for (User user : selectedUsers) {
+
                 int headCount = random.nextInt(3) + 1;
 
-                // totalPrice = ship.price * headCount
                 int price = schedule.getShip().getPrice() * headCount;
 
-                // AVAILABLE 쿠폰 중 랜덤 선택
-                List<Coupon> userCoupons = availableCouponsByUser.getOrDefault(user.getId(), Collections.emptyList());
-                Coupon coupon = userCoupons.isEmpty() ? null : userCoupons.get(random.nextInt(userCoupons.size()));
+                // 유저의 AVAILABLE 쿠폰 중 랜덤 선택 (없으면 null)
+                List<Coupon> userCoupons = availableCouponsByUser.getOrDefault(
+                        user.getId(),
+                        Collections.emptyList()
+                );
+                Coupon coupon = userCoupons.isEmpty()
+                        ? null
+                        : userCoupons.get(random.nextInt(userCoupons.size()));
 
                 Reservation reservation = Reservation.create(
                         headCount,
