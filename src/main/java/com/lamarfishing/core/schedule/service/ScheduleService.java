@@ -6,12 +6,10 @@ import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
+import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
-import com.lamarfishing.core.schedule.exception.DuplicateSchedule;
-import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
-import com.lamarfishing.core.schedule.exception.ScheduleHasReservations;
-import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
+import com.lamarfishing.core.schedule.exception.*;
 import com.lamarfishing.core.schedule.mapper.ScheduleMapper;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
@@ -29,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -148,7 +147,7 @@ public class ScheduleService {
         return ViewDepartureTimeResponse.from(false, tomorrow);
     }
 
-    public void UpdateDepartureTime(Long userId, String publicId){
+    public void UpdateDepartureTime(Long userId, String publicId, UpdateDepartureTimeRequest request){
         if(!publicId.startsWith("sch")){
             throw new InvalidSchedulePublicId();
         }
@@ -157,13 +156,16 @@ public class ScheduleService {
             throw new InvalidUserGrade();
         }
 
-
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        //실험할때 주석처리할 것
+        // 실험할 때 주석처리할 것 (160~164)
         LocalDateTime now = LocalDateTime.now();
         LocalDateTime limit = now.plusDays(2);
         if (schedule.getDeparture().isBefore(now) || schedule.getDeparture().isAfter(limit)) {
             throw new InvalidDepartureTime();
         }
+
+        LocalTime updateTime = request.getDepartureTime();
+        schedule.
+
     }
 }
