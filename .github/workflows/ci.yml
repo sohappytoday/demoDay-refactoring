@@ -69,4 +69,7 @@ jobs:
           token: ${{ secrets.PAT_TOKEN }}
           repository: La-Mar-Project/Backend
           event-type: deploy
-          client-payload: '{"tag":"1.1.${{ github.run_number }}"}'
+          client-payload: |
+            {
+              "tag": "1.1.${{ github.run_number }}"
+            }
