@@ -9,6 +9,7 @@ import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.exception.DuplicateSchedule;
 import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
+import com.lamarfishing.core.schedule.exception.ScheduleHasReservations;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.mapper.ScheduleMapper;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
@@ -95,6 +96,26 @@ public class ScheduleService {
             scheduleRepository.save(schedule);
 
         }
+    }
+
+    @Transactional
+    public void deleteSchedule(Long userId, String publicId){
+        if(!publicId.startsWith("sch")){
+            throw new InvalidSchedulePublicId();
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if(user.getGrade()!=User.Grade.ADMIN){
+            throw new InvalidUserGrade();
+        }
+
+        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        boolean hasReservations = reservationRepository.existsBySchedule(schedule);
+        if (hasReservations) {
+            throw new ScheduleHasReservations();
+        }
+
+        scheduleRepository.delete(schedule);
     }
 
 }

@@ -7,6 +7,7 @@ import com.lamarfishing.core.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.service.annotation.DeleteExchange;
 
 @RestController
 @RequiredArgsConstructor
@@ -42,5 +43,23 @@ public class ScheduleController {
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 생성에 성공하였습니다."));
 
+    }
+
+    /**
+     * 출항 일정 삭제
+     */
+//    @DeleteExchange("/{schedulePublicId}")
+//    public ResponseEntity<ApiResponse<Void>> deleteSchedule(@RequestHeader Long userId,
+//                                                            @PathVariable("schedulePublicId") String publicId) {
+//        scheduleService.deleteSchedule(userId,publicId);
+//
+//        return ResponseEntity.ok(ApiResponse.success("출항 일정 삭제에 성공하였습니다."));
+//    }
+    @DeleteExchange("/{schedulePublicId}")
+    public ResponseEntity<ApiResponse<Void>> deleteSchedule(@PathVariable("schedulePublicId") String publicId) {
+        Long userId = 2L;
+        scheduleService.deleteSchedule(userId,publicId);
+
+        return ResponseEntity.ok(ApiResponse.success("출항 일정 삭제에 성공하였습니다."));
     }
 }
