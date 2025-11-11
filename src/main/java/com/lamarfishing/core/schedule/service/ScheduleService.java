@@ -120,6 +120,11 @@ public class ScheduleService {
     }
 
     public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
+        User user  = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if(user.getGrade()!=User.Grade.ADMIN){
+            throw new InvalidUserGrade();
+        }
+
         //api 받는 그 시간
         LocalDateTime now = LocalDateTime.now();
         LocalDate today = now.toLocalDate();

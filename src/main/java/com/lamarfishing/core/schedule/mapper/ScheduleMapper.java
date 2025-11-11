@@ -29,10 +29,4 @@ public class ScheduleMapper {
                 .build();
     }
 
-    public static ViewDepartureTimeResponse toViewDepartureTimeResponse(Schedule schedule) {
-        return ViewDepartureTimeResponse.builder()
-                .schedulePublicId(schedule.getPublicId())
-                .departureTime(schedule.getDeparture())
-                .build();
-    }
 }

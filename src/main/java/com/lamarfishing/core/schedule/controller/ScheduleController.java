@@ -3,6 +3,7 @@ package com.lamarfishing.core.schedule.controller;
 import com.lamarfishing.core.common.ApiResponse;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
+import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
 import com.lamarfishing.core.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -61,5 +62,22 @@ public class ScheduleController {
         scheduleService.deleteSchedule(userId,publicId);
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 삭제에 성공하였습니다."));
+    }
+
+    /**
+     * 관리자 : 메인페이지서 출항 시간 보기
+     */
+//    @GetMapping("/departure-time")
+//    public ResponseEntity<ApiResponse<ViewDepartureTimeResponse>> getDepartureTime(@RequestHeader Long userId) {
+//        ViewDepartureTimeResponse viewDepartureTimeResponse =scheduleService.viewDepartureTime(userId);
+//
+//        return ResponseEntity.ok(ApiResponse.success("출항 시간 조회에 성공하였습니다.",viewDepartureTimeResponse));
+//    }
+    @GetMapping("/departure")
+    public ResponseEntity<ApiResponse<ViewDepartureTimeResponse>> getDepartureTime() {
+        Long userId = 2L;
+        ViewDepartureTimeResponse viewDepartureTimeResponse =scheduleService.viewDepartureTime(userId);
+
+        return ResponseEntity.ok(ApiResponse.success("출항 시간 조회에 성공하였습니다.",viewDepartureTimeResponse));
     }
 }

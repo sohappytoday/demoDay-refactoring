@@ -15,7 +15,7 @@ public class ViewDepartureTimeResponse {
     private String schedulePublicId;
     private LocalDate date;
     private String dayOfWeek;
-
+    private LocalTime dateTime;
 
     public static ViewDepartureTimeResponse from(Boolean scheduleExist, Schedule schedule){
         return ViewDepartureTimeResponse.builder()
@@ -23,6 +23,7 @@ public class ViewDepartureTimeResponse {
                 .schedulePublicId(schedule.getPublicId())
                 .date(schedule.getDeparture().toLocalDate())
                 .dayOfWeek(schedule.getDeparture().toLocalDate().getDayOfWeek().toString())
+                .dateTime(schedule.getDeparture().toLocalTime())
                 .build();
     }
 
@@ -32,6 +33,7 @@ public class ViewDepartureTimeResponse {
                 .schedulePublicId(null)
                 .date(date)
                 .dayOfWeek(date.getDayOfWeek().toString())
+                .dateTime(null)
                 .build();
     }
 }
