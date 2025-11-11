@@ -80,4 +80,8 @@ public class Reservation {
                 .coupon(coupon)
                 .build();
     }
+
+    public void changeProcess(Process process) {
+        this.process = process;
+    }
 }

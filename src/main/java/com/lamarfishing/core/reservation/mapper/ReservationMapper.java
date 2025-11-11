@@ -40,6 +40,7 @@ public class ReservationMapper {
                 .couponId(reservation.getCoupon().getId())
                 .request(reservation.getRequest())
                 .totalPrice(reservation.getTotalPrice())
+                .process(reservation.getProcess())
                 .build();
     }
 

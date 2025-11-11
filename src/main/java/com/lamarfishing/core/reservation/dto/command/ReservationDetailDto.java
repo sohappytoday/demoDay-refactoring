@@ -1,5 +1,6 @@
 package com.lamarfishing.core.reservation.dto.command;
 
+import com.lamarfishing.core.reservation.domain.Reservation;
 import lombok.Builder;
 import lombok.Data;
 
@@ -16,4 +17,5 @@ public class ReservationDetailDto {
     private Long couponId;
     private String request;
     private Integer totalPrice;
+    private Reservation.Process process;
 }

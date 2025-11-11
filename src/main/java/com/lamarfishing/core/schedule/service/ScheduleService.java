@@ -40,7 +40,7 @@ public class ScheduleService {
     private final UserRepository userRepository;
     private final ShipRepository shipRepository;
 
-    public ScheduleDetailResponse getScheduleDetail(String publicId){
+    public ScheduleDetailResponse getScheduleDetail(String publicId) {
         if (!publicId.startsWith("sch")) {
             throw new InvalidSchedulePublicId();
         }
@@ -63,9 +63,9 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void createSchedule(Long userId, ScheduleCreateRequest scheduleCreateRequest){
+    public void createSchedule(Long userId, ScheduleCreateRequest scheduleCreateRequest) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade()!=User.Grade.ADMIN){
+        if (user.getGrade() != User.Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -77,7 +77,7 @@ public class ScheduleService {
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
         Integer maxHeadCount = ship.getMaxHeadCount();
         //중복되는 날짜가 있으면 덮어쓰기, 없으면 생성
-        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)){
+        for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
@@ -92,20 +92,20 @@ public class ScheduleService {
             }
 
             int tide = (date.getDayOfYear() % 15) + 1;
-            Schedule schedule = Schedule.create(date.atTime(4,0,0),maxHeadCount,tide,Schedule.Status.WAITING,scheduleType,ship);
+            Schedule schedule = Schedule.create(date.atTime(4, 0, 0), maxHeadCount, tide, Schedule.Status.WAITING, scheduleType, ship);
             scheduleRepository.save(schedule);
 
         }
     }
 
     @Transactional
-    public void deleteSchedule(Long userId, String publicId){
-        if(!publicId.startsWith("sch")){
+    public void deleteSchedule(Long userId, String publicId) {
+        if (!publicId.startsWith("sch")) {
             throw new InvalidSchedulePublicId();
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade()!=User.Grade.ADMIN){
+        if (user.getGrade() != User.Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -119,8 +119,8 @@ public class ScheduleService {
     }
 
     public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
-        User user  = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade()!=User.Grade.ADMIN){
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if (user.getGrade() != User.Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -135,12 +135,12 @@ public class ScheduleService {
 
         //오늘 일정이 존재한다면
         if (scheduleRepository.existsByDepartureBetween(now, todayEnd)) {
-            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(now,todayEnd).orElseThrow(ScheduleNotFound::new);
+            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(now, todayEnd).orElseThrow(ScheduleNotFound::new);
             return ViewDepartureTimeResponse.from(true, schedule);
         }
         //오늘 일정이 없다면
         if (scheduleRepository.existsByDepartureBetween(tomorrowStart, tomorrowEnd)) {
-            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(tomorrowStart,tomorrowEnd).orElseThrow(ScheduleNotFound::new);
+            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(tomorrowStart, tomorrowEnd).orElseThrow(ScheduleNotFound::new);
             return ViewDepartureTimeResponse.from(true, schedule);
         }
 
@@ -148,12 +148,12 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void UpdateDepartureTime(Long userId, String publicId, UpdateDepartureTimeRequest request){
-        if(!publicId.startsWith("sch")){
+    public void UpdateDepartureTime(Long userId, String publicId, UpdateDepartureTimeRequest request) {
+        if (!publicId.startsWith("sch")) {
             throw new InvalidSchedulePublicId();
         }
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade()!=User.Grade.ADMIN){
+        if (user.getGrade() != User.Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -167,8 +167,32 @@ public class ScheduleService {
 
         LocalTime updateTime = request.getDepartureTime();
         LocalDate departureDate = schedule.getDeparture().toLocalDate();
-        LocalDateTime updateDeparture =  departureDate.atTime(updateTime);
+        LocalDateTime updateDeparture = departureDate.atTime(updateTime);
 
         schedule.updateDeparture(updateDeparture);
+    }
+
+    /**
+     * 선예약 마감
+     */
+    @Transactional
+    public void markAsDrawn(Long userId, String publicId) {
+        if (!publicId.startsWith("sch")) {
+            throw new InvalidSchedulePublicId();
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if (user.getGrade() != User.Grade.ADMIN) {
+            throw new InvalidUserGrade();
+        }
+
+        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        //선예약 시에만
+        if (schedule.getType() == Schedule.Type.EARLY) {
+            schedule.changeType(Schedule.Type.DRAWN);
+        }
+        throw new InvalidScheduleType();
+
+
     }
 }

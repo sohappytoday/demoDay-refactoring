@@ -101,4 +101,22 @@ public class ScheduleController {
 
         return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
     }
+
+    /**
+     * 선예약 마감
+     */
+//    @PatchMapping("/{schedulePublicId}/drawn")
+//    public ResponseEntity<ApiResponse<Void>> markAsDrawn(@RequestHeader Long userId,
+//                                                         @PathVariable String schedulePublicId) {
+//        scheduleService.markAsDrawn(userId, schedulePublicId);
+//
+//        return ResponseEntity.ok(ApiResponse.success("출항 일정 선예약 마감이 되었습니다."));
+//    }
+    @PatchMapping("/{schedulePublicId}/drawn")
+    public ResponseEntity<ApiResponse<Void>> markAsDrawn(@PathVariable String schedulePublicId) {
+        Long userId = 2L;
+        scheduleService.markAsDrawn(userId, schedulePublicId);
+
+        return ResponseEntity.ok(ApiResponse.success("출항 일정 선예약 마감이 되었습니다."));
+    }
 }
