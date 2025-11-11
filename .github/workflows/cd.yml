@@ -4,7 +4,7 @@ name: CD Pipeline
 # 트리거
 on:
   push:
-    branches: ["dev"]
+    branches: ["main"]
 
 jobs:
   deploy:
@@ -13,6 +13,14 @@ jobs:
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v3
+
+      - name: Download image tag artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: image-tag
+
+      - name: Read image tag
+        run: echo "TAG=$(cat image-tag.txt)" >> $GITHUB_ENV
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
@@ -24,7 +32,7 @@ jobs:
             cd /home/ec2-user/deploy
 
             # 최신 이미지 pull
-            docker pull geooeg/jjubul-resource:1.1.${{ github.run_number }}
+            docker pull geooeg/jjubul-resource:${TAG}
 
             # 현재 nginx 라우팅 포트번호 확인 (e.g 8080, 8081)
             LIVE_PORT=$(grep -o "808[0-1]" /etc/nginx/conf.d/jjubul.conf)
@@ -41,8 +49,8 @@ jobs:
             fi
             
             # compose 내부 이미지 태그 자동 교체
-            sed -i "s|image: geooeg/jjubul-resource:[0-9\.]*|image: geooeg/jjubul-resource:1.1.${{ github.run_number }}|g" $TARGET_COMPOSE
-            
+            sed -i "s|image: geooeg/jjubul-resource:[0-9\.]*|image: geooeg/jjubul-resource:${TAG}|g" $TARGET_COMPOSE
+
             # blue 서버 재배포
             docker-compose -f $TARGET_COMPOSE down
             docker-compose -f $TARGET_COMPOSE up -d

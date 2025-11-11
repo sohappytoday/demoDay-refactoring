@@ -57,3 +57,14 @@ jobs:
       # 도커 이미지 푸쉬 (1.1.x 버전)
       - name: Push Image to Docker hub
         run: docker push geooeg/jjubul-resource:1.1.${{github.run_number}}
+
+      # 태그를 파일에 저장
+      - name: Save image tag
+        run: echo "1.1.${{ github.run_number }}" > image-tag.txt
+
+      # 아티팩트 업로드
+      - name: Upload image tag artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: image-tag
+          path: image-tag.txt
