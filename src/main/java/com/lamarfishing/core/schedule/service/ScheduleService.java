@@ -60,7 +60,7 @@ public class ScheduleService {
     }
 
     @Transactional
-    public Void createSchedule(Long userId, ScheduleCreateRequest scheduleCreateRequest){
+    public void createSchedule(Long userId, ScheduleCreateRequest scheduleCreateRequest){
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         if(user.getGrade()!=User.Grade.ADMIN){
             throw new InvalidUserGrade();
@@ -75,13 +75,14 @@ public class ScheduleService {
         Integer maxHeadCount = ship.getMaxHeadCount();
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)){
             //중복되는 날짜가 있음
-            if(!scheduleRepository.existsByDepartureBetween(date.atStartOfDay(),date.atTime(23,59,59)){
+            if(scheduleRepository.existsByDepartureBetween(date.atStartOfDay(),date.atTime(23,59,59))){
                 throw new DuplicateSchedule();
             }
-            Schedule schedule = Schedule.create(date.atTime(4,0,0),)
+            int tide = (date.getDayOfYear() % 15) + 1;
+            Schedule schedule = Schedule.create(date.atTime(4,0,0),maxHeadCount,tide,Schedule.Status.WAITING,scheduleType,ship);
+            scheduleRepository.save(schedule);
 
         }
-
     }
 
 }
