@@ -148,4 +148,22 @@ public class ScheduleService {
         return ViewDepartureTimeResponse.from(false, tomorrow);
     }
 
+    public void UpdateDepartureTime(Long userId, String publicId){
+        if(!publicId.startsWith("sch")){
+            throw new InvalidSchedulePublicId();
+        }
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if(user.getGrade()!=User.Grade.ADMIN){
+            throw new InvalidUserGrade();
+        }
+
+
+        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        //실험할때 주석처리할 것
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime limit = now.plusDays(2);
+        if (schedule.getDeparture().isBefore(now) || schedule.getDeparture().isAfter(limit)) {
+            throw new InvalidDepartureTime();
+        }
+    }
 }
