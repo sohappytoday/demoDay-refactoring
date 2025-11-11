@@ -3,6 +3,7 @@ package com.lamarfishing.core.schedule.mapper;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.command.ReservationDetailScheduleDto;
 import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
+import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -27,4 +28,5 @@ public class ScheduleMapper {
                 .tide(schedule.getTide())
                 .build();
     }
+
 }

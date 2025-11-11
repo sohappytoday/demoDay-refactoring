@@ -12,6 +12,7 @@ public class ShipMapper {
                 .shipId(ship.getId())
                 .fishType(ship.getFishType())
                 .price(ship.getPrice())
+                .notification(ship.getNotification())
                 .build();
     }
 

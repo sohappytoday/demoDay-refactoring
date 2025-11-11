@@ -13,5 +13,6 @@ public class ShipDetailDto {
     private Long shipId;
     private String fishType;
     private Integer price;
+    private String notification;
 
 }

@@ -85,7 +85,7 @@ public class Schedule {
                 .build();
     }
 
-    public void changeDeparture(LocalDateTime departure) {
+    public void updateDeparture(LocalDateTime departure) {
         this.departure = departure;
     }
 
@@ -102,6 +102,10 @@ public class Schedule {
             //예외 발생
         }
         this.currentHeadCount -= headCount;
+    }
+
+    public void updateType(Schedule.Type newType) {
+        this.type = newType;
     }
 
     public void changeStatus(Status status) {
