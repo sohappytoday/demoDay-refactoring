@@ -10,6 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Debug TAG
+        run: echo "TAG= '${{ github.event.client_payload.tag }}'"
+
       - name: Read tag from dispatch event
         run: echo "TAG=${{ github.event.client_payload.tag }}" >> $GITHUB_ENV
 
