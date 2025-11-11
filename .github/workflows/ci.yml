@@ -67,6 +67,6 @@ jobs:
         uses: peter-evans/repository-dispatch@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          repository: geooeg/Backend
+          repository: La-Mar-Project/Backend
           event-type: deploy
           client-payload: '{"tag":"1.1.${{ github.run_number }}"}'
