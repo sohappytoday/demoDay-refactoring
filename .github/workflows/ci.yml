@@ -1,10 +1,10 @@
 # workflow name
 name: CI Pipeline
 
-#dev branch에 push시 자동 실행
+#main branch에 push시 자동 실행
 on:
   push:
-    branches: ["dev"]
+    branches: ["main"]
 
 jobs:
   ci:
