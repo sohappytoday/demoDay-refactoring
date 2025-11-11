@@ -7,6 +7,7 @@ import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
+import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
 import com.lamarfishing.core.schedule.exception.DuplicateSchedule;
 import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleHasReservations;
@@ -116,6 +117,30 @@ public class ScheduleService {
         }
 
         scheduleRepository.delete(schedule);
+    }
+
+    public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
+        //api 받는 그 시간
+        LocalDateTime now = LocalDateTime.now();
+        LocalDate today = now.toLocalDate();
+        LocalDateTime todayEnd = today.atTime(23, 59, 59);
+
+        LocalDateTime tomorrowStart = todayEnd.plusSeconds(1);
+        LocalDate tomorrow = tomorrowStart.toLocalDate();
+        LocalDateTime tomorrowEnd = tomorrow.atTime(23, 59, 59);
+
+        //오늘 일정이 존재한다면
+        if (scheduleRepository.existsByDepartureBetween(now, todayEnd)) {
+            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(now,todayEnd).orElseThrow(ScheduleNotFound::new);
+            return ViewDepartureTimeResponse.from(true, schedule);
+        }
+        //오늘 일정이 없다면
+        if (scheduleRepository.existsByDepartureBetween(tomorrowStart, tomorrowEnd)) {
+            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(tomorrowStart,tomorrowEnd).orElseThrow(ScheduleNotFound::new);
+            return ViewDepartureTimeResponse.from(true, schedule);
+        }
+
+        return ViewDepartureTimeResponse.from(false, tomorrow);
     }
 
 }

@@ -74,7 +74,7 @@ public class DepartureController {
     public ResponseEntity<ApiResponse<DepartureResponse>> departureDelay(@PathVariable("schedulePublicId") String publicId,
                                                                          @RequestBody DepartureRequest request){
         Long userId = 2L;
-        DepartureResponse response = departureService.cancel(userId, publicId, request);
+        DepartureResponse response = departureService.delay(userId, publicId, request);
 
         return ResponseEntity.ok(ApiResponse.success("출항 보류 메시지를 보냈습니다.",response));
     }
