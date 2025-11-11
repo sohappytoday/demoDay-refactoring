@@ -2,6 +2,7 @@ package com.lamarfishing.core.schedule.controller;
 
 import com.lamarfishing.core.common.ApiResponse;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
+import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
 import com.lamarfishing.core.schedule.service.ScheduleService;
@@ -40,7 +41,7 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createSchedule(@RequestBody ScheduleCreateRequest scheduleCreateRequest) {
         Long userId = 2L;
-        scheduleService.createSchedule(userId,scheduleCreateRequest);
+        scheduleService.createSchedule(userId, scheduleCreateRequest);
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 생성에 성공하였습니다."));
 
@@ -59,7 +60,7 @@ public class ScheduleController {
     @DeleteExchange("/{schedulePublicId}")
     public ResponseEntity<ApiResponse<Void>> deleteSchedule(@PathVariable("schedulePublicId") String publicId) {
         Long userId = 2L;
-        scheduleService.deleteSchedule(userId,publicId);
+        scheduleService.deleteSchedule(userId, publicId);
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 삭제에 성공하였습니다."));
     }
@@ -76,8 +77,28 @@ public class ScheduleController {
     @GetMapping("/departure")
     public ResponseEntity<ApiResponse<ViewDepartureTimeResponse>> getDepartureTime() {
         Long userId = 2L;
-        ViewDepartureTimeResponse viewDepartureTimeResponse =scheduleService.viewDepartureTime(userId);
+        ViewDepartureTimeResponse viewDepartureTimeResponse = scheduleService.viewDepartureTime(userId);
 
-        return ResponseEntity.ok(ApiResponse.success("출항 시간 조회에 성공하였습니다.",viewDepartureTimeResponse));
+        return ResponseEntity.ok(ApiResponse.success("출항 시간 조회에 성공하였습니다.", viewDepartureTimeResponse));
+    }
+
+    /**
+     * 출항 시간 변경 api
+     * */
+//    @PatchMapping("/{schedulePublicId}/departure")
+//    public ResponseEntity<ApiResponse<Void>> UpdateDepartureTime(@RequestHeader Long userId,
+//                                                                 @PathVariable String publicId,
+//                                                                 @RequestBody UpdateDepartureTimeRequest request){
+//        scheduleService.UpdateDepartureTime(userId,publicId, request);
+//
+//        return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
+//    }
+    @PatchMapping("/{schedulePublicId}/departure")
+    public ResponseEntity<ApiResponse<Void>> UpdateDepartureTime(@PathVariable String schedulePublicId,
+                                                                 @RequestBody UpdateDepartureTimeRequest request){
+        Long userId = 2L;
+        scheduleService.UpdateDepartureTime(userId,schedulePublicId, request);
+
+        return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
     }
 }

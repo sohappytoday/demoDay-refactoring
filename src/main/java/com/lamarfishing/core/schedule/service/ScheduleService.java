@@ -147,6 +147,7 @@ public class ScheduleService {
         return ViewDepartureTimeResponse.from(false, tomorrow);
     }
 
+    @Transactional
     public void UpdateDepartureTime(Long userId, String publicId, UpdateDepartureTimeRequest request){
         if(!publicId.startsWith("sch")){
             throw new InvalidSchedulePublicId();
@@ -165,7 +166,9 @@ public class ScheduleService {
         }
 
         LocalTime updateTime = request.getDepartureTime();
-        schedule.
+        LocalDate departureDate = schedule.getDeparture().toLocalDate();
+        LocalDateTime updateDeparture =  departureDate.atTime(updateTime);
 
+        schedule.updateDeparture(updateDeparture);
     }
 }
