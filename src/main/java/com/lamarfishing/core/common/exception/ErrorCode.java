@@ -28,6 +28,7 @@ public enum ErrorCode {
     DUPLICATE_SCHEDULE(HttpStatus.BAD_REQUEST, "Duplicate schedule"),
     SCHEDULE_HAS_RESERVATIONS(HttpStatus.BAD_REQUEST, "Schedule has reservation"),
     INVALID_DEPARTURE_TIME(HttpStatus.BAD_REQUEST, "Invalid departure time"),
+    INVALID_SCHEDULE_TYPE(HttpStatus.BAD_REQUEST, "Invalid schedule type"),
     /**
      * reservation
      */
