@@ -10,16 +10,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Debug TAG
-        run: echo "TAG= '${{ github.event.client_payload.tag }}'"
+      - name: Sanitize TAG
+        id: sanitize
+        run: |
+          CLEANED=$(echo "${{ github.event.client_payload.tag }}" | tr -d "'" | tr -d " ")
+          echo "CLEANED_TAG=$CLEANED" >> $GITHUB_ENV
 
-      - name: Read tag from dispatch event
-        run: echo "TAG=${{ github.event.client_payload.tag }}" >> $GITHUB_ENV
+      - name: Debug TAG
+        run: echo "CLEANED_TAG= '${{ env.CLEANED_TAG }}'"
 
       - name: Deploy to EC2
         uses: appleboy/ssh-action@v0.1.7
         env:
-          TAG: ${{ github.event.client_payload.tag }}
+          TAG: ${{ env.CLEANED_TAG }}
         with:
           host: ${{ secrets.EC2_HOST }}
           username: ec2-user
