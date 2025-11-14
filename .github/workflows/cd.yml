@@ -27,15 +27,15 @@ jobs:
 
             docker pull geooeg/jjubul-resource:${TAG}
 
-            LIVE_PORT=$(grep -o "808[0-1]" /etc/nginx/conf.d/jjubul.conf)
+            LIVE_PORT=$(grep -o "808[0-1]" /etc/nginx/conf.d/resource.conf)
             
             # 8080 포트 사용중이면 blue.yml이 live
             if [ "$LIVE_PORT" = "8080" ]; then
-              TARGET_COMPOSE="docker-compose.green.yml"
+              TARGET_COMPOSE="docker-compose.resource.green.yml"
               PREV_CONTAINER="jjubul-resource-server-blue"
               TARGET_PORT=8081
             else
-              TARGET_COMPOSE="docker-compose.blue.yml"
+              TARGET_COMPOSE="docker-compose.resource.blue.yml"
               PREV_CONTAINER="jjubul-resource-server-green"
               TARGET_PORT=8080
             fi
@@ -47,7 +47,7 @@ jobs:
             docker-compose -f $TARGET_COMPOSE up -d
             
             # nginx 포트 변경
-            sudo sed -i "s|proxy_pass http://localhost:808[0-1]|proxy_pass http://localhost:${TARGET_PORT}|g" /etc/nginx/conf.d/jjubul.conf
+            sudo sed -i "s|proxy_pass http://localhost:808[0-1]|proxy_pass http://localhost:${TARGET_PORT}|g" /etc/nginx/conf.d/resource.conf
             sudo nginx -s reload
             
             # 변경 후 기존 컨테이너 stop
