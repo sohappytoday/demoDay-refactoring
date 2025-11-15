@@ -2,6 +2,7 @@ package com.lamarfishing.core.ship.service;
 
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
+import com.lamarfishing.core.ship.dto.request.CreateShipRequest;
 import com.lamarfishing.core.ship.dto.response.ShipListResponse;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.ship.repository.ShipRepository;
@@ -36,5 +37,23 @@ public class ShipService {
                 .toList();
 
         return ShipListResponse.from(shipDtos);
+    }
+
+    @Transactional
+    public void CreateShip(Long userId, CreateShipRequest request) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+
+        if(user.getGrade() != User.Grade.ADMIN){
+            throw new InvalidUserGrade();
+        }
+
+        String fishType = request.getFishType();
+        int price = request.getPrice();
+        int maxHeadCount = request.getMaxHeadCount();
+        String notification = request.getNotification();
+
+        Ship ship = Ship.create(maxHeadCount, fishType, price, notification); // 객체 메서드를 객체에 받는 코드
+        shipRepository.save(ship);  // DB에 저장
+
     }
 }
