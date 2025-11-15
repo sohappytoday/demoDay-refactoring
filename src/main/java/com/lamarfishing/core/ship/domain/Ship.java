@@ -38,10 +38,19 @@ public class Ship {
         return new Ship(maxHeadCount, fishType, price, notification);
     }
 
-    public void change(int newMaxHeadCount, String newFishType, int newPrice, String newNotification) {
-        this.maxHeadCount = newMaxHeadCount;
-        this.fishType = newFishType;
-        this.price = newPrice;
-        this.notification = newNotification;
+    public void updateMaxHeadCount(int maxHeadCount) {
+        this.maxHeadCount = maxHeadCount;
+    }
+
+    public void updateFishType(String fishType) {
+        this.fishType = fishType;
+    }
+
+    public void updatePrice(int price) {
+        this.price = price;
+    }
+
+    public void updateNotification(String notification) {
+        this.notification = notification;
     }
 }
