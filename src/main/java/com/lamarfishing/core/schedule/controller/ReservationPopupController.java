@@ -1,6 +1,6 @@
 package com.lamarfishing.core.schedule.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationPopupResponse;

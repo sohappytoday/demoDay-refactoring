@@ -1,6 +1,6 @@
 package com.lamarfishing.core.schedule.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
