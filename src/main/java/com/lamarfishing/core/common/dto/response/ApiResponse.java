@@ -1,4 +1,4 @@
-package com.lamarfishing.core.common;
+package com.lamarfishing.core.common.dto.response;
 
 import lombok.Getter;
 

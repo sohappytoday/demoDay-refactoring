@@ -1,7 +1,6 @@
 package com.lamarfishing.core.user.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
-import com.lamarfishing.core.user.dto.command.MyProfileDto;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.user.dto.response.MyProfileResponse;
 import com.lamarfishing.core.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;

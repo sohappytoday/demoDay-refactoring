@@ -1,12 +1,14 @@
 package com.lamarfishing.core.ship.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
+import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.ship.dto.request.CreateShipRequest;
 import com.lamarfishing.core.ship.dto.request.DeleteShipRequest;
 import com.lamarfishing.core.ship.dto.request.UpdateShipRequest;
-import com.lamarfishing.core.ship.dto.response.ShipListResponse;
+import com.lamarfishing.core.ship.dto.response.ShipDetailResponse;
 import com.lamarfishing.core.ship.service.ShipService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,19 +23,17 @@ public class ShipController {
      * 배 리스트 조회 / 스케쥴 생성할 때 필요한 조회
      */
 //    @GetMapping
-//    public ResponseEntity<ApiResponse<ShipListResponse>> getShips(@RequestHeader Long userId){
+//    public ResponseEntity<ApiResponse<ShipDetailResponse>> getShips(@RequestHeader Long userId){
 //
-//        ShipListResponse shipListResponse = shipService.getShips(userId);
+//        ShipDetailResponse shipListResponse = shipService.getShips(userId);
 //
 //        return ResponseEntity.ok(ApiResponse.success("배 리스트 조회에 성공하였습니다.",shipListResponse));
 //    }
     @GetMapping
-    public ResponseEntity<ApiResponse<ShipListResponse>> getShips(){
-        /**
-         * 임시
-         */
+    public ResponseEntity<ApiResponse<PageResponse<ShipDetailResponse>>> getShips(Pageable pageable){
+
         Long userId = 2L;
-        ShipListResponse shipListResponse = shipService.getShips(userId);
+        PageResponse<ShipDetailResponse> shipListResponse = shipService.getShips(userId, pageable);
 
         return ResponseEntity.ok(ApiResponse.success("배 리스트 조회에 성공하였습니다.",shipListResponse));
     }
@@ -95,4 +95,6 @@ public class ShipController {
 
         return ResponseEntity.ok(ApiResponse.success("배 삭제에 성공하였습니다."));
     }
+
+
 }
