@@ -1,6 +1,6 @@
 package com.lamarfishing.core.ship.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.ship.dto.request.CreateShipRequest;
 import com.lamarfishing.core.ship.dto.request.DeleteShipRequest;
 import com.lamarfishing.core.ship.dto.request.UpdateShipRequest;
@@ -95,4 +95,6 @@ public class ShipController {
 
         return ResponseEntity.ok(ApiResponse.success("배 삭제에 성공하였습니다."));
     }
+
+
 }

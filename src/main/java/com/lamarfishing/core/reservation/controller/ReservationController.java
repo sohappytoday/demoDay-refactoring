@@ -1,6 +1,6 @@
 package com.lamarfishing.core.reservation.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.coupon.service.CouponService;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
