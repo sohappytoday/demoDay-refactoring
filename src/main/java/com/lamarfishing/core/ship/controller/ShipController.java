@@ -22,10 +22,10 @@ public class ShipController {
     /**
      * 배 리스트 조회 / 스케쥴 생성할 때 필요한 조회
      */
-//    @GetMapping
-//    public ResponseEntity<ApiResponse<ShipDetailResponse>> getShips(@RequestHeader Long userId){
+//   @GetMapping
+//    public ResponseEntity<ApiResponse<PageResponse<ShipDetailResponse>>> getShips(@RequestHeader Long userId, Pageable pageable){
 //
-//        ShipDetailResponse shipListResponse = shipService.getShips(userId);
+//        PageResponse<ShipDetailResponse> shipListResponse = shipService.getShips(userId, pageable);
 //
 //        return ResponseEntity.ok(ApiResponse.success("배 리스트 조회에 성공하였습니다.",shipListResponse));
 //    }
