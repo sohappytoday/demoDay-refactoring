@@ -7,6 +7,8 @@ import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Status;
+import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationPopupResponse;
@@ -93,7 +95,7 @@ class ReservationPopupServiceTest {
         Ship ship = Ship.create(20, "쭈갑", 90000, "주의사항 없음");
 
         Schedule schedule = Schedule.create(LocalDateTime.of(2025, 11, 5, 0, 0),
-                5, 3, Schedule.Status.WAITING, Schedule.Type.NORMAL, ship);
+                5, 3, Status.WAITING, Type.NORMAL, ship);
 
         User user = User.create("김지오", "geooeg", User.Grade.BASIC, "01012345678");
         Coupon coupon1 = Coupon.create(Coupon.Type.WEEKDAY, user);
@@ -148,7 +150,7 @@ class ReservationPopupServiceTest {
         Ship ship = Ship.create(20, "쭈갑", 90000, "주의사항 없음");
 
         Schedule schedule = Schedule.create(LocalDateTime.of(2025, 11, 5, 0, 0),
-                5, 3, Schedule.Status.WAITING, Schedule.Type.NORMAL, ship);
+                5, 3, Status.WAITING, Type.NORMAL, ship);
 
         User user = User.create("김지오", "geooeg", User.Grade.GUEST, "01012345678");  //사실 없는 객체임
 
@@ -214,8 +216,8 @@ class ReservationPopupServiceTest {
                 LocalDateTime.of(2025, 11, 5, 0, 0),
                 5,
                 3,
-                Schedule.Status.WAITING,
-                Schedule.Type.NORMAL,
+                Status.WAITING,
+                Type.NORMAL,
                 ship
         );
 
@@ -269,8 +271,8 @@ class ReservationPopupServiceTest {
                 LocalDateTime.of(2025, 11, 5, 0, 0),
                 5,
                 3,
-                Schedule.Status.WAITING,
-                Schedule.Type.NORMAL,
+                Status.WAITING,
+                Type.NORMAL,
                 ship
         );
         int beforeCurrentHeadCount = schedule.getCurrentHeadCount();
@@ -311,8 +313,8 @@ class ReservationPopupServiceTest {
                 LocalDateTime.of(2025, 11, 5, 0, 0),
                 5,
                 3,
-                Schedule.Status.WAITING,
-                Schedule.Type.NORMAL,
+                Status.WAITING,
+                Type.NORMAL,
                 ship
         );
 

@@ -4,6 +4,8 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationCommonDto;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Status;
+import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
@@ -43,7 +45,7 @@ class ScheduleServiceTest {
         Ship ship = Ship.create(20, "쭈갑", 90000, "주의사항 없음");
         //스케쥴 생성
         Schedule schedule = Schedule.create(LocalDateTime.of(2025, 11, 5, 0, 0),
-                4, 3, Schedule.Status.WAITING, Schedule.Type.NORMAL, ship);
+                4, 3, Status.WAITING, Type.NORMAL, ship);
         //유저 생성
         User user1 = User.create("김지오", "geooeg", User.Grade.GUEST, "01012345678");
         User user2 = User.create("원종윤", "bellyun", User.Grade.BASIC, "01077776777");

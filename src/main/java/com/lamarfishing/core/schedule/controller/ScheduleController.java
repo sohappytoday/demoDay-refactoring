@@ -1,20 +1,30 @@
 package com.lamarfishing.core.schedule.controller;
 
 import com.lamarfishing.core.common.dto.response.ApiResponse;
+import com.lamarfishing.core.common.dto.response.PageResponse;
+import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
+import com.lamarfishing.core.schedule.service.ScheduleQueryService;
 import com.lamarfishing.core.schedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.service.annotation.DeleteExchange;
+
+import java.time.LocalDateTime;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/schedules")
 public class ScheduleController {
+
+    private final ScheduleQueryService scheduleQueryService;
     private final ScheduleService scheduleService;
 
     /**
@@ -118,5 +128,12 @@ public class ScheduleController {
         scheduleService.markAsDrawn(userId, schedulePublicId);
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 선예약 마감이 되었습니다."));
+    }
+
+    @GetMapping("/main")
+    public ResponseEntity<ApiResponse<PageResponse<ScheduleMainDto>>> getSchedules(LocalDateTime from, LocalDateTime to, Pageable pageable) {
+        Page<ScheduleMainDto> pageResult = scheduleQueryService.getSchedules(from, to, pageable);
+
+        return ResponseEntity.ok(ApiResponse.success("출항 일정 목록 조회에 성공하였습니다.", PageResponse.from(pageResult)));
     }
 }

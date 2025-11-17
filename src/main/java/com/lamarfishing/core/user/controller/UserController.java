@@ -34,7 +34,7 @@ public class UserController {
     //내 예약 검색하기
     @GetMapping("/me/reservations")
     public ResponseEntity<ApiResponse<PageResponse<MyReservationDto>>> getMyReservations(Process process, Pageable pageable) {
-        Page<MyReservationDto> page = reservationQueryService.getReservations(1L, process, pageable);
-        return ResponseEntity.ok(ApiResponse.success("나의 예약 목록 조회를 성공하였습니다.", PageResponse.from(page)));
+        Page<MyReservationDto> pageResult = reservationQueryService.getReservations(1L, process, pageable);
+        return ResponseEntity.ok(ApiResponse.success("나의 예약 목록 조회를 성공하였습니다.", PageResponse.from(pageResult)));
     }
 }

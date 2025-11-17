@@ -1,0 +1,33 @@
+spring:
+  datasource:
+    url: ${CORE_DB_URL}
+    username: ${CORE_DB_USERNAME}
+    password: ${CORE_DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      initialization-fail-timeout: 0
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://jjubul-auth.duckdns.org/oauth2/jwks
+
+  jpa:
+    database-platform: org.hibernate.dialect.MySQL8Dialect
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+logging:
+  level:
+    org:
+      hibernate.orm.jdbc.bind: trace
+
+# Solapi SMS 설정
+solapi:
+  api-key: NCSVUSROTKXO0FLN
+  api-secret: 9AE6KAWRMHLIIC5TIJTZXGQHP8UAHCKU
+  sender: 01062647243
