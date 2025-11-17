@@ -1,11 +1,11 @@
 package com.lamarfishing.core.user.mapper;
 
-import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.coupon.dto.CouponCommonDto;
 import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.MyProfileDto;
-import com.lamarfishing.core.user.dto.command.ReservationUserDto;
+import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
+import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,8 +26,8 @@ public class UserMapper {
                 .build();
     }
 
-    public static ReservationUserDto toReservationUserDto(User user, List<CouponCommonDto> coupons) {
-        return ReservationUserDto.builder()
+    public static EarlyReservationUserDto toEarlyReservationUserDto(User user, List<CouponCommonDto> coupons) {
+        return EarlyReservationUserDto.builder()
                 .username(user.getUsername())
                 .nickname(user.getNickname())
                 .grade(user.getGrade())
@@ -36,14 +36,22 @@ public class UserMapper {
                 .build();
     }
 
+    public static NormalReservationUserDto toNormalReservationUserDto(User user) {
+        return NormalReservationUserDto.builder()
+                .username(user.getUsername())
+                .nickname(user.getNickname())
+                .grade(user.getGrade())
+                .phone(user.getPhone())
+                .build();
+    }
+
     //비회원용
-    public static ReservationUserDto toReservationUserDto(){
-        return ReservationUserDto.builder()
+    public static NormalReservationUserDto toNormalReservationUserDto(){
+        return NormalReservationUserDto.builder()
                 .username(GUEST_USERNAME)
                 .nickname(GUEST_NICKNAME)
                 .grade(User.Grade.GUEST)
                 .phone(GUEST_PHONE)
-                .coupons(new ArrayList<>())
                 .build();
     }
 }

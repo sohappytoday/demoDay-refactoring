@@ -13,6 +13,7 @@ import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.request.EarlyReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.EarlyReservationPopupResponse;
+import com.lamarfishing.core.schedule.dto.response.NormalReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
@@ -22,7 +23,8 @@ import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ReservationShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.User;
-import com.lamarfishing.core.user.dto.command.ReservationUserDto;
+import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
+import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
@@ -70,10 +72,39 @@ public class ReservationPopupService {
                 .stream()
                 .map(CouponMapper::toCouponCommonDto)
                 .toList();
-        ReservationUserDto reservationUserDto = UserMapper.toReservationUserDto(user,coupons);
+        EarlyReservationUserDto earlyReservationUserDto = UserMapper.toEarlyReservationUserDto(user,coupons);
         Integer remainHeadCount = schedule.getShip().getMaxHeadCount() - schedule.getCurrentHeadCount();
 
-        return EarlyReservationPopupResponse.from(schedule,remainHeadCount,reservationUserDto,reservationShipDto);
+        return EarlyReservationPopupResponse.from(schedule,remainHeadCount, earlyReservationUserDto,reservationShipDto);
+    }
+
+    /**
+     * 일반예약 팝업 조회
+     */
+    public NormalReservationPopupResponse getNormalReservationPopup(Long userId, String publicId) {
+        if (!publicId.startsWith("sch")) {
+            throw new InvalidSchedulePublicId();
+        }
+
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+
+        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        if (schedule.getType() != Type.NORMAL){
+            throw new UnauthorizedPopupAccess();
+        }
+
+        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipDto(schedule.getShip());
+        Integer remainHeadCount = schedule.getShip().getMaxHeadCount() - schedule.getCurrentHeadCount();
+
+        if (user.getGrade() == User.Grade.GUEST){
+            NormalReservationUserDto normalReservationUserDto = UserMapper.toNormalReservationUserDto();
+            return NormalReservationPopupResponse.from(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
+        }
+
+        NormalReservationUserDto normalReservationUserDto = UserMapper.toNormalReservationUserDto(user);
+        return NormalReservationPopupResponse.from(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
+
+
     }
 
     @Transactional

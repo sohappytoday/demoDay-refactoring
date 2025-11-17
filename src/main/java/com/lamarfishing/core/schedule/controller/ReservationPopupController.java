@@ -3,6 +3,7 @@ package com.lamarfishing.core.schedule.controller;
 import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.schedule.dto.request.EarlyReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.EarlyReservationPopupResponse;
+import com.lamarfishing.core.schedule.dto.response.NormalReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.service.ReservationPopupService;
 import lombok.RequiredArgsConstructor;
@@ -19,7 +20,7 @@ public class ReservationPopupController {
      * 선예약 팝업 조회
      */
 //    @GetMapping("/early")
-//    public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getReservationPopup(@RequestHeader Long userId,
+//    public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getEarlyReservationPopup(@RequestHeader Long userId,
 //                                                                                    @PathVariable("schedulePublicId") String publicId){
 //
 //        EarlyReservationPopupResponse response = reservationPopupService.getEarlyReservationPopup(userId,publicId);
@@ -28,14 +29,33 @@ public class ReservationPopupController {
 //    }
 
     @GetMapping("/early")
-    public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getReservationPopup(@PathVariable("schedulePublicId") String publicId){
+    public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getEarlyReservationPopup(@PathVariable("schedulePublicId") String publicId){
 
         Long userId = 1L;
         EarlyReservationPopupResponse response = reservationPopupService.getEarlyReservationPopup(userId,publicId);
 
-        return ResponseEntity.ok(ApiResponse.success("예약 팝업 조회에 성공하였습니다",response));
+        return ResponseEntity.ok(ApiResponse.success("선예약 팝업 조회에 성공하였습니다",response));
     }
 
+    /**
+     * 일반예약 팝업 조회
+     */
+//    @GetMapping("/normal")
+//    public ResponseEntity<ApiResponse<NormalReservationPopupResponse>> getNormalReservationPopup(@RequestHeader Long userId, @PathVariable("schedulePublicId") String publicId){
+//
+//        NormalReservationPopupResponse response = reservationPopupService.getNormalReservationPopup(userId,publicId);
+//
+//        return ResponseEntity.ok(ApiResponse.success("선예약 팝업 조회에 성공하였습니다",response));
+//    }
+
+    @GetMapping("/normal")
+    public ResponseEntity<ApiResponse<NormalReservationPopupResponse>> getNormalReservationPopup(@PathVariable("schedulePublicId") String publicId){
+
+        Long userId = 1L;
+        NormalReservationPopupResponse response = reservationPopupService.getNormalReservationPopup(userId,publicId);
+
+        return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",response));
+    }
 
     /**
      * 예약
