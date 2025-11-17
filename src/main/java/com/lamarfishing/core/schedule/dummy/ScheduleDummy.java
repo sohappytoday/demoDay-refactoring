@@ -47,7 +47,7 @@ public class ScheduleDummy {
             LocalDateTime departure = baseDate.plusDays(i);
 
             // currentHeadCount = ship maxHeadCount
-            int currentHeadCount = ship.getMaxHeadCount();
+            int currentHeadCount = 0;
 
             Schedule schedule = Schedule.create(departure, currentHeadCount, tide, status, type, ship);
 

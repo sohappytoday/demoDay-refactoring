@@ -15,6 +15,7 @@ import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.EarlyReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.NormalReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
+import com.lamarfishing.core.schedule.exception.InvalidHeadCount;
 import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.exception.UnauthorizedPopupAccess;
@@ -119,6 +120,9 @@ public class ReservationPopupService {
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
         int headCount = reservationPopupRequest.getHeadCount();
+        if(headCount + schedule.getCurrentHeadCount() > schedule.getShip().getMaxHeadCount()){
+            throw new InvalidHeadCount();
+        }
         int totalPrice = ship.getPrice() * headCount;
         String userRequest = reservationPopupRequest.getRequest();
 
@@ -142,9 +146,10 @@ public class ReservationPopupService {
             coupon.use();
         }
 
+        schedule.IncreaseCurrentHeadCount(headCount);
         Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule,coupon);
         reservationRepository.save(reservation);
-        schedule.decreaseCurrentHeadCount(headCount);
+
 
         ReservationCreateResponse reservationCreateResponse = ReservationMapper.toReservationCreateResponse(reservation);
 

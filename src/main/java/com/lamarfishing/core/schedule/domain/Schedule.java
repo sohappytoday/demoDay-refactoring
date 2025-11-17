@@ -78,11 +78,8 @@ public class Schedule {
         this.currentHeadCount += count;
     }
 
-    public void decreaseCurrentHeadCount(int headCount) {
-        if (currentHeadCount - headCount < 0) {
-            //예외 발생
-        }
-        this.currentHeadCount -= headCount;
+    public void IncreaseCurrentHeadCount(int headCount) {
+        this.currentHeadCount += headCount;
     }
 
     public void updateType(Type newType) {

@@ -94,7 +94,7 @@ public class ScheduleService {
             }
 
             int tide = (date.getDayOfYear() % 15) + 1;
-            Schedule schedule = Schedule.create(date.atTime(4, 0, 0), maxHeadCount, tide, Status.WAITING, scheduleType, ship);
+            Schedule schedule = Schedule.create(date.atTime(4, 0, 0), 0, tide, Status.WAITING, scheduleType, ship);
             scheduleRepository.save(schedule);
 
         }

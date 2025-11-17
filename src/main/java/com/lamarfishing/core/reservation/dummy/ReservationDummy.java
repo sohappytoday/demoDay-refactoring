@@ -7,9 +7,7 @@ import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.user.repository.UserRepository;
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 import com.lamarfishing.core.user.domain.User;
 
@@ -79,7 +77,7 @@ public class ReservationDummy {
                         schedule,
                         coupon
                 );
-
+                schedule.IncreaseCurrentHeadCount(headCount);
                 reservationRepository.save(reservation);
             }
         }
