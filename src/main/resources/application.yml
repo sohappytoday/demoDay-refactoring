@@ -7,6 +7,12 @@ spring:
     hikari:
       initialization-fail-timeout: 0
 
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: https://jjubul-auth.duckdns.org/oauth2/jwks
+
   jpa:
     database-platform: org.hibernate.dialect.MySQL8Dialect
     hibernate:
@@ -22,6 +28,6 @@ logging:
 
 # Solapi SMS 설정
 solapi:
-  api-key: ${SOLAPI_API_KEY}
-  api-secret: ${SOLAPI_API_SECRET}
-  sender: ${SOLAPI_SENDER_NUMBER}
+  api-key: NCSVUSROTKXO0FLN
+  api-secret: 9AE6KAWRMHLIIC5TIJTZXGQHP8UAHCKU
+  sender: 01062647243
