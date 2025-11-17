@@ -8,12 +8,12 @@ import java.util.List;
 
 @Data
 @Builder
-public class ShipListResponse {
-    List<ShipDetailDto> ships;
+public class ShipDetailResponse {
+    ShipDetailDto ship;
 
-    public static ShipListResponse from(List<ShipDetailDto> ships){
-        return ShipListResponse.builder()
-                .ships(ships)
+    public static ShipDetailResponse from(ShipDetailDto ship){
+        return ShipDetailResponse.builder()
+                .ship(ship)
                 .build();
     }
 }

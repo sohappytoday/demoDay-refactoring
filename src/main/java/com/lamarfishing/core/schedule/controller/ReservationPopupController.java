@@ -1,6 +1,6 @@
 package com.lamarfishing.core.schedule.controller;
 
-import com.lamarfishing.core.common.ApiResponse;
+import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.schedule.dto.request.EarlyReservationPopupRequest;
 import com.lamarfishing.core.schedule.dto.response.EarlyReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
@@ -16,47 +16,47 @@ public class ReservationPopupController {
 
     private final ReservationPopupService reservationPopupService;
     /**
-     * 예약 팝업 조회
+     * 선예약 팝업 조회
      */
 //    @GetMapping
-//    public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getReservationPopup(@RequestAttribute(name = "수정필요1") Long userId,
+//    public ResponseEntity<ApiResponse<ReservationPopupResponse>> getReservationPopup(@RequestAttribute(name = "수정필요1") Long userId,
 //                                                                                    @RequestAttribute(name = "수정필요2") String grade,
 //                                                                                    @PathVariable("schedule_public_id") String publicId){
 //
-//        EarlyReservationPopupResponse popupResponse = reservationPopupService.getReservationPopup(userId,grade,publicId);
+//        ReservationPopupResponse popupResponse = reservationPopupService.getReservationPopup(userId,grade,publicId);
 //
 //        return ResponseEntity.ok(ApiResponse.success("예약 팝업 조회에 성공하였습니다",popupResponse));
 //    }
 
     //더미 컨트롤러
-    @GetMapping
+    @GetMapping("/early")
     public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getReservationPopup(@PathVariable("schedulePublicId") String publicId){
 
         Long userId = 1L;   //BASIC
         EarlyReservationPopupResponse popupResponse = reservationPopupService.getReservationPopup(userId,publicId);
 
-        return ResponseEntity.ok(ApiResponse.success("예약 팝업 조회에 성공하였습니다",popupResponse));
+        return ResponseEntity.ok(ApiResponse.success("선예약 팝업 조회에 성공하였습니다",popupResponse));
     }
 
     /**
-     * 예약하기
+     * 예약
      */
 //    @PostMapping
 //    public ResponseEntity<ApiResponse<ReservationCreateResponse>> createReservation(@RequestAttribute(name = "수정필요1") Long userId,
 //                                                                                    @PathVariable("schedule_public_id") String publicId,
-//                                                                                    @RequestBody EarlyReservationPopupRequest earlyReservationPopupRequest) {
+//                                                                                    @RequestBody ReservationPopupRequest reservationPopupRequest) {
 //
-//        ReservationCreateResponse reservationCreateResponse = reservationPopupService.createReservation(userId, publicId, earlyReservationPopupRequest);
+//        ReservationCreateResponse reservationCreateResponse = reservationPopupService.createReservation(userId, publicId, reservationPopupRequest);
 //
 //        return ResponseEntity.ok(ApiResponse.success("예약을 성공하였습니다.",reservationCreateResponse));
 //    }
 
     @PostMapping
     public ResponseEntity<ApiResponse<ReservationCreateResponse>> createReservation(@PathVariable("schedulePublicId") String publicId,
-                                                                                    @RequestBody EarlyReservationPopupRequest earlyReservationPopupRequest) {
+                                                                                    @RequestBody EarlyReservationPopupRequest reservationPopupRequest) {
 
         Long userId = 1L; //BASIC
-        ReservationCreateResponse reservationCreateResponse = reservationPopupService.createReservation(userId, publicId, earlyReservationPopupRequest);
+        ReservationCreateResponse reservationCreateResponse = reservationPopupService.createReservation(userId, publicId, reservationPopupRequest);
 
         return ResponseEntity.ok(ApiResponse.success("예약을 성공하였습니다.",reservationCreateResponse));
     }

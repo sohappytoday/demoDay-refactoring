@@ -15,6 +15,7 @@ import com.lamarfishing.core.schedule.dto.response.EarlyReservationPopupResponse
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
+import com.lamarfishing.core.schedule.exception.UnauthorizedPopupAccess;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ReservationShipDto;
@@ -55,6 +56,7 @@ public class ReservationPopupService {
         if (user.getGrade() == User.Grade.GUEST){
             throw new UnauthorizedPopupAccess();
         }
+
     }
 
     @Transactional

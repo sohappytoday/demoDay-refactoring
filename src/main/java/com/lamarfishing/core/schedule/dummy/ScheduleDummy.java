@@ -1,6 +1,8 @@
 package com.lamarfishing.core.schedule.dummy;
 
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Status;
+import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.repository.ShipRepository;
@@ -37,9 +39,9 @@ public class ScheduleDummy {
             int tide = (i % 12) + 1;
 
             // 첫 일정만 EARLY, 나머지는 NORMAL
-            Schedule.Type type = (i == 0) ? Schedule.Type.EARLY : Schedule.Type.NORMAL;
+            Type type = (i == 0) ? Type.EARLY : Type.NORMAL;
 
-            Schedule.Status status = Schedule.Status.WAITING;
+            Status status = Status.WAITING;
 
             // 날짜 하루씩 증가
             LocalDateTime departure = baseDate.plusDays(i);

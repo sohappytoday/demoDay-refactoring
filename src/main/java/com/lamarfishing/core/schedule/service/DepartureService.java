@@ -1,6 +1,7 @@
 package com.lamarfishing.core.schedule.service;
 
 import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;
+import com.lamarfishing.core.schedule.domain.Status;
 import com.lamarfishing.core.schedule.exception.InvalidDepartureRequest;
 import com.lamarfishing.core.schedule.dto.request.DepartureRequest;
 import com.lamarfishing.core.schedule.dto.response.DepartureResponse;
@@ -34,8 +35,8 @@ public class DepartureService {
 
     //출항 확정
     public DepartureResponse confirmation(Long userId, String publicId, DepartureRequest departureRequest) {
-        Schedule.Status scheduleStatus = departureRequest.getScheduleStatus();
-        if (scheduleStatus != Schedule.Status.CONFIRMED) {
+        Status scheduleStatus = departureRequest.getScheduleStatus();
+        if (scheduleStatus != Status.CONFIRMED) {
             throw new InvalidDepartureRequest();
         }
         if (!publicId.startsWith("sch")) {
@@ -49,7 +50,7 @@ public class DepartureService {
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         //출항 상태 변경
-        schedule.changeStatus(Schedule.Status.CONFIRMED);
+        schedule.changeStatus(Status.CONFIRMED);
         scheduleRepository.save(schedule);
 
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
@@ -67,8 +68,8 @@ public class DepartureService {
 
     //출항 취소
     public DepartureResponse cancel(Long userId, String publicId, DepartureRequest departureRequest) {
-        Schedule.Status scheduleStatus = departureRequest.getScheduleStatus();
-        if (scheduleStatus != Schedule.Status.CANCELED) {
+        Status scheduleStatus = departureRequest.getScheduleStatus();
+        if (scheduleStatus != Status.CANCELED) {
             throw new InvalidDepartureRequest();
         }
         if (!publicId.startsWith("sch")) {
@@ -83,7 +84,7 @@ public class DepartureService {
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
 
         //출항 상태 변경
-        schedule.changeStatus(Schedule.Status.CANCELED);
+        schedule.changeStatus(Status.CANCELED);
         scheduleRepository.save(schedule);
 
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
@@ -101,8 +102,8 @@ public class DepartureService {
 
     //출항 연기
     public DepartureResponse delay(Long userId, String publicId, DepartureRequest departureRequest) {
-        Schedule.Status scheduleStatus = departureRequest.getScheduleStatus();
-        if (scheduleStatus != Schedule.Status.DELAYED) {
+        Status scheduleStatus = departureRequest.getScheduleStatus();
+        if (scheduleStatus != Status.DELAYED) {
             throw new InvalidDepartureRequest();
         }
         if (!publicId.startsWith("sch")) {
@@ -117,7 +118,7 @@ public class DepartureService {
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
 
         //출항 상태 변경
-        schedule.changeStatus(Schedule.Status.DELAYED);
+        schedule.changeStatus(Status.DELAYED);
         scheduleRepository.save(schedule);
 
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);

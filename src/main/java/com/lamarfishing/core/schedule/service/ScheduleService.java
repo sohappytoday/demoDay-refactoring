@@ -4,6 +4,8 @@ import com.lamarfishing.core.reservation.dto.command.ReservationCommonDto;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Status;
+import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
@@ -72,7 +74,7 @@ public class ScheduleService {
         LocalDate startDate = scheduleCreateRequest.getStartDate();
         LocalDate endDate = scheduleCreateRequest.getEndDate();
         Long shipId = scheduleCreateRequest.getShipId();
-        Schedule.Type scheduleType = scheduleCreateRequest.getScheduleType();
+        Type scheduleType = scheduleCreateRequest.getScheduleType();
 
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
         Integer maxHeadCount = ship.getMaxHeadCount();
@@ -92,7 +94,7 @@ public class ScheduleService {
             }
 
             int tide = (date.getDayOfYear() % 15) + 1;
-            Schedule schedule = Schedule.create(date.atTime(4, 0, 0), maxHeadCount, tide, Schedule.Status.WAITING, scheduleType, ship);
+            Schedule schedule = Schedule.create(date.atTime(4, 0, 0), maxHeadCount, tide, Status.WAITING, scheduleType, ship);
             scheduleRepository.save(schedule);
 
         }
@@ -188,11 +190,9 @@ public class ScheduleService {
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         //선예약 시에만
-        if (schedule.getType() == Schedule.Type.EARLY) {
-            schedule.changeType(Schedule.Type.DRAWN);
+        if (schedule.getType() == Type.EARLY) {
+            schedule.changeType(Type.DRAWN);
         }
         throw new InvalidScheduleType();
-
-
     }
 }
