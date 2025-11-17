@@ -3,7 +3,7 @@ package com.lamarfishing.core.user.controller;
 import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
-import com.lamarfishing.core.user.dto.command.MyReservationDto;
+import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import com.lamarfishing.core.user.dto.response.MyProfileResponse;
 import com.lamarfishing.core.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +33,8 @@ public class UserController {
 
     //내 예약 검색하기
     @GetMapping("/me/reservations")
-    public ResponseEntity<ApiResponse<PageResponse<MyReservationDto>>> getMyReservations(Process process, Pageable pageable) {
-        Page<MyReservationDto> pageResult = reservationQueryService.getReservations(1L, process, pageable);
+    public ResponseEntity<ApiResponse<PageResponse<ReservationSimpleDto>>> getMyReservations(Process process, Pageable pageable) {
+        Page<ReservationSimpleDto> pageResult = reservationQueryService.getMyReservations(1L, process, pageable);
         return ResponseEntity.ok(ApiResponse.success("나의 예약 목록 조회를 성공하였습니다.", PageResponse.from(pageResult)));
     }
 }

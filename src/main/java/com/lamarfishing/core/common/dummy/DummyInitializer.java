@@ -21,14 +21,14 @@ public class DummyInitializer {
     private final CouponDummy couponDummy;
     private final ReservationDummy reservationDummy;
 
-//    @Transactional
-//    @EventListener(ApplicationReadyEvent.class)
-//    public void init() {
-//
-//        userDummy.init();
-//        shipDummy.init();
-//        scheduleDummy.init();
-//        couponDummy.init();
-//        reservationDummy.init();
-//    }
+    @Transactional
+    @EventListener(ApplicationReadyEvent.class)
+    public void init() {
+
+        userDummy.init();
+        shipDummy.init();
+        scheduleDummy.init();
+        couponDummy.init();
+        reservationDummy.init();
+    }
 }

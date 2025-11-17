@@ -1,7 +1,7 @@
 package com.lamarfishing.core.reservation.service;
 
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
-import com.lamarfishing.core.user.dto.command.MyReservationDto;
+import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,7 +14,11 @@ public class ReservationQueryService {
 
     private final ReservationRepository reservationRepository;
 
-    public Page<MyReservationDto> getReservations(Long userId, Process process, Pageable pageable) {
-        return reservationRepository.getMyReservations(userId, process, pageable);
+    public Page<ReservationSimpleDto> getMyReservations(Long userId, Process process, Pageable pageable) {
+        return reservationRepository.getReservations(userId, process, pageable);
+    }
+
+    public Page<ReservationSimpleDto> getReservations(Process process, Pageable pageable) {
+        return reservationRepository.getReservations(null, process, pageable);
     }
 }

@@ -1,18 +1,27 @@
 package com.lamarfishing.core.reservation.controller;
 
 import com.lamarfishing.core.common.dto.response.ApiResponse;
+import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.coupon.service.CouponService;
+import com.lamarfishing.core.reservation.domain.Reservation;
+import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
+import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import com.lamarfishing.core.reservation.domain.Reservation.Process;
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/reservations")
 public class ReservationController {
+
+    private final ReservationQueryService reservationQueryService;
     private final ReservationService reservationService;
     private final CouponService couponService;
 
@@ -75,6 +84,14 @@ public class ReservationController {
         reservationService.changeReservationProcess(userId, publicId, request);
 
         return ResponseEntity.ok(ApiResponse.success("예약 상태 변경에 성공하였습니다."));
+    }
+
+    @GetMapping
+    public ResponseEntity<ApiResponse<PageResponse<ReservationSimpleDto>>> getReservations(Process process, Pageable pageable) {
+
+        Page<ReservationSimpleDto> pageResult = reservationQueryService.getReservations(process, pageable);
+
+        return ResponseEntity.ok(ApiResponse.success("예약 목록 조회에 성공하였습니다.", PageResponse.from(pageResult)));
     }
 }
 
