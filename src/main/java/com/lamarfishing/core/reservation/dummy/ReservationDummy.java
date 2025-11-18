@@ -77,7 +77,7 @@ public class ReservationDummy {
                         schedule,
                         coupon
                 );
-                schedule.IncreaseCurrentHeadCount(headCount);
+                schedule.increaseCurrentHeadCount(headCount);
                 reservationRepository.save(reservation);
             }
         }
