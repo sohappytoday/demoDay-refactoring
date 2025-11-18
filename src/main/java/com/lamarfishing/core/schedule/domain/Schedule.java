@@ -78,8 +78,12 @@ public class Schedule {
         this.currentHeadCount += count;
     }
 
-    public void IncreaseCurrentHeadCount(int headCount) {
+    public void increaseCurrentHeadCount(int headCount) {
         this.currentHeadCount += headCount;
+    }
+
+    public void decreaseCurrentHeadCount(int headCount) {
+        this.currentHeadCount -= headCount;
     }
 
     public void updateType(Type newType) {

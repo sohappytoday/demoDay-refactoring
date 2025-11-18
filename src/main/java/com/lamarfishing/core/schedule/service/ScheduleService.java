@@ -1,5 +1,6 @@
 package com.lamarfishing.core.schedule.service;
 
+import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationCommonDto;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
@@ -56,6 +57,7 @@ public class ScheduleService {
         List<ReservationCommonDto> reservations =
                 reservationRepository.findBySchedule(schedule)
                         .stream()
+                        .filter(reservation -> reservation.getProcess() != Reservation.Process.CANCEL_COMPLETED)
                         .map(ReservationMapper::toReservationCommonDto)
                         .toList();
 

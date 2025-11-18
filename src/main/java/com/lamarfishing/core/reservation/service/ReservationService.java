@@ -21,9 +21,11 @@ import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ReservationService {
 
     private final UserRepository userRepository;
@@ -53,6 +55,7 @@ public class ReservationService {
         return response;
     }
 
+    @Transactional
     public void changeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
         if (!publicId.startsWith("res")) {
             throw new InvalidReservationPublicId();
@@ -65,7 +68,7 @@ public class ReservationService {
         if (requestProcess == null) {
             throw new InvalidRequestContent();
         }
-        //관리자가 아니면 requestProcess는 오직 CANCEL_REQUESTED
+        // User Logic
         if (user.getGrade() != User.Grade.ADMIN) {
             if (requestProcess != Reservation.Process.CANCEL_REQUESTED) {
                 throw new InvalidRequestContent();
@@ -74,9 +77,20 @@ public class ReservationService {
             return;
         }
 
-        if(requestProcess ==  Reservation.Process.CANCEL_REQUESTED) {
+        // Admin Logic
+        if(requestProcess == Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
         }
-        reservation.changeProcess(requestProcess);;
+
+        if (requestProcess == Reservation.Process.CANCEL_COMPLETED) {
+            reservation.changeProcess(requestProcess);
+
+            Schedule schedule = reservation.getSchedule();
+            schedule.decreaseCurrentHeadCount(reservation.getHeadCount());
+            return;
+        }
+
+        // 예약 완료, 입금 완료
+        reservation.changeProcess(requestProcess);
     }
 }
