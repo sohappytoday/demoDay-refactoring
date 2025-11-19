@@ -1,4 +1,4 @@
-package com.lamarfishing.core.log.message.domain;
+package com.lamarfishing.core.message.domain;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
