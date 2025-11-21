@@ -1,0 +1,24 @@
+package com.lamarfishing.core.log.message.service;
+
+import com.lamarfishing.core.log.message.domain.Result;
+import com.lamarfishing.core.log.message.dto.command.MessageLogDto;
+import com.lamarfishing.core.log.message.repository.MessageLogRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDateTime;
+
+@Service
+@Transactional
+@RequiredArgsConstructor
+public class MessageLogQueryService {
+
+    private final MessageLogRepository messageLogRepository;
+
+    public Page<MessageLogDto> findMessageLog(LocalDateTime from, LocalDateTime to, Result result, Pageable pageable) {
+        return messageLogRepository.findMessageLog(from, to, result, pageable);
+    }
+}

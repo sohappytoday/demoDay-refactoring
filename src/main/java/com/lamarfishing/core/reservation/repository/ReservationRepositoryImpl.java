@@ -21,6 +21,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
+    @Override
     public Page<ReservationSimpleDto> getReservations(Long userId, Process process, Pageable pageable) {
         List<ReservationSimpleDto> mainQuery = queryFactory
                 .select(Projections.constructor(ReservationSimpleDto.class,

@@ -19,7 +19,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
     private final JPAQueryFactory queryFactory;
 
-    public Page<ScheduleMainDto> getSchedules(LocalDateTime from, LocalDateTime to, Pageable pageable) {
+    @Override
+    public List<ScheduleMainDto> getSchedules(LocalDateTime from, LocalDateTime to) {
 
         List<ScheduleMainDto> mainQuery = queryFactory
                 .select(Projections.constructor(ScheduleMainDto.class,
@@ -31,15 +32,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .leftJoin(QShip.ship).on(QShip.ship.id.eq(QSchedule.schedule.ship.id))
                 .where(QSchedule.schedule.departure.after(from).and(QSchedule.schedule.departure.before(to)))
                 .orderBy(QSchedule.schedule.departure.desc())
-                .offset(pageable.getOffset())
-                .limit(pageable.getPageSize())
                 .fetch();
 
-        JPAQuery<Long> countQuery = queryFactory
-                .select(QSchedule.schedule.count())
-                .from(QSchedule.schedule)
-                .where(QSchedule.schedule.departure.after(from).and(QSchedule.schedule.departure.before(to)));
-
-        return PageableExecutionUtils.getPage(mainQuery, pageable, countQuery::fetchOne);
+        return mainQuery;
     }
 }

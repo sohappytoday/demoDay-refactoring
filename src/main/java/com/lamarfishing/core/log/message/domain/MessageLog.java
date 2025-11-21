@@ -26,13 +26,18 @@ public class MessageLog {
     @Column(name = "message_log_content")
     private String content;
 
-    private MessageLog(LocalDateTime timeStamp, String recipientPhone, String content) {
+    @Enumerated(EnumType.STRING)
+    @Column(name = "message_log_result")
+    private Result result;
+
+    private MessageLog(LocalDateTime timeStamp, String recipientPhone, String content, Result result) {
         this.timeStamp = timeStamp;
         this.recipientPhone = recipientPhone;
         this.content = content;
+        this.result = result;
     }
 
-    public static MessageLog create(String recipientPhone, String content) {
-        return new MessageLog(LocalDateTime.now(), recipientPhone, content);
+    public static MessageLog create(String recipientPhone, String content, Result result) {
+        return new MessageLog(LocalDateTime.now(), recipientPhone, content, result);
     }
 }

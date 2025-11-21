@@ -1,11 +1,11 @@
 package com.lamarfishing.core.schedule.service;
 
-import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;
+import com.lamarfishing.core.message.dto.command.MessageCommonDto;
 import com.lamarfishing.core.schedule.domain.Status;
 import com.lamarfishing.core.schedule.exception.InvalidDepartureRequest;
 import com.lamarfishing.core.schedule.dto.request.DepartureRequest;
 import com.lamarfishing.core.schedule.dto.response.DepartureResponse;
-import com.lamarfishing.core.log.message.service.MessageService;
+import com.lamarfishing.core.message.service.MessageService;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
@@ -30,7 +30,6 @@ public class DepartureService {
     private final ScheduleRepository scheduleRepository;
     private final ReservationRepository reservationRepository;
     private final UserRepository userRepository;
-
     private final MessageService messageService;
 
     //출항 확정
@@ -61,7 +60,7 @@ public class DepartureService {
             phones.add(reservationUser.getPhone());
         }
 
-        List<MessageCommonDto> messageCommonDto = messageService.sendDepartureConfirmedMessages(phones);
+        List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.CONFIRMED);
 
         return DepartureResponse.from(messageCommonDto);
     }
@@ -95,7 +94,7 @@ public class DepartureService {
             phones.add(reservationUser.getPhone());
         }
 
-        List<MessageCommonDto> messageCommonDto = messageService.sendDepartureCanceledMessages(phones);
+        List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.CANCELED);
 
         return DepartureResponse.from(messageCommonDto);
     }
@@ -129,7 +128,7 @@ public class DepartureService {
             phones.add(reservationUser.getPhone());
         }
 
-        List<MessageCommonDto> messageCommonDto = messageService.sendDepartureDelayedMessages(phones);
+        List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.DELAYED);
 
         return DepartureResponse.from(messageCommonDto);
     }

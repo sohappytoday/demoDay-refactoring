@@ -1,6 +1,6 @@
 package com.lamarfishing.core.schedule.dto.response;
 
-import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;
+import com.lamarfishing.core.message.dto.command.MessageCommonDto;
 import lombok.Builder;
 import lombok.Data;
 
