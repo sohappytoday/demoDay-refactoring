@@ -7,6 +7,7 @@ import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
+import com.lamarfishing.core.schedule.dto.response.ScheduleMainResponse;
 import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
 import com.lamarfishing.core.schedule.service.ScheduleQueryService;
 import com.lamarfishing.core.schedule.service.ScheduleService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.service.annotation.DeleteExchange;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -131,9 +133,9 @@ public class ScheduleController {
     }
 
     @GetMapping("/main")
-    public ResponseEntity<ApiResponse<PageResponse<ScheduleMainDto>>> getSchedules(LocalDateTime from, LocalDateTime to, Pageable pageable) {
-        Page<ScheduleMainDto> pageResult = scheduleQueryService.getSchedules(from, to, pageable);
+    public ResponseEntity<ApiResponse<ScheduleMainResponse>> getSchedules(LocalDateTime from, LocalDateTime to) {
+        List<ScheduleMainDto> schedules = scheduleQueryService.getSchedules(from, to);
 
-        return ResponseEntity.ok(ApiResponse.success("출항 일정 목록 조회에 성공하였습니다.", PageResponse.from(pageResult)));
+        return ResponseEntity.ok(ApiResponse.success("출항 일정 목록 조회에 성공하였습니다.", ScheduleMainResponse.from(schedules)));
     }
 }

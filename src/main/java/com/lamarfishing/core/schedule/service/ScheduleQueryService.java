@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @Transactional
@@ -17,7 +18,7 @@ public class ScheduleQueryService {
 
     private final ScheduleRepository scheduleRepository;
 
-    public Page<ScheduleMainDto> getSchedules(LocalDateTime from, LocalDateTime to, Pageable pageable) {
-        return scheduleRepository.getSchedules(from, to, pageable);
+    public List<ScheduleMainDto> getSchedules(LocalDateTime from, LocalDateTime to) {
+        return scheduleRepository.getSchedules(from, to);
     }
 }

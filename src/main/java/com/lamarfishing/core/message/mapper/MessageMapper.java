@@ -1,7 +1,7 @@
-package com.lamarfishing.core.log.message.mapper;
+package com.lamarfishing.core.message.mapper;
 
 import com.lamarfishing.core.log.message.domain.MessageLog;
-import com.lamarfishing.core.log.message.dto.command.MessageCommonDto;
+import com.lamarfishing.core.message.dto.command.MessageCommonDto;
 
 public class MessageMapper {
     public static MessageCommonDto toMessage(MessageLog message){

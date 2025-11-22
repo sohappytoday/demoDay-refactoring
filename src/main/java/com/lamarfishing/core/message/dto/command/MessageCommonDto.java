@@ -1,4 +1,4 @@
-package com.lamarfishing.core.log.message.dto.command;
+package com.lamarfishing.core.message.dto.command;
 
 import lombok.Builder;
 import lombok.Getter;
