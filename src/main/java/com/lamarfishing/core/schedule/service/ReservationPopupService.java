@@ -9,6 +9,7 @@ import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
+import com.lamarfishing.core.reservation.service.ReservationService;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.request.ReservationPopupRequest;
@@ -49,6 +50,7 @@ public class ReservationPopupService {
     private final UserRepository userRepository;
     private final CouponRepository couponRepository;
     private final ReservationRepository reservationRepository;
+    private final ReservationService reservationService;
 
     /**
      * 선예약 팝업 조회
@@ -150,6 +152,7 @@ public class ReservationPopupService {
         Reservation reservation = Reservation.create(headCount,userRequest,totalPrice, Reservation.Process.RESERVE_COMPLETED,user,schedule,coupon);
         reservationRepository.save(reservation);
 
+        reservationService.sendReservationReceiptNotification(user, schedule, ship, totalPrice, headCount);
 
         ReservationCreateResponse reservationCreateResponse = ReservationMapper.toReservationCreateResponse(reservation);
 
