@@ -11,4 +11,5 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     Boolean existsBySchedule(Schedule schedule);
     List<Reservation> findBySchedule(Schedule schedule);
     Optional<Reservation> findByPublicId(String publicId);
+    List<Reservation> findByScheduleAndProcess(Schedule schedule, Reservation.Process process);
 }

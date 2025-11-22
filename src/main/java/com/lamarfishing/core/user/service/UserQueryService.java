@@ -24,7 +24,7 @@ public class UserQueryService {
 
     public MyProfileDto getMyProfile() {
 
-        String phone = "1";// 인증 후 수정
+        String phone = "01056604120";// 인증 후 수정
         User user = userRepository.findByPhone(phone);
 
         List<Coupon> coupons = couponRepository.findByUserAndStatus(user,Coupon.Status.AVAILABLE);

@@ -176,25 +176,25 @@ public class ScheduleService {
         schedule.updateDeparture(updateDeparture);
     }
 
-    /**
-     * 선예약 마감
-     */
-    @Transactional
-    public void markAsDrawn(Long userId, String publicId) {
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != User.Grade.ADMIN) {
-            throw new InvalidUserGrade();
-        }
-
-        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        //선예약 시에만
-        if (schedule.getType() == Type.EARLY) {
-            schedule.changeType(Type.DRAWN);
-        }
-        throw new InvalidScheduleType();
-    }
+//    /**
+//     * 선예약 마감
+//     */
+//    @Transactional
+//    public void markAsDrawn(Long userId, String publicId) {
+//        if (!publicId.startsWith("sch")) {
+//            throw new InvalidSchedulePublicId();
+//        }
+//
+//        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+//        if (user.getGrade() != User.Grade.ADMIN) {
+//            throw new InvalidUserGrade();
+//        }
+//
+//        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+//        //선예약 시에만
+//        if (schedule.getType() == Type.EARLY) {
+//            schedule.changeType(Type.DRAWN);
+//        }
+//        throw new InvalidScheduleType();
+//    }
 }

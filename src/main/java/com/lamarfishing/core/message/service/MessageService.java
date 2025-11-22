@@ -60,4 +60,29 @@ public class MessageService {
         }
         return results;
     }
+
+    public List<MessageCommonDto> sendMessage(List<String> phones, String content) {
+
+        List<String> failedPhones = new ArrayList<>();
+        List<MessageCommonDto> results = new ArrayList<>();
+
+        for (String to : phones) {
+
+            Message msg = new Message();
+            msg.setFrom(senderNumber);
+            msg.setTo(to);
+            msg.setText(content);
+
+            try {
+                messageService.send(msg);
+            } catch (Exception e) {
+                failedPhones.add(to);
+            }
+        }
+
+        if (!failedPhones.isEmpty()) {
+            throw new MessageSendFailedException("전송 실패: " + failedPhones, failedPhones);
+        }
+        return results;
+    }
 }
