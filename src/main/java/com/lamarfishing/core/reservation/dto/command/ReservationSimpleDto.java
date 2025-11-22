@@ -3,6 +3,7 @@ package com.lamarfishing.core.reservation.dto.command;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import com.lamarfishing.core.reservation.domain.Reservation.Process;
 
 import java.time.LocalDateTime;
 
