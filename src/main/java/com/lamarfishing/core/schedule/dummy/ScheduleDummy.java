@@ -53,5 +53,12 @@ public class ScheduleDummy {
 
             scheduleRepository.save(schedule);
         }
+
+        /**
+         * 창엽이 부탁
+         */
+        Ship ship = ships.get(1);
+        Schedule schedule = Schedule.create(LocalDateTime.of(2025,9,2,5,0),0,3,Status.WAITING,Type.EARLY, ship);
+        scheduleRepository.save(schedule);
     }
 }
