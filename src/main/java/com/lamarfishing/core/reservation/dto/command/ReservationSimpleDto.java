@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 public class ReservationSimpleDto {
 
     private Long reservationId;
-    private int totalPrice;
+    private Integer totalPrice;
     private Process process;
     private String shipFishType;
     private LocalDateTime scheduleDeparture;
