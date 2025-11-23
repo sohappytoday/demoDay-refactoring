@@ -3,7 +3,6 @@ package com.lamarfishing.core.reservation.controller;
 import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.coupon.service.CouponService;
-import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
@@ -64,9 +63,7 @@ public class ReservationController {
     }
 
     /**
-     * 입금 확인/취소 접수/취소 완료 변경
-     * User.Grade == ADMIN -> 입금확인/취소 완료만 가능
-     * User.Grade != ADMIN -> 취소 접수만 가능
+     * 예약자 취소 예약 신청
      */
 //    @PatchMapping("/{reservationPublicId}/process")
 //    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@RequestHeader Long userId,
@@ -76,16 +73,26 @@ public class ReservationController {
 //
 //        return ResponseEntity.ok(ApiResponse.success("예약 상태 변경에 성공하였습니다."));
 //    }
-    @PatchMapping("/{reservationPublicId}/process")
-    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@PathVariable("reservationPublicId") String publicId,
+    @PatchMapping("/{reservationPublicId}/cancel-request")
+    public ResponseEntity<ApiResponse<Void>> ReservationCancelRequest(@PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
-        //예약 취소는 당장은 불가능 프론트가 필요시 1L로 바꿀것
-        Long userId = 2L;
-        reservationService.changeReservationProcess(userId, publicId, request);
+        Long userId = 1L;
+        reservationService.ReservationCancelRequest(userId, publicId, request);
 
-        return ResponseEntity.ok(ApiResponse.success("예약 상태 변경에 성공하였습니다."));
+        return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
     }
 
+    /**
+     * 관리자 예약 상태 변경
+     */
+    @PatchMapping("/{reservationPublicId}/process")
+    public ResponseEntity<ApiResponse<Void>> ChangeReservationProcess(@PathVariable("reservationPublicId") String publicId,
+                                                                      @RequestBody ReservationProcessUpdateRequest request) {
+        Long userId = 2L;
+        reservationService.ChangeReservationProcess(userId, publicId, request);
+
+        return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
+    }
     /**
      * 예약 목록 조회
      */

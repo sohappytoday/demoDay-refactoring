@@ -50,7 +50,7 @@ public class ReservationService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
         //관리자나 예약자가 아니면 거부
-        if (!user.getGrade().equals(User.Grade.ADMIN) && !reservation.getUser().equals(user)) {
+        if (!reservation.getUser().equals(user)) {
             throw new InvalidUserGrade();
         }
 
@@ -66,8 +66,11 @@ public class ReservationService {
         return response;
     }
 
+    /**
+     * 일반 유저가 예약
+     */
     @Transactional
-    public void changeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
+    public void ReservationCancelRequest(Long userId, String publicId, ReservationProcessUpdateRequest request) {
         if (!publicId.startsWith("res")) {
             throw new InvalidReservationPublicId();
         }
@@ -76,19 +79,28 @@ public class ReservationService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         Reservation.Process requestProcess = request.getProcess();
-        if (requestProcess == null) {
+
+        if (requestProcess != Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
         }
-        // User Logic
-        if (user.getGrade() != User.Grade.ADMIN) {
-            if (requestProcess != Reservation.Process.CANCEL_REQUESTED) {
-                throw new InvalidRequestContent();
-            }
-            reservation.changeProcess(requestProcess);
-            return;
+
+        reservation.changeProcess(requestProcess);
+    }
+
+    /**
+     * Admin이 예약 상태 변경
+     */
+    @Transactional
+    public void ChangeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
+        if (!publicId.startsWith("res")) {
+            throw new InvalidReservationPublicId();
         }
 
-        // Admin Logic
+        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+
+        Reservation.Process requestProcess = request.getProcess();
+
         if(requestProcess == Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
         }
@@ -98,13 +110,13 @@ public class ReservationService {
 
             Schedule schedule = reservation.getSchedule();
             schedule.decreaseCurrentHeadCount(reservation.getHeadCount());
+            sendReservationCanceledNotification(reservation);
             return;
         }
 
         // 예약 완료, 입금 완료
         reservation.changeProcess(requestProcess);
     }
-
     /*************************************************************************/
     //자동 메시지 관련 메서드
 
@@ -175,7 +187,10 @@ public class ReservationService {
         LocalDate msgScheduleDate = schedule.getDeparture().toLocalDate();
         String msgScheduleDay = getKoreanDay(msgScheduleDate);
 
-        List<Integer> phone = new ArrayList<>();
+        List<String> phones = new ArrayList<>();
+        phones.add(user.getPhone());
+
+        String strTotalPrice = formatWithComma(totalPrice);
         String msg = "안녕하세요 쭈불 낚시입니다. \n" +
                 msgScheduleDate + msgScheduleDay +  // 2025-11-28(토)
                 " " + ship.getFishType()+ " 예약 접수 확인 안내 문자 드립니다. 입금 완료 후에 예약이 확정되니, 아래의 계좌로 금액만큼 입금해주시길 바랍니다.\n" +
@@ -185,7 +200,36 @@ public class ReservationService {
                 "닉네임: " + user.getNickname() + "\n" +
                 "예약인원: " + headCount + "명\n" +
                 "입금계좌: 신한 110-345-678910\n" +
-                "입금금액: " + totalPrice + "원";
+                "입금금액: " + strTotalPrice + "원\n" +
+                "문의사항은 010-6264-7243으로 연락주세요";
+
+        messageService.sendMessage(phones,msg);
+    }
+
+    public void sendReservationCanceledNotification(Reservation reservation){
+        Schedule schedule =  reservation.getSchedule();
+        User user = reservation.getUser();
+        Ship ship = schedule.getShip();
+        LocalDate msgScheduleDate = schedule.getDeparture().toLocalDate();
+        String msgScheduleDay = getKoreanDay(msgScheduleDate);
+
+        List<String> phones = new ArrayList<>();
+        phones.add(user.getPhone());
+        String strTotalPrice = formatWithComma(reservation.getTotalPrice());
+
+        String msg = "안녕하세요. 신청하신 예약 취소 접수가 완료되었습니다.\n" +
+                "출항일: " + msgScheduleDate + msgScheduleDay +" " + schedule.getTide() +"물 " + ship.getFishType() +
+                "\n" +
+                "취소자명: " + user.getUsername() + "\n" +
+                "닉네임: " + user.getNickname() + "\n" +
+                "취소인원: " + reservation.getHeadCount() + "\n" +
+                "환불금액: " + strTotalPrice + "원";
+
+        messageService.sendMessage(phones,msg);
+    }
+
+    private String formatWithComma(int number) {
+        return String.format("%,d", number);
     }
 
     private void expireReservation(Reservation reservation) {

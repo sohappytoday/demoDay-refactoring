@@ -74,7 +74,7 @@ public class ReservationPopupController {
     public ResponseEntity<ApiResponse<ReservationCreateResponse>> createReservation(@PathVariable("schedulePublicId") String publicId,
                                                                                     @RequestBody ReservationPopupRequest reservationPopupRequest) {
 
-        Long userId = 1L; //BASIC
+        Long userId = 3L; //VIP
         ReservationCreateResponse reservationCreateResponse = reservationPopupService.createReservation(userId, publicId, reservationPopupRequest);
 
         return ResponseEntity.ok(ApiResponse.success("예약을 성공하였습니다.",reservationCreateResponse));
