@@ -43,14 +43,15 @@ public class ReservationService {
     private final MessageService messageService;
 
     public ReservationDetailResponse getReservationDetail(Long userId, String publicId) {
-        if (!publicId.startsWith("res")) {
-            throw new InvalidReservationPublicId();
-        }
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
-        //관리자나 예약자가 아니면 거부
-        if (!reservation.getUser().equals(user)) {
+        validateReservationPublicId(publicId);
+
+        User user = findUser(userId);
+        Reservation reservation = findReservation(publicId);
+
+        boolean isAdmin = user.getGrade() == User.Grade.ADMIN;
+        boolean isOwner = reservation.getUser().equals(user);
+        if (!isAdmin && !isOwner) {
             throw new InvalidUserGrade();
         }
 
@@ -61,9 +62,11 @@ public class ReservationService {
         ReservationDetailDto reservationDetailDto = ReservationMapper.toReservationDetailDto(reservation);
         ReservationDetailScheduleDto reservationDetailScheduleDto = ScheduleMapper.toReservationDetailScheduleDto(schedule);
 
-        ReservationDetailResponse response = ReservationDetailResponse.from(reservationDetailShipDto, reservationDetailDto, reservationDetailScheduleDto);
-
-        return response;
+        return ReservationDetailResponse.from(
+                reservationDetailShipDto,
+                reservationDetailDto,
+                reservationDetailScheduleDto
+        );
     }
 
     /**
@@ -71,12 +74,11 @@ public class ReservationService {
      */
     @Transactional
     public void ReservationCancelRequest(Long userId, String publicId, ReservationProcessUpdateRequest request) {
-        if (!publicId.startsWith("res")) {
-            throw new InvalidReservationPublicId();
-        }
 
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        validateReservationPublicId(publicId);
+
+        User user = findUser(userId);
+        Reservation reservation = findReservation(publicId);
 
         Reservation.Process requestProcess = request.getProcess();
 
@@ -92,12 +94,11 @@ public class ReservationService {
      */
     @Transactional
     public void ChangeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
-        if (!publicId.startsWith("res")) {
-            throw new InvalidReservationPublicId();
-        }
 
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        validateReservationPublicId(publicId);
+
+        User user = findUser(userId);
+        Reservation reservation = findReservation(publicId);
 
         Reservation.Process requestProcess = request.getProcess();
 
@@ -117,8 +118,29 @@ public class ReservationService {
         // 예약 완료, 입금 완료
         reservation.changeProcess(requestProcess);
     }
-    /*************************************************************************/
-    //자동 메시지 관련 메서드
+    /**
+     * private Method
+     */
+    private void validateReservationPublicId(String publicId){
+        if(!publicId.startsWith("res")) {
+            throw new InvalidReservationPublicId();
+        }
+    }
+
+    private User findUser(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        return user;
+    }
+
+    private Reservation findReservation(String pubilcId){
+        Reservation reservation = reservationRepository.findByPublicId(pubilcId).orElseThrow(ReservationNotFound::new);
+        return reservation;
+    }
+
+
+    /*************************************************************************
+    /**************************자동 메시지 관련 메서드****************************
+    /*************************************************************************
 
     /**
      * 입금 만료 마감 경고

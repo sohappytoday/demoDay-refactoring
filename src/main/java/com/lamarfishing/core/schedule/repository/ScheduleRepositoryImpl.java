@@ -24,7 +24,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
         List<ScheduleMainDto> mainQuery = queryFactory
                 .select(Projections.constructor(ScheduleMainDto.class,
-                        QSchedule.schedule.id, QSchedule.schedule.departure,
+                        QSchedule.schedule.publicId, QSchedule.schedule.departure,
                         QShip.ship.maxHeadCount.subtract(QSchedule.schedule.currentHeadCount),
                         QSchedule.schedule.tide, QSchedule.schedule.status, QSchedule.schedule.type,
                         QShip.ship.fishType, QShip.ship.price))

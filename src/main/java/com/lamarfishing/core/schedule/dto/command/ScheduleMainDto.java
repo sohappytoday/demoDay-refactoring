@@ -12,7 +12,7 @@ import java.time.LocalDateTime;
 public class ScheduleMainDto {
 
     // schedule
-    private Long id;
+    private Long schedulePublicId;
     private LocalDateTime departure;
     private Integer remainingHeadCount;
     private Integer tide;
