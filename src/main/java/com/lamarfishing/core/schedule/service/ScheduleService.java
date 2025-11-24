@@ -20,6 +20,7 @@ import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
 import com.lamarfishing.core.ship.exception.ShipNotFound;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.ship.repository.ShipRepository;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
@@ -69,7 +70,7 @@ public class ScheduleService {
     @Transactional
     public void createSchedule(Long userId, ScheduleCreateRequest scheduleCreateRequest) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -109,7 +110,7 @@ public class ScheduleService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -124,7 +125,7 @@ public class ScheduleService {
 
     public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -157,7 +158,7 @@ public class ScheduleService {
             throw new InvalidSchedulePublicId();
         }
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 

@@ -9,6 +9,8 @@ import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
+import com.lamarfishing.core.user.domain.Grade;
+import com.lamarfishing.core.user.domain.Provider;
 import com.lamarfishing.core.user.domain.User;
 import org.hibernate.service.spi.InjectService;
 import org.junit.jupiter.api.DisplayName;
@@ -47,9 +49,9 @@ class ScheduleServiceTest {
         Schedule schedule = Schedule.create(LocalDateTime.of(2025, 11, 5, 0, 0),
                 4, 3, Status.WAITING, Type.NORMAL, ship);
         //유저 생성
-        User user1 = User.create("김지오", "geooeg", User.Grade.GUEST, "01012345678");
-        User user2 = User.create("원종윤", "bellyun", User.Grade.BASIC, "01077776777");
-        User user3 = User.create("김승규", "wingyu", User.Grade.VIP, "01088889888");
+        User user1 = User.create("김지오", "geooeg", Grade.GUEST, "01012345678", "1234", Provider.GOOGLE);
+        User user2 = User.create("원종윤", "bellyun", Grade.BASIC, "01077776777", "1234", Provider.GOOGLE);
+        User user3 = User.create("김승규", "wingyu", Grade.VIP, "01088889888", "1234", Provider.GOOGLE);
         //예약 생성
         Reservation reservation1 = Reservation.create(3, "김지오입니다.", 270000, Reservation.Process.RESERVE_COMPLETED, user1, schedule,null);
         Reservation reservation2 = Reservation.create(5, "원종윤입니다.", 450000, Reservation.Process.RESERVE_COMPLETED, user2, schedule,null);

@@ -7,6 +7,7 @@ import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
@@ -31,12 +32,8 @@ public class CouponService {
     @Transactional
     public void issueCoupon(Long userId, String publicId) {
 
-        ValidatePublicId.validateReservationPublicId(publicId);
-
-        User user = findUser(userId);
-        Reservation reservation = findReservation(publicId);
-
-        if (user.getGrade() != User.Grade.ADMIN) {
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 

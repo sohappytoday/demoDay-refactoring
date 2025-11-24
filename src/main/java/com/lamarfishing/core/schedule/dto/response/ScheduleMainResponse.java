@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ScheduleMainResponse {
 
-    List<ScheduleMainDto> schedules = new ArrayList<>();
+    List<ScheduleMainDto> schedules;
 
     private ScheduleMainResponse(List<ScheduleMainDto> dto) {
         this.schedules = dto;
