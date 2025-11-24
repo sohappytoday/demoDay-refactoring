@@ -2,6 +2,7 @@ package com.lamarfishing.core.user.dto.command;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
+import com.lamarfishing.core.user.domain.Grade;
 import lombok.Builder;
 import lombok.Data;
 

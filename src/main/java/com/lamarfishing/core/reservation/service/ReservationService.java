@@ -17,6 +17,7 @@ import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ReservationDetailShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
@@ -49,7 +50,7 @@ public class ReservationService {
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
 
-        boolean isAdmin = user.getGrade() == User.Grade.ADMIN;
+        boolean isAdmin = user.getGrade() == Grade.ADMIN;
         boolean isOwner = reservation.getUser().equals(user);
         if (!isAdmin && !isOwner) {
             throw new InvalidUserGrade();

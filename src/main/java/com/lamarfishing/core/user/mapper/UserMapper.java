@@ -2,12 +2,12 @@ package com.lamarfishing.core.user.mapper;
 
 import com.lamarfishing.core.coupon.dto.CouponCommonDto;
 import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.MyProfileDto;
 import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
 import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class UserMapper {
@@ -50,7 +50,7 @@ public class UserMapper {
         return NormalReservationUserDto.builder()
                 .username(GUEST_USERNAME)
                 .nickname(GUEST_NICKNAME)
-                .grade(User.Grade.GUEST)
+                .grade(Grade.GUEST)
                 .phone(GUEST_PHONE)
                 .build();
     }

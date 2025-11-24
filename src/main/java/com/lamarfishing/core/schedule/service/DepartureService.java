@@ -12,6 +12,7 @@ import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.exception.InvalidSchedulePublicId;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
@@ -43,7 +44,7 @@ public class DepartureService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != User.Grade.ADMIN){
+        if(user.getGrade() != Grade.ADMIN){
             throw new InvalidUserGrade();
         }
 
@@ -76,7 +77,7 @@ public class DepartureService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != User.Grade.ADMIN){
+        if(user.getGrade() != Grade.ADMIN){
             throw new InvalidUserGrade();
         }
 
@@ -110,7 +111,7 @@ public class DepartureService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != User.Grade.ADMIN){
+        if(user.getGrade() != Grade.ADMIN){
             throw new InvalidUserGrade();
         }
 
