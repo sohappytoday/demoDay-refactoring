@@ -7,10 +7,12 @@ import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
+import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,16 +31,12 @@ public class CouponService {
 
     @Transactional
     public void issueCoupon(Long userId, String publicId) {
-        if (!publicId.startsWith("res")) {
-            throw new InvalidReservationPublicId();
-        }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
 
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
         User receiver = reservation.getUser();
         LocalDateTime departure = reservation.getSchedule().getDeparture();
         //주말인지 아닌지
@@ -54,4 +52,15 @@ public class CouponService {
         Coupon coupon = Coupon.create(Coupon.Type.WEEKDAY, receiver);
         couponRepository.save(coupon);
     }
+
+    private User findUser(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        return user;
+    }
+
+    private Reservation findReservation(String publicId) {
+        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
+        return reservation;
+    }
+
 }

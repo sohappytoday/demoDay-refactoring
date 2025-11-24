@@ -1,5 +1,6 @@
 package com.lamarfishing.core.reservation.dto.command;
 import com.lamarfishing.core.reservation.domain.Reservation;
+import com.lamarfishing.core.user.domain.Grade;
 import lombok.Builder;
 import lombok.Getter;
 

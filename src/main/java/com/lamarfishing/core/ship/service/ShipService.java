@@ -9,6 +9,7 @@ import com.lamarfishing.core.ship.dto.response.ShipDetailResponse;
 import com.lamarfishing.core.ship.exception.ShipNotFound;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.ship.repository.ShipRepository;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
@@ -21,6 +22,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.lamarfishing.core.user.domain.Grade.*;
+
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
@@ -32,7 +35,7 @@ public class ShipService {
     public PageResponse<ShipDetailResponse> getShips(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -47,7 +50,7 @@ public class ShipService {
     public void createShip(Long userId, CreateShipRequest request) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -65,7 +68,7 @@ public class ShipService {
     public void updateShip(Long userId, Long shipId, UpdateShipRequest request) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
 
@@ -89,7 +92,7 @@ public class ShipService {
     public void deleteShip(Long userId, DeleteShipRequest request) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
-        if (user.getGrade() != User.Grade.ADMIN) {
+        if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
 
