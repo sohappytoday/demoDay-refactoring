@@ -3,7 +3,7 @@
    =========================== */
 CREATE TABLE users
 (
-    user_id       BIGINT       NOT NULL,
+    user_id       BIGINT       NOT NULL AUTO_INCREMENT,
     user_sub      VARCHAR(255) NULL,
     user_provider SMALLINT     NULL,
     user_username VARCHAR(255) NULL,
@@ -19,7 +19,7 @@ CREATE TABLE users
 
 CREATE TABLE accounts
 (
-    account_id           BIGINT       NOT NULL,
+    account_id           BIGINT       NOT NULL AUTO_INCREMENT,
     account_bank         VARCHAR(255) NULL,
     account_bank_account VARCHAR(255) NULL,
     CONSTRAINT pk_accounts PRIMARY KEY (account_id)
@@ -27,7 +27,7 @@ CREATE TABLE accounts
 
 CREATE TABLE admin_logs
 (
-    admin_log_id         BIGINT       NOT NULL,
+    admin_log_id         BIGINT       NOT NULL AUTO_INCREMENT,
     admin_log_time_stamp datetime     NULL,
     admin_log_account    VARCHAR(255) NULL,
     admin_log_ip         VARCHAR(255) NULL,
@@ -36,7 +36,7 @@ CREATE TABLE admin_logs
 
 CREATE TABLE coupons
 (
-    coupon_id         BIGINT       NOT NULL,
+    coupon_id         BIGINT       NOT NULL AUTO_INCREMENT,
     coupon_expires_at datetime     NULL,
     coupon_type       VARCHAR(255) NULL,
     coupon_status     VARCHAR(255) NULL,
@@ -46,7 +46,7 @@ CREATE TABLE coupons
 
 CREATE TABLE manifests
 (
-    manifest_id                BIGINT       NOT NULL,
+    manifest_id                BIGINT       NOT NULL AUTO_INCREMENT,
     manifest_username          VARCHAR(255) NULL,
     manifest_nickname          VARCHAR(255) NULL,
     manifest_birth_date        date         NULL,
@@ -61,7 +61,7 @@ CREATE TABLE manifests
 
 CREATE TABLE message_logs
 (
-    message_log_id            BIGINT       NOT NULL,
+    message_log_id            BIGINT       NOT NULL AUTO_INCREMENT,
     message_log_time_stamp    datetime     NULL,
     message_log_recipient_phone VARCHAR(255) NULL,
     message_log_content       VARCHAR(255) NULL,
@@ -71,7 +71,7 @@ CREATE TABLE message_logs
 
 CREATE TABLE ships
 (
-    ship_id             BIGINT       NOT NULL,
+    ship_id             BIGINT       NOT NULL AUTO_INCREMENT,
     ship_max_head_count INT          NULL,
     ship_fish_type      VARCHAR(255) NULL,
     ship_price          INT          NULL,
@@ -81,7 +81,7 @@ CREATE TABLE ships
 
 CREATE TABLE schedules
 (
-    schedule_id                 BIGINT       NOT NULL,
+    schedule_id                 BIGINT       NOT NULL AUTO_INCREMENT,
     schedule_public_id          VARCHAR(255) NOT NULL,
     schedule_departure          datetime     NULL,
     schedule_current_head_count INT          NULL,
@@ -94,7 +94,7 @@ CREATE TABLE schedules
 
 CREATE TABLE reservations
 (
-    reservation_id          BIGINT       NOT NULL,
+    reservation_id          BIGINT       NOT NULL AUTO_INCREMENT,
     reservation_public_id   VARCHAR(255) NOT NULL,
     reservation_head_count  INT          NULL,
     reservation_request     VARCHAR(255) NULL,
@@ -112,7 +112,7 @@ CREATE TABLE reservations
 
 CREATE TABLE oauth2_users
 (
-    oauth2_user_id       BIGINT       NOT NULL,
+    oauth2_user_id       BIGINT       NOT NULL AUTO_INCREMENT,
     oauth2_user_provider VARCHAR(255) NULL,
     oauth2_user_sub      VARCHAR(255) NULL,
     user_grade           VARCHAR(255) NULL,
@@ -122,7 +122,7 @@ CREATE TABLE oauth2_users
 
 CREATE TABLE refresh_tokens
 (
-    id                       BIGINT       NOT NULL,
+    id                       BIGINT       NOT NULL AUTO_INCREMENT,
     refresh_token_user_id    BIGINT       NULL,
     refresh_token_value      VARCHAR(255) NULL,
     refresh_token_expires_at datetime     NULL,
