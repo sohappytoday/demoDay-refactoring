@@ -29,7 +29,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     public Page<ReservationSimpleDto> getReservations(Long userId, Process process, Pageable pageable) {
         List<ReservationSimpleDto> mainQuery = queryFactory
                 .select(Projections.constructor(ReservationSimpleDto.class,
-                        QReservation.reservation.id, QReservation.reservation.totalPrice,
+                        QReservation.reservation.publicId, QReservation.reservation.totalPrice,
                         QReservation.reservation.process, QReservation.reservation.headCount, QReservation.reservation.request,
                         QReservation.reservation.user.username,
                         QReservation.reservation.schedule.ship.fishType,
