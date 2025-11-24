@@ -11,7 +11,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 public class ReservationSimpleDto {
 
-    Long reservationId;
+    String reservationId;
     Integer totalPrice;
     Process process;
     int headCount;
