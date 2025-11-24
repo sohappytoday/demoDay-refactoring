@@ -24,53 +24,18 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     /**
      * 종윤이 코드
      */
-//    @Override
-//    public Page<ReservationSimpleDto> getReservations(Long userId, Process process, Pageable pageable) {
-//        List<ReservationSimpleDto> mainQuery = queryFactory
-//                .select(Projections.constructor(ReservationSimpleDto.class,
-//                        QReservation.reservation.id, QReservation.reservation.totalPrice,
-//                        QReservation.reservation.process, QReservation.reservation.schedule.ship.fishType,
-//                        QReservation.reservation.schedule.departure))
-//                .from(QReservation.reservation)
-//                .leftJoin(QSchedule.schedule).on(QSchedule.schedule.id.eq(QReservation.reservation.schedule.id))
-//                .leftJoin(QShip.ship).on(QShip.ship.id.eq(QReservation.reservation.schedule.id))
-//                .where(userIdEq(userId), processEq(process))
-//                .orderBy(QReservation.reservation.schedule.departure.desc())
-//                .offset(pageable.getOffset())
-//                .limit(pageable.getPageSize())
-//                .fetch();
-//
-//        JPAQuery<Long> countQuery = queryFactory
-//                .select(QReservation.reservation.count())
-//                .from(QReservation.reservation)
-//                .where(QReservation.reservation.user.id.eq(userId));
-//
-//        return PageableExecutionUtils.getPage(mainQuery, pageable, countQuery::fetchOne);
-//    }
-
-    /**
-     * 삭제시킬것
-     */
     @Override
     public Page<ReservationSimpleDto> getReservations(Long userId, Process process, Pageable pageable) {
-
         List<ReservationSimpleDto> mainQuery = queryFactory
-                .select(Projections.constructor(
-                        ReservationSimpleDto.class,
-                        QReservation.reservation.id,
-                        QReservation.reservation.totalPrice,
-                        QReservation.reservation.process,
-                        QShip.ship.fishType,
-                        QSchedule.schedule.departure
-                ))
+                .select(Projections.constructor(ReservationSimpleDto.class,
+                        QReservation.reservation.id, QReservation.reservation.totalPrice,
+                        QReservation.reservation.process, QReservation.reservation.schedule.ship.fishType,
+                        QReservation.reservation.schedule.departure))
                 .from(QReservation.reservation)
-                .leftJoin(QReservation.reservation.schedule, QSchedule.schedule)
-                .leftJoin(QSchedule.schedule.ship, QShip.ship)
-                .where(
-                        userIdEq(userId),
-                        processEq(process)
-                )
-                .orderBy(QSchedule.schedule.departure.desc())
+                .leftJoin(QSchedule.schedule).on(QSchedule.schedule.id.eq(QReservation.reservation.schedule.id))
+                .leftJoin(QShip.ship).on(QShip.ship.id.eq(QReservation.reservation.schedule.id))
+                .where(userIdEq(userId), processEq(process))
+                .orderBy(QReservation.reservation.schedule.departure.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
@@ -78,15 +43,10 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(QReservation.reservation.count())
                 .from(QReservation.reservation)
-                .where(
-                        QReservation.reservation.user.id.eq(userId),
-                        processEq(process)
-                );
+                .where(userIdEq(userId), processEq(process));
 
         return PageableExecutionUtils.getPage(mainQuery, pageable, countQuery::fetchOne);
     }
-
-
 
     private BooleanExpression processEq(Process process) {
         return process == null ? null : QReservation.reservation.process.eq(process);
