@@ -39,3 +39,8 @@ out/
 .env
 application.yml
 src/main/resources/application.yml
+
+/**/build/
+/**/generated/
+/**/generated-sources/
+/**/generated/querydsl/
