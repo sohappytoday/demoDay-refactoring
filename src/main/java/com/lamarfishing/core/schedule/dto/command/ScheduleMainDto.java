@@ -5,6 +5,7 @@ import com.lamarfishing.core.schedule.domain.Type;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
+import java.awt.*;
 import java.time.LocalDateTime;
 
 @Data
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 public class ScheduleMainDto {
 
     // schedule
-    private Long schedulePublicId;
+    private String schedulePublicId;
     private LocalDateTime departure;
     private Integer remainingHeadCount;
     private Integer tide;
