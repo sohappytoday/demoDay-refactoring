@@ -24,6 +24,7 @@ import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ReservationShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
 import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
@@ -61,7 +62,7 @@ public class ReservationPopupService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() == User.Grade.GUEST){
+        if (user.getGrade() == Grade.GUEST){
             throw new UnauthorizedPopupAccess();
         }
 
@@ -99,7 +100,7 @@ public class ReservationPopupService {
         ReservationShipDto reservationShipDto = ShipMapper.toReservationShipDto(schedule.getShip());
         Integer remainHeadCount = schedule.getShip().getMaxHeadCount() - schedule.getCurrentHeadCount();
 
-        if (user.getGrade() == User.Grade.GUEST){
+        if (user.getGrade() == Grade.GUEST){
             NormalReservationUserDto normalReservationUserDto = UserMapper.toNormalReservationUserDto();
             return NormalReservationPopupResponse.from(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
         }
@@ -117,7 +118,7 @@ public class ReservationPopupService {
         }
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        User.Grade userGrade = user.getGrade();
+        Grade userGrade = user.getGrade();
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
@@ -129,7 +130,7 @@ public class ReservationPopupService {
         String userRequest = reservationPopupRequest.getRequest();
 
         //비회원이라면
-        if (userGrade == User.Grade.GUEST) {
+        if (userGrade == Grade.GUEST) {
             String username = reservationPopupRequest.getUsername();
             String nickname = reservationPopupRequest.getNickname();
             String phone = reservationPopupRequest.getPhone();

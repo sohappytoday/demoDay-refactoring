@@ -2,13 +2,13 @@ package com.lamarfishing.core.user.dto.response;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.dto.command.MyProfileDto;
 import lombok.Builder;
 import lombok.Data;
 
 import java.util.List;
 
-import static com.lamarfishing.core.user.domain.User.Grade;
 
 @Data
 @Builder

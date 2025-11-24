@@ -6,6 +6,7 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
@@ -33,9 +34,9 @@ public class ReservationDummy {
 
         // 1. BASIC/VIP/GUEST 유저만 가져오기
         List<User> users = userRepository.findAll().stream()
-                .filter(u -> u.getGrade() == User.Grade.BASIC
-                        || u.getGrade() == User.Grade.VIP
-                        || u.getGrade() == User.Grade.GUEST)
+                .filter(u -> u.getGrade() == Grade.BASIC
+                        || u.getGrade() == Grade.VIP
+                        || u.getGrade() == Grade.GUEST)
                 .collect(Collectors.toList());
 
         // 2. 모든 쿠폰 가져와서 user별 AVAILABLE 쿠폰 리스트 매핑

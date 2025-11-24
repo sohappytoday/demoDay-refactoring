@@ -4,12 +4,13 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationCommonDto;
 import com.lamarfishing.core.reservation.dto.command.ReservationDetailDto;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
+import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 
 public class ReservationMapper {
 
     public static ReservationCommonDto toReservationCommonDto(Reservation reservation) {
-        User.Grade grade = reservation.getUser().getGrade();
+        Grade grade = reservation.getUser().getGrade();
         String nickname = reservation.getUser().getNickname();
 
         return ReservationCommonDto.builder()
