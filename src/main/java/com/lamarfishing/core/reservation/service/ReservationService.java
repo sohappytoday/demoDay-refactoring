@@ -21,6 +21,7 @@ import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
+import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +45,7 @@ public class ReservationService {
 
     public ReservationDetailResponse getReservationDetail(Long userId, String publicId) {
 
-        validateReservationPublicId(publicId);
+        ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
@@ -75,7 +76,7 @@ public class ReservationService {
     @Transactional
     public void ReservationCancelRequest(Long userId, String publicId, ReservationProcessUpdateRequest request) {
 
-        validateReservationPublicId(publicId);
+        ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
@@ -95,7 +96,7 @@ public class ReservationService {
     @Transactional
     public void ChangeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
 
-        validateReservationPublicId(publicId);
+        ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
@@ -121,12 +122,6 @@ public class ReservationService {
     /**
      * private Method
      */
-    private void validateReservationPublicId(String publicId){
-        if(!publicId.startsWith("res")) {
-            throw new InvalidReservationPublicId();
-        }
-    }
-
     private User findUser(Long userId){
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         return user;
