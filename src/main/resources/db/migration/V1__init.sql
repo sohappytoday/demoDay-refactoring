@@ -129,6 +129,23 @@ CREATE TABLE refresh_tokens
     CONSTRAINT pk_refresh_tokens PRIMARY KEY (id)
 );
 
+CREATE TABLE statistics (
+                            statistic_id BIGINT NOT NULL AUTO_INCREMENT,
+
+                            statistic_daily_visited   INT NOT NULL,
+                            statistic_daily_reserved  INT NOT NULL,
+                            statistic_daily_deposited INT NOT NULL,
+                            statistic_daily_sales     INT NOT NULL,
+
+                            statistic_deposit_expired INT NOT NULL,
+                            statistic_deposit_24hour  INT NOT NULL,
+
+                            statistic_date DATE NOT NULL,
+
+                            PRIMARY KEY (statistic_id),
+                            UNIQUE KEY uq_statistics_date (statistic_date)
+);
+
 /* ===========================
     UNIQUE CONSTRAINTS
    =========================== */

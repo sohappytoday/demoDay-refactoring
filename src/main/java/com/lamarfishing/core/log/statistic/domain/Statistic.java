@@ -63,11 +63,11 @@ public class Statistic {
                 .date(date).build();
     }
 
-    public void addVisitor() {
+    public void addVisited() {
         this.dailyVisited++;
     }
 
-    public void addReserver() {
+    public void addReserved() {
         this.dailyReserved++;
     }
 
