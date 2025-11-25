@@ -73,23 +73,24 @@ public class ScheduleService {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
-        Integer maxHeadCount = ship.getMaxHeadCount();
+
         //중복되는 날짜가 있으면 덮어쓰기, 없으면 생성
         for (LocalDate date = startDate; !date.isAfter(endDate); date = date.plusDays(1)) {
+
             LocalDateTime startOfDay = date.atStartOfDay();
             LocalDateTime endOfDay = date.atTime(23, 59, 59);
 
-            Optional<Schedule> existing = scheduleRepository
+            Optional<Schedule> existingSchedule = scheduleRepository
                     .findFirstByDepartureBetween(startOfDay, endOfDay);
 
             //이미 날짜가 있다면
-            if (existing.isPresent()) {
-                Schedule schedule = existing.get();
-                schedule.updateType(scheduleType);
+            if (existingSchedule.isPresent()) {
+                existingSchedule.get().updateType(scheduleType);
                 continue;
             }
 
             int tide = (date.getDayOfYear() % 15) + 1;
+
             Schedule schedule = Schedule.create(date.atTime(4, 0, 0), 0, tide, Status.WAITING, scheduleType, ship);
             scheduleRepository.save(schedule);
 
