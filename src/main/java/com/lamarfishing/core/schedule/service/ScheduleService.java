@@ -103,11 +103,8 @@ public class ScheduleService {
         ValidatePublicId.validateSchedulePublicId(publicId);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != Grade.ADMIN) {
-            throw new InvalidUserGrade();
-        }
-
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+
         boolean hasReservations = reservationRepository.existsBySchedule(schedule);
         if (hasReservations) {
             throw new ScheduleHasReservations();
@@ -117,32 +114,39 @@ public class ScheduleService {
     }
 
     public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
+
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != Grade.ADMIN) {
-            throw new InvalidUserGrade();
-        }
 
-        //api 받는 그 시간
         LocalDateTime now = LocalDateTime.now();
-        LocalDate today = now.toLocalDate();
-        LocalDateTime todayEnd = today.atTime(23, 59, 59);
+        LocalDate todayDate = now.toLocalDate();
 
-        LocalDateTime tomorrowStart = todayEnd.plusSeconds(1);
-        LocalDate tomorrow = tomorrowStart.toLocalDate();
-        LocalDateTime tomorrowEnd = tomorrow.atTime(23, 59, 59);
+        LocalDateTime todayStart = todayDate.atStartOfDay();
+        LocalDateTime todayEnd = todayDate.atTime(23, 59, 59);
 
-        //오늘 일정이 존재한다면
+        LocalDate tomorrowDate = todayDate.plusDays(1);
+        LocalDateTime tomorrowStart = tomorrowDate.atStartOfDay();
+        LocalDateTime tomorrowEnd = tomorrowDate.atTime(23, 59, 59);
+
+        // 오늘 일정 존재
         if (scheduleRepository.existsByDepartureBetween(now, todayEnd)) {
-            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(now, todayEnd).orElseThrow(ScheduleNotFound::new);
-            return ViewDepartureTimeResponse.from(true, schedule);
-        }
-        //오늘 일정이 없다면
-        if (scheduleRepository.existsByDepartureBetween(tomorrowStart, tomorrowEnd)) {
-            Schedule schedule = scheduleRepository.findFirstByDepartureBetween(tomorrowStart, tomorrowEnd).orElseThrow(ScheduleNotFound::new);
+            Schedule schedule = scheduleRepository
+                    .findFirstByDepartureBetween(now, todayEnd)
+                    .orElseThrow(ScheduleNotFound::new);
+
             return ViewDepartureTimeResponse.from(true, schedule);
         }
 
-        return ViewDepartureTimeResponse.from(false, tomorrow);
+        // 내일 일정 존재
+        if (scheduleRepository.existsByDepartureBetween(tomorrowStart, tomorrowEnd)) {
+            Schedule schedule = scheduleRepository
+                    .findFirstByDepartureBetween(tomorrowStart, tomorrowEnd)
+                    .orElseThrow(ScheduleNotFound::new);
+
+            return ViewDepartureTimeResponse.from(true, schedule);
+        }
+
+        // 둘 다 없으면 내일 날짜만 반환
+        return ViewDepartureTimeResponse.from(false, tomorrowDate);
     }
 
     @Transactional
@@ -151,17 +155,7 @@ public class ScheduleService {
         ValidatePublicId.validateSchedulePublicId(publicId);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != Grade.ADMIN) {
-            throw new InvalidUserGrade();
-        }
-
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        // 실험할 때 주석처리할 것 (160~164)
-        LocalDateTime now = LocalDateTime.now();
-        LocalDateTime limit = now.plusDays(2);
-        if (schedule.getDeparture().isBefore(now) || schedule.getDeparture().isAfter(limit)) {
-            throw new InvalidDepartureTime();
-        }
 
         LocalDate departureDate = schedule.getDeparture().toLocalDate();
         LocalDateTime updateDeparture = departureDate.atTime(updateTime);
