@@ -44,11 +44,14 @@ public class ReservationDummy {
                 .filter(c -> c.getStatus() == Coupon.Status.AVAILABLE)
                 .collect(Collectors.groupingBy(c -> c.getUser().getId()));
 
-        // 3. 스케줄(30개) 가져오기
+        // 3. 스케줄 가져오기
         List<Schedule> schedules = scheduleRepository.findAll();
+
+        int i = 0;
 
         for (Schedule schedule : schedules) {
 
+            i++;
             List<User> shuffledUsers = new ArrayList<>(users);
             Collections.shuffle(shuffledUsers);
 
@@ -71,7 +74,7 @@ public class ReservationDummy {
 
                 Reservation reservation = Reservation.create(
                         headCount,
-                        "예약자가 보낸 메시지입니다",
+                        "예약자가 보낸 메시지입니다" + i,
                         price,
                         Reservation.Process.RESERVE_COMPLETED,
                         user,

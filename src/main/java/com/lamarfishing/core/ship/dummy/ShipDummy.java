@@ -24,5 +24,8 @@ public class ShipDummy {
         shipRepository.save(Ship.create(20, "쭈꾸미", 100000, "공지사항입니다3"));
         shipRepository.save(Ship.create(15, "쭈갑", 90000, "공지사항입니다4"));
         shipRepository.save(Ship.create(20, "갑오징어", 80000, "공지사항입니다5"));
+        shipRepository.save(Ship.create(20, "참동타이라바", 150000, "공지사항입니다6"));
+        shipRepository.save(Ship.create(30, "우럭외수질", 100000, "공지사항입니다7"));
+
     }
 }
