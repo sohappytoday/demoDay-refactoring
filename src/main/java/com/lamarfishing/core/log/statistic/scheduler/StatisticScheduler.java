@@ -11,10 +11,10 @@ public class StatisticScheduler {
 
     private final ReservationService reservationService;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void statisticPaymentDeadlineWarning(){reservationService.statisticPaymentDeadlineWarning();}
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
     public void statisticPaymentExpiredNotification(){reservationService.statisticPaymentExpiredNotification();}
 
 }
