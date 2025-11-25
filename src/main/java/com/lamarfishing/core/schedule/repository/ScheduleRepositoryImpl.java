@@ -2,6 +2,7 @@ package com.lamarfishing.core.schedule.repository;
 
 import com.lamarfishing.core.schedule.domain.QSchedule;
 import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
+import com.lamarfishing.core.schedule.dto.command.TodayScheduleDto;
 import com.lamarfishing.core.ship.domain.QShip;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -11,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -35,5 +37,26 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .fetch();
 
         return mainQuery;
+    }
+
+    public TodayScheduleDto getTodaySchedule() {
+
+        LocalDate today = LocalDate.now();
+        LocalDateTime start = today.atStartOfDay();
+        LocalDateTime end = today.plusDays(1).atStartOfDay();
+
+        return  queryFactory
+                .select(Projections.constructor(TodayScheduleDto.class,
+                        QSchedule.schedule.currentHeadCount, QSchedule.schedule.departure,
+                        QSchedule.schedule.status,
+                        Projections.constructor(TodayScheduleDto.ShipDto.class,
+                                QSchedule.schedule.ship.fishType, QSchedule.schedule.ship.price,
+                                QSchedule.schedule.ship.notification, QSchedule.schedule.ship.maxHeadCount)))
+                .from(QSchedule.schedule)
+                .leftJoin(QShip.ship).on(QShip.ship.id.eq(QSchedule.schedule.ship.id))
+                .where(QSchedule.schedule.departure.goe(start), QSchedule.schedule.departure.lt(end))
+                .orderBy(QSchedule.schedule.departure.desc())
+                .limit(1)
+                .fetchOne();
     }
 }
