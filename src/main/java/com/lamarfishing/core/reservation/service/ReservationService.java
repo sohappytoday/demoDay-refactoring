@@ -1,12 +1,13 @@
 package com.lamarfishing.core.reservation.service;
 
+import com.lamarfishing.core.log.statistic.domain.Statistic;
+import com.lamarfishing.core.log.statistic.repository.StatisticRepository;
 import com.lamarfishing.core.message.service.MessageService;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationDetailDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
 import com.lamarfishing.core.reservation.exception.InvalidRequestContent;
-import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
@@ -23,6 +24,7 @@ import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
+import com.lamarfishing.core.reservation.domain.Reservation.Process;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -43,6 +45,7 @@ public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final ScheduleRepository scheduleRepository;
     private final MessageService messageService;
+    private final StatisticRepository statisticRepository;
 
     public ReservationDetailResponse getReservationDetail(Long userId, String publicId) {
 
@@ -75,14 +78,12 @@ public class ReservationService {
      * 일반 유저가 예약
      */
     @Transactional
-    public void ReservationCancelRequest(Long userId, String publicId, ReservationProcessUpdateRequest request) {
+    public void reservationCancelRequest(Long userId, String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
-
-        Reservation.Process requestProcess = request.getProcess();
 
         if (requestProcess != Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
@@ -95,14 +96,12 @@ public class ReservationService {
      * Admin이 예약 상태 변경
      */
     @Transactional
-    public void ChangeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
+    public void changeReservationProcess(Long userId, String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
-
-        Reservation.Process requestProcess = request.getProcess();
 
         if(requestProcess == Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
@@ -117,7 +116,12 @@ public class ReservationService {
             return;
         }
 
-        // 예약 완료, 입금 완료
+        // 예약 완료
+        if(requestProcess == Process.RESERVE_COMPLETED) {
+            reservation.changeProcess(requestProcess);
+            return;
+        }
+        // 입금 완료
         reservation.changeProcess(requestProcess);
     }
     /**
@@ -137,6 +141,59 @@ public class ReservationService {
     /*************************************************************************
     /**************************자동 메시지 관련 메서드****************************
     /*************************************************************************
+
+    /**
+     * 입금 만료 마감 통계 분석
+     */
+
+    @Transactional
+    public void statisticPaymentDeadlineWarning(){
+        LocalDate today = LocalDate.now();  //11월 22일
+        LocalDate deadline = today.plusDays(4); //11월 26일
+
+        LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 26일 오전 0시
+        LocalDateTime scheduleEnd = deadline.atTime(23,59,59);  //11월 26일 23시 59분 59초
+
+        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
+                .orElse(null);
+
+        if (schedule == null) {
+            return;
+        }
+
+        List<Reservation> reservations = reservationRepository
+                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
+
+        Statistic statistic = statisticRepository.findByDate(today);
+        for (Reservation reservation : reservations) {
+            statistic.addDeposit24Hour();
+        }
+
+    }
+
+    @Transactional
+    public void statisticPaymentExpiredNotification(){
+        LocalDate today = LocalDate.now();  //11월 22일
+        LocalDate deadline = today.plusDays(3); //11월 25일
+
+        LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 25일 오전 0시
+        LocalDateTime scheduleEnd = deadline.atTime(23,59,59);
+
+        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
+                .orElse(null);
+
+        if (schedule == null) {
+            return;
+        }
+
+        List<Reservation> reservations = reservationRepository
+                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
+
+        Statistic statistic = statisticRepository.findByDate(today);
+        for (Reservation reservation : reservations) {
+            statistic.addDepositExpired();
+        }
+    }
 
     /**
      * 입금 만료 마감 경고

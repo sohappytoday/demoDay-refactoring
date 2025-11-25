@@ -1,5 +1,6 @@
 package com.lamarfishing.core.reservation.repository;
 
+import com.lamarfishing.core.log.message.domain.QMessageLog;
 import com.lamarfishing.core.reservation.domain.QReservation;
 import com.lamarfishing.core.schedule.domain.QSchedule;
 import com.lamarfishing.core.ship.domain.QShip;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.support.PageableExecutionUtils;
 import com.lamarfishing.core.reservation.domain.Reservation.Process;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,7 +28,9 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
      */
     // 예약자 이름, 인원, 메모,
     @Override
-    public Page<ReservationSimpleDto> getReservations(Long userId, Process process, Pageable pageable) {
+    public Page<ReservationSimpleDto> getReservations(Long userId, Process process,
+                                                      LocalDateTime from, LocalDateTime to,
+                                                      Long shipId, Pageable pageable) {
         List<ReservationSimpleDto> mainQuery = queryFactory
                 .select(Projections.constructor(ReservationSimpleDto.class,
                         QReservation.reservation.publicId, QReservation.reservation.totalPrice,
@@ -37,7 +41,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .from(QReservation.reservation)
                 .leftJoin(QSchedule.schedule).on(QSchedule.schedule.id.eq(QReservation.reservation.schedule.id))
                 .leftJoin(QShip.ship).on(QShip.ship.id.eq(QReservation.reservation.schedule.id))
-                .where(userIdEq(userId), processEq(process))
+                .where(userIdEq(userId), processEq(process), fromGoe(from), toLoe(to), shipIdEq(shipId))
                 .orderBy(QReservation.reservation.schedule.departure.desc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
@@ -46,7 +50,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
         JPAQuery<Long> countQuery = queryFactory
                 .select(QReservation.reservation.count())
                 .from(QReservation.reservation)
-                .where(userIdEq(userId), processEq(process));
+                .where(userIdEq(userId), processEq(process), fromGoe(from), toLoe(to), shipIdEq(shipId));
 
         return PageableExecutionUtils.getPage(mainQuery, pageable, countQuery::fetchOne);
     }
@@ -57,6 +61,18 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
     private BooleanExpression userIdEq(Long userId) {
         return userId == null ? null : QReservation.reservation.user.id.eq(userId);
+    }
+
+    private BooleanExpression fromGoe(LocalDateTime from) {
+        return from == null ? null : QReservation.reservation.schedule.departure.goe(from);
+    }
+
+    private BooleanExpression toLoe(LocalDateTime to) {
+        return to == null ? null : QReservation.reservation.schedule.departure.loe(to);
+    }
+
+    private BooleanExpression shipIdEq(Long shipId) {
+        return shipId == null ? null : QReservation.reservation.schedule.ship.id.eq(shipId);
     }
 
 }

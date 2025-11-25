@@ -47,17 +47,12 @@ public class ShipService {
     }
 
     @Transactional
-    public void createShip(Long userId, CreateShipRequest request) {
+    public void createShip(Long userId, String fishType, int price, int maxHeadCount, String notification) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
-
-        String fishType = request.getFishType();
-        int price = request.getPrice();
-        int maxHeadCount = request.getMaxHeadCount();
-        String notification = request.getNotification();
 
         Ship ship = Ship.create(maxHeadCount, fishType, price, notification); // 객체 메서드를 객체에 받는 코드
         shipRepository.save(ship);  // DB에 저장
@@ -65,7 +60,7 @@ public class ShipService {
     }
 
     @Transactional
-    public void updateShip(Long userId, Long shipId, UpdateShipRequest request) {
+    public void updateShip(Long userId, Long shipId, String fishType, Integer price, Integer maxHeadCount, String notification) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         if (user.getGrade() != ADMIN) {
@@ -74,29 +69,28 @@ public class ShipService {
 
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
 
-        if (request.getFishType() != null){
-            ship.updateFishType(request.getFishType());
+        if (fishType != null){
+            ship.updateFishType(fishType);
         }
-        if(request.getPrice() != null){
-            ship.updatePrice(request.getPrice());
+        if(price != null){
+            ship.updatePrice(price);
         }
-       if(request.getMaxHeadCount() != null){
-           ship.updateMaxHeadCount(request.getMaxHeadCount());
+       if(maxHeadCount != null){
+           ship.updateMaxHeadCount(maxHeadCount);
        }
-       if(request.getNotification() !=null){
-           ship.updateNotification(request.getNotification());
+       if(notification !=null){
+           ship.updateNotification(notification);
        }
     }
 
     @Transactional
-    public void deleteShip(Long userId, DeleteShipRequest request) {
+    public void deleteShip(Long userId, List<Long> shipIds) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
 
-        List<Long> shipIds = request.getShipIds();
         List<Ship> ships = shipRepository.findAllById(shipIds);
 
         if (ships.size() != shipIds.size()) {
