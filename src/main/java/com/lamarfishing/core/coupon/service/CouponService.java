@@ -12,6 +12,7 @@ import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
+import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,31 +31,31 @@ public class CouponService {
 
     @Transactional
     public void issueCoupon(Long userId, String publicId) {
-        if (!publicId.startsWith("res")) {
-            throw new InvalidReservationPublicId();
-        }
+
+        ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != Grade.ADMIN) {
-            throw new InvalidUserGrade();
-        }
-
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
+        Reservation reservation = reservationRepository.findByPublicId(publicId)
+                .orElseThrow(ReservationNotFound::new);
 
         User receiver = reservation.getUser();
         LocalDateTime departure = reservation.getSchedule().getDeparture();
-        //주말인지 아닌지
-        boolean isWeekend = departure.getDayOfWeek() == DayOfWeek.SATURDAY
-                || departure.getDayOfWeek() == DayOfWeek.SUNDAY;
 
-        if (isWeekend) {
-            //주말이면 주말쿠폰 생성
-            Coupon coupon = Coupon.create(Coupon.Type.WEEKEND, receiver);
-            couponRepository.save(coupon);
-            return;
+        Coupon.Type type;
+
+        if (isWeekend(departure)) {
+            type = Coupon.Type.WEEKEND;
+        } else {
+            type = Coupon.Type.WEEKDAY;
         }
-        Coupon coupon = Coupon.create(Coupon.Type.WEEKDAY, receiver);
+
+        Coupon coupon = Coupon.create(type, receiver);
         couponRepository.save(coupon);
+    }
+
+    private boolean isWeekend(LocalDateTime time) {
+        DayOfWeek day = time.getDayOfWeek();
+        return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
     }
 
     private User findUser(Long userId){

@@ -36,93 +36,46 @@ public class DepartureService {
 
     //출항 확정
     public DepartureResponse confirmation(Long userId, String publicId, Status scheduleStatus) {
-        if (scheduleStatus != Status.CONFIRMED) {
-            throw new InvalidDepartureRequest();
-        }
-
-        ValidatePublicId.validateSchedulePublicId(publicId);
-
-        isAdminById(userId);
-
-        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        //출항 상태 변경
-        schedule.changeStatus(Status.CONFIRMED);
-
-        List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
-
-        List<String> phones = new ArrayList<>();
-        for (Reservation reservation : reservations) {
-            User reservationUser = reservation.getUser();
-            phones.add(reservationUser.getPhone());
-        }
-
-        List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.CONFIRMED);
-
-        return DepartureResponse.from(messageCommonDto);
+        return processDeparture(userId, publicId, scheduleStatus, Status.CONFIRMED);
     }
 
-    //출항 취소
     public DepartureResponse cancel(Long userId, String publicId, Status scheduleStatus) {
-
-        if (scheduleStatus != Status.CANCELED) {
-            throw new InvalidDepartureRequest();
-        }
-
-        ValidatePublicId.validateSchedulePublicId(publicId);
-
-        isAdminById(userId);
-
-        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        //출항 상태 변경
-        schedule.changeStatus(Status.CANCELED);
-
-        List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
-
-        List<String> phones = new ArrayList<>();
-        for (Reservation reservation : reservations) {
-            User reservationUser = reservation.getUser();
-            phones.add(reservationUser.getPhone());
-        }
-
-        List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.CANCELED);
-
-        return DepartureResponse.from(messageCommonDto);
+        return processDeparture(userId, publicId, scheduleStatus, Status.CANCELED);
     }
 
-    //출항 연기
     public DepartureResponse delay(Long userId, String publicId, Status scheduleStatus) {
+        return processDeparture(userId, publicId, scheduleStatus, Status.DELAYED);
+    }
 
-        if (scheduleStatus != Status.DELAYED) {
+    private DepartureResponse processDeparture(Long userId, String publicId,
+                                               Status requestStatus, Status expectedStatus) {
+
+        if (requestStatus != expectedStatus) {
             throw new InvalidDepartureRequest();
         }
 
         ValidatePublicId.validateSchedulePublicId(publicId);
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
-        isAdminById(userId);
+        // 스케줄 조회
+        Schedule schedule = scheduleRepository.findByPublicId(publicId)
+                .orElseThrow(ScheduleNotFound::new);
 
-        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-        //출항 상태 변경
-        schedule.changeStatus(Status.DELAYED);
+        // 상태 변경
+        schedule.changeStatus(expectedStatus);
 
+        // 예약 조회
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
 
+        // 폰 번호 추출
         List<String> phones = new ArrayList<>();
         for (Reservation reservation : reservations) {
-            User reservationUser = reservation.getUser();
-            phones.add(reservationUser.getPhone());
+            phones.add(reservation.getUser().getPhone());
         }
 
-        List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.DELAYED);
+        // 메시지 발송
+        List<MessageCommonDto> dto = messageService.sendMessage(phones, expectedStatus);
 
-        return DepartureResponse.from(messageCommonDto);
+        return DepartureResponse.from(dto);
     }
-
-    private User isAdminById(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != Grade.ADMIN){
-            throw new InvalidUserGrade();
-        }
-        return user;
-    }
-
 }
