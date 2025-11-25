@@ -1,6 +1,7 @@
 package com.lamarfishing.core.common.dummy;
 
 import com.lamarfishing.core.coupon.dummy.CouponDummy;
+import com.lamarfishing.core.log.statistic.dummy.StatisticDummy;
 import com.lamarfishing.core.reservation.dummy.ReservationDummy;
 import com.lamarfishing.core.schedule.dummy.ScheduleDummy;
 import com.lamarfishing.core.ship.dummy.ShipDummy;
@@ -20,6 +21,7 @@ public class DummyInitializer {
     private final ScheduleDummy scheduleDummy;
     private final CouponDummy couponDummy;
     private final ReservationDummy reservationDummy;
+    private final StatisticDummy statisticDummy;
 
     @Transactional
     @EventListener(ApplicationReadyEvent.class)
@@ -30,5 +32,7 @@ public class DummyInitializer {
         scheduleDummy.init();
         couponDummy.init();
         reservationDummy.init();
+        statisticDummy.init();
+
     }
 }
