@@ -123,8 +123,6 @@ public class ReservationService {
         }
         // 입금 완료
         reservation.changeProcess(requestProcess);
-        Statistic statistic = statisticRepository.findByDate(LocalDate.now());
-        statistic.addDeposited();
     }
     /**
      * private Method
