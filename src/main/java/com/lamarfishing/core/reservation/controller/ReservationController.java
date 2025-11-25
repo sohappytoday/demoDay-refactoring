@@ -62,7 +62,7 @@ public class ReservationController {
         Long userId = 2L;
         couponService.issueCoupon(userId, publicId);
 
-        return ResponseEntity.ok(ApiResponse.success("쿠폰을 발급하였습니다."));
+        return ResponseEntity.ok(ApiResponse.success("쿠폰을 발급하였습니다.",null));
     }
 
     /**

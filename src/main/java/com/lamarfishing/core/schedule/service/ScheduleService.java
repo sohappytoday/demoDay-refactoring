@@ -71,9 +71,6 @@ public class ScheduleService {
     public void createSchedule(Long userId, LocalDate startDate, LocalDate endDate, Long shipId, Type scheduleType) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() != Grade.ADMIN) {
-            throw new InvalidUserGrade();
-        }
 
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
         Integer maxHeadCount = ship.getMaxHeadCount();
