@@ -26,6 +26,9 @@ public class UserDummy {
         userRepository.save(User.create("김철수", "철수악마", Grade.ADMIN, "01012345678", "1234", Provider.KAKAO));
         userRepository.save(User.create("장창엽", "창엽천사", Grade.VIP, "01045105619", "1234", Provider.KAKAO));
         userRepository.save(User.create("김준수", "준수악마", Grade.GUEST, "01044966580", "1234", Provider.KAKAO));
+        userRepository.save(User.create("윤예은","예은천사", Grade.BASIC, "01041268427", "1234", Provider.KAKAO));
+        userRepository.save(User.create("김경우", "경우악마", Grade.BASIC, "01039975917", "1234", Provider.KAKAO));
+        userRepository.save(User.create("서혜원", "혜원천사", Grade.BASIC, "01062330155", "1234", Provider.KAKAO));
     }
 
 }

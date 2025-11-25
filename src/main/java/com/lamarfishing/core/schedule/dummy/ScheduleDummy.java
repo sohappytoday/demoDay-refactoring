@@ -14,6 +14,55 @@ import jakarta.annotation.PostConstruct;
 import java.time.LocalDateTime;
 import java.util.List;
 
+//@Component
+//@RequiredArgsConstructor
+//public class ScheduleDummy {
+//
+//    private final ScheduleRepository scheduleRepository;
+//    private final ShipRepository shipRepository;
+//
+//    public void init() {
+//
+//        if (scheduleRepository.count() > 0) {
+//            return;
+//        }
+//
+//        List<Ship> ships = shipRepository.findAll();
+//
+//        LocalDateTime baseDate = LocalDateTime.of(2025, 11, 10, 5, 0);
+//
+//        for (int i = 0; i < 30; i++) {
+//            // ship 순환 (1,2,3,4,5 반복)
+//            Ship ship = ships.get(i % 5);
+//
+//            // tide 1부터 12까지 순환
+//            int tide = (i % 12) + 1;
+//
+//            // 첫 일정만 EARLY, 나머지는 NORMAL
+//            Type type = (i == 0) ? Type.EARLY : Type.NORMAL;
+//
+//            Status status = Status.WAITING;
+//
+//            // 날짜 하루씩 증가
+//            LocalDateTime departure = baseDate.plusDays(i);
+//
+//            // currentHeadCount = ship maxHeadCount
+//            int currentHeadCount = 0;
+//
+//            Schedule schedule = Schedule.create(departure, currentHeadCount, tide, status, type, ship);
+//
+//            scheduleRepository.save(schedule);
+//        }
+//
+//        /**
+//         * 창엽이 부탁
+//         */
+//        Ship ship = ships.get(1);
+//        Schedule schedule = Schedule.create(LocalDateTime.of(2025,9,2,5,0),0,3,Status.WAITING,Type.EARLY, ship);
+//        scheduleRepository.save(schedule);
+//    }
+//}
+
 @Component
 @RequiredArgsConstructor
 public class ScheduleDummy {
@@ -29,36 +78,31 @@ public class ScheduleDummy {
 
         List<Ship> ships = shipRepository.findAll();
 
-        LocalDateTime baseDate = LocalDateTime.of(2025, 11, 10, 5, 0);
+        LocalDateTime startDate = LocalDateTime.of(2025, 9, 1, 5, 0);
+        LocalDateTime endDate = LocalDateTime.of(2026, 2, 2, 5, 0);
+        int i = 0;
+        for (LocalDateTime date = startDate; date.isBefore(endDate); date = date.plusDays(1)) {
 
-        for (int i = 0; i < 30; i++) {
-            // ship 순환 (1,2,3,4,5 반복)
-            Ship ship = ships.get(i % 5);
+            // ship 순환 (1,2,3,4,5,6,7 반복)
+            Ship ship = ships.get(i % 7);
 
             // tide 1부터 12까지 순환
             int tide = (i % 12) + 1;
 
             // 첫 일정만 EARLY, 나머지는 NORMAL
-            Type type = (i == 0) ? Type.EARLY : Type.NORMAL;
+            Type type = (i % 29 == 0) ? Type.EARLY : Type.NORMAL;
 
             Status status = Status.WAITING;
-
-            // 날짜 하루씩 증가
-            LocalDateTime departure = baseDate.plusDays(i);
 
             // currentHeadCount = ship maxHeadCount
             int currentHeadCount = 0;
 
-            Schedule schedule = Schedule.create(departure, currentHeadCount, tide, status, type, ship);
+            Schedule schedule = Schedule.create(date, currentHeadCount, tide, status, type, ship);
 
             scheduleRepository.save(schedule);
+
+            i++;
         }
 
-        /**
-         * 창엽이 부탁
-         */
-        Ship ship = ships.get(1);
-        Schedule schedule = Schedule.create(LocalDateTime.of(2025,9,2,5,0),0,3,Status.WAITING,Type.EARLY, ship);
-        scheduleRepository.save(schedule);
     }
 }
