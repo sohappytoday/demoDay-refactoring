@@ -79,10 +79,12 @@ public class Statistic {
         this.dailySales += sales;
     }
 
+    //입금 마감
     public void addDepositExpired() {
         this.depositExpired++;
     }
 
+    //입금마감 24시간전
     public void addDeposit24Hour() {
         this.deposit24Hour++;
     }

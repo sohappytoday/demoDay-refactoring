@@ -21,6 +21,9 @@ public class MessageScheduler {
         reservationService.sendPaymentDeadlineWarning();
     }
 
+    /**
+     * 입금 기한 만료 (3일 전)
+     */
     @Scheduled(cron = "0 0 9 * * *")
     public void sendPaymentExpiredNotification(){
         reservationService.sendPaymentExpiredNotification();
