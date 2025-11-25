@@ -17,6 +17,7 @@ import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
+import com.lamarfishing.core.validate.ValidatePublicId;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -34,24 +35,18 @@ public class DepartureService {
     private final MessageService messageService;
 
     //출항 확정
-    public DepartureResponse confirmation(Long userId, String publicId, DepartureRequest departureRequest) {
-        Status scheduleStatus = departureRequest.getScheduleStatus();
+    public DepartureResponse confirmation(Long userId, String publicId, Status scheduleStatus) {
         if (scheduleStatus != Status.CONFIRMED) {
             throw new InvalidDepartureRequest();
         }
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != Grade.ADMIN){
-            throw new InvalidUserGrade();
-        }
+        ValidatePublicId.validateSchedulePublicId(publicId);
+
+        isAdminById(userId);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         //출항 상태 변경
         schedule.changeStatus(Status.CONFIRMED);
-        scheduleRepository.save(schedule);
 
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
 
@@ -67,25 +62,19 @@ public class DepartureService {
     }
 
     //출항 취소
-    public DepartureResponse cancel(Long userId, String publicId, DepartureRequest departureRequest) {
-        Status scheduleStatus = departureRequest.getScheduleStatus();
+    public DepartureResponse cancel(Long userId, String publicId, Status scheduleStatus) {
+
         if (scheduleStatus != Status.CANCELED) {
             throw new InvalidDepartureRequest();
         }
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != Grade.ADMIN){
-            throw new InvalidUserGrade();
-        }
+        ValidatePublicId.validateSchedulePublicId(publicId);
+
+        isAdminById(userId);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-
         //출항 상태 변경
         schedule.changeStatus(Status.CANCELED);
-        scheduleRepository.save(schedule);
 
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
 
@@ -101,25 +90,19 @@ public class DepartureService {
     }
 
     //출항 연기
-    public DepartureResponse delay(Long userId, String publicId, DepartureRequest departureRequest) {
-        Status scheduleStatus = departureRequest.getScheduleStatus();
+    public DepartureResponse delay(Long userId, String publicId, Status scheduleStatus) {
+
         if (scheduleStatus != Status.DELAYED) {
             throw new InvalidDepartureRequest();
         }
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if(user.getGrade() != Grade.ADMIN){
-            throw new InvalidUserGrade();
-        }
+        ValidatePublicId.validateSchedulePublicId(publicId);
+
+        isAdminById(userId);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-
         //출항 상태 변경
         schedule.changeStatus(Status.DELAYED);
-        scheduleRepository.save(schedule);
 
         List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
 
@@ -132,6 +115,14 @@ public class DepartureService {
         List<MessageCommonDto> messageCommonDto = messageService.sendMessage(phones, Status.DELAYED);
 
         return DepartureResponse.from(messageCommonDto);
+    }
+
+    private User isAdminById(Long userId){
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+        if(user.getGrade() != Grade.ADMIN){
+            throw new InvalidUserGrade();
+        }
+        return user;
     }
 
 }

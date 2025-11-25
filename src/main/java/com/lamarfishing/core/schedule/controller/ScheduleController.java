@@ -3,6 +3,7 @@ package com.lamarfishing.core.schedule.controller;
 import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
@@ -18,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.service.annotation.DeleteExchange;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -51,9 +53,10 @@ public class ScheduleController {
 //
 //    }
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createSchedule(@RequestBody ScheduleCreateRequest scheduleCreateRequest) {
+    public ResponseEntity<ApiResponse<Void>> createSchedule(@RequestBody ScheduleCreateRequest req) {
         Long userId = 2L;
-        scheduleService.createSchedule(userId, scheduleCreateRequest);
+
+        scheduleService.createSchedule(userId, req.getStartDate(), req.getEndDate(), req.getShipId(), req.getScheduleType());
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 생성에 성공하였습니다."));
 
@@ -107,9 +110,9 @@ public class ScheduleController {
 //    }
     @PatchMapping("/{schedulePublicId}/departure")
     public ResponseEntity<ApiResponse<Void>> UpdateDepartureTime(@PathVariable String schedulePublicId,
-                                                                 @RequestBody UpdateDepartureTimeRequest request){
+                                                                 @RequestBody UpdateDepartureTimeRequest req){
         Long userId = 2L;
-        scheduleService.UpdateDepartureTime(userId,schedulePublicId, request);
+        scheduleService.UpdateDepartureTime(userId,schedulePublicId, req.getDepartureTime());
 
         return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
     }
