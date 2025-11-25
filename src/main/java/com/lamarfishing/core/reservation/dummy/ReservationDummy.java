@@ -50,13 +50,14 @@ public class ReservationDummy {
         int i = 0;
 
         for (Schedule schedule : schedules) {
-
             i++;
             List<User> shuffledUsers = new ArrayList<>(users);
             Collections.shuffle(shuffledUsers);
 
             List<User> selectedUsers = shuffledUsers.subList(0, Math.min(5, shuffledUsers.size()));
-
+            if(schedule.getDeparture().getDayOfMonth() == 10 || schedule.getDeparture().getDayOfMonth() == 11) {
+                continue;
+            }
             for (User user : selectedUsers) {
 
                 int headCount = random.nextInt(3) + 1;
