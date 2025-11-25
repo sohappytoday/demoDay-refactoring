@@ -6,7 +6,6 @@ import com.lamarfishing.core.reservation.dto.command.ReservationDetailDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
 import com.lamarfishing.core.reservation.exception.InvalidRequestContent;
-import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
@@ -23,6 +22,7 @@ import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
+import com.lamarfishing.core.reservation.domain.Reservation.Process;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -75,14 +75,12 @@ public class ReservationService {
      * 일반 유저가 예약
      */
     @Transactional
-    public void ReservationCancelRequest(Long userId, String publicId, ReservationProcessUpdateRequest request) {
+    public void reservationCancelRequest(Long userId, String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
-
-        Reservation.Process requestProcess = request.getProcess();
 
         if (requestProcess != Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
@@ -95,14 +93,12 @@ public class ReservationService {
      * Admin이 예약 상태 변경
      */
     @Transactional
-    public void ChangeReservationProcess(Long userId, String publicId, ReservationProcessUpdateRequest request) {
+    public void changeReservationProcess(Long userId, String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
-
-        Reservation.Process requestProcess = request.getProcess();
 
         if(requestProcess == Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();

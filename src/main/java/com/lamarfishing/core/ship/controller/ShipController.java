@@ -12,6 +12,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/ships")
 @RequiredArgsConstructor
@@ -49,10 +51,10 @@ public class ShipController {
 //    }
 
     @PostMapping
-    public ResponseEntity<ApiResponse<Void>> createShip(@RequestBody CreateShipRequest request){
+    public ResponseEntity<ApiResponse<Void>> createShip(@RequestBody CreateShipRequest req){
 
         Long userId = 2L;
-        shipService.createShip(userId, request);
+        shipService.createShip(userId, req.getFishType(), req.getPrice(), req.getMaxHeadCount(), req.getNotification());
         return ResponseEntity.ok(ApiResponse.success("배 생성에 성공하였습니다."));
     }
 
@@ -69,10 +71,10 @@ public class ShipController {
 //    }
 
     @PutMapping("/{shipId}")
-    public ResponseEntity<ApiResponse<Void>> updateShip(@RequestBody UpdateShipRequest request,
+    public ResponseEntity<ApiResponse<Void>> updateShip(@RequestBody UpdateShipRequest req,
                                                         @PathVariable Long shipId){
         Long userId = 2L;
-        shipService.updateShip(userId, shipId, request);
+        shipService.updateShip(userId, shipId, req.getFishType(), req.getPrice(), req.getMaxHeadCount(), req.getNotification());
 
         return ResponseEntity.ok(ApiResponse.success("배 수정에 성공"));
     }
@@ -91,7 +93,8 @@ public class ShipController {
     @PostMapping("/delete")
     public ResponseEntity<ApiResponse<Void>> deleteShip(@RequestBody DeleteShipRequest request){
         Long userId = 2L;
-        shipService.deleteShip(userId, request);
+        List<Long> shipIds = request.getShipIds();
+        shipService.deleteShip(userId, shipIds);
 
         return ResponseEntity.ok(ApiResponse.success("배 삭제에 성공하였습니다."));
     }

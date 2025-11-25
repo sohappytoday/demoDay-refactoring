@@ -25,6 +25,7 @@ import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
+import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,9 +46,8 @@ public class ScheduleService {
     private final ShipRepository shipRepository;
 
     public ScheduleDetailResponse getScheduleDetail(String publicId) {
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
+
+        ValidatePublicId.validateSchedulePublicId(publicId);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         ScheduleDetailDto scheduleDetailDto = ScheduleMapper.toScheduleDetailDto(schedule);
@@ -68,16 +68,12 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void createSchedule(Long userId, ScheduleCreateRequest scheduleCreateRequest) {
+    public void createSchedule(Long userId, LocalDate startDate, LocalDate endDate, Long shipId, Type scheduleType) {
+
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
         }
-
-        LocalDate startDate = scheduleCreateRequest.getStartDate();
-        LocalDate endDate = scheduleCreateRequest.getEndDate();
-        Long shipId = scheduleCreateRequest.getShipId();
-        Type scheduleType = scheduleCreateRequest.getScheduleType();
 
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
         Integer maxHeadCount = ship.getMaxHeadCount();
@@ -105,9 +101,8 @@ public class ScheduleService {
 
     @Transactional
     public void deleteSchedule(Long userId, String publicId) {
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
+
+        ValidatePublicId.validateSchedulePublicId(publicId);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         if (user.getGrade() != Grade.ADMIN) {
@@ -153,10 +148,10 @@ public class ScheduleService {
     }
 
     @Transactional
-    public void UpdateDepartureTime(Long userId, String publicId, UpdateDepartureTimeRequest request) {
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
+    public void updateDepartureTime(Long userId, String publicId, LocalTime updateTime) {
+
+        ValidatePublicId.validateSchedulePublicId(publicId);
+
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         if (user.getGrade() != Grade.ADMIN) {
             throw new InvalidUserGrade();
@@ -170,7 +165,6 @@ public class ScheduleService {
             throw new InvalidDepartureTime();
         }
 
-        LocalTime updateTime = request.getDepartureTime();
         LocalDate departureDate = schedule.getDeparture().toLocalDate();
         LocalDateTime updateDeparture = departureDate.atTime(updateTime);
 

@@ -31,6 +31,7 @@ import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
+import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -112,35 +113,32 @@ public class ReservationPopupService {
     }
 
     @Transactional
-    public ReservationCreateResponse createReservation(Long userId, String publicId, ReservationPopupRequest reservationPopupRequest) {
-        if (!publicId.startsWith("sch")) {
-            throw new InvalidSchedulePublicId();
-        }
+    public ReservationCreateResponse createReservation(
+            Long userId, String publicId,
+            String username, String nickname, String phone, int headCount, String userRequest, Long couponId) {
+
+        ValidatePublicId.validateSchedulePublicId(publicId);
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Grade userGrade = user.getGrade();
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();
-        int headCount = reservationPopupRequest.getHeadCount();
+
         if(headCount + schedule.getCurrentHeadCount() > schedule.getShip().getMaxHeadCount()){
             throw new InvalidHeadCount();
         }
         int totalPrice = ship.getPrice() * headCount;
-        String userRequest = reservationPopupRequest.getRequest();
 
         //비회원이라면
         if (userGrade == Grade.GUEST) {
-            String username = reservationPopupRequest.getUsername();
-            String nickname = reservationPopupRequest.getNickname();
-            String phone = reservationPopupRequest.getPhone();
             //게스트 업데이트
             user.updateGuestInfo(username, nickname, phone);
         }
 
         Coupon coupon = null;
-        if (reservationPopupRequest.getCouponId() != null) {
-            coupon = couponRepository.findById(reservationPopupRequest.getCouponId())
+        if (couponId != null) {
+            coupon = couponRepository.findById(couponId)
                     .orElseThrow(CouponNotFound::new);
 
             if (!coupon.getUser().equals(user)) {

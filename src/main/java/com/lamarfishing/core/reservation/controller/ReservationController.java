@@ -3,6 +3,7 @@ package com.lamarfishing.core.reservation.controller;
 import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.coupon.service.CouponService;
+import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
@@ -74,10 +75,11 @@ public class ReservationController {
 //        return ResponseEntity.ok(ApiResponse.success("예약 상태 변경에 성공하였습니다."));
 //    }
     @PatchMapping("/{reservationPublicId}/cancel-request")
-    public ResponseEntity<ApiResponse<Void>> ReservationCancelRequest(@PathVariable("reservationPublicId") String publicId,
+    public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
         Long userId = 1L;
-        reservationService.ReservationCancelRequest(userId, publicId, request);
+        Process process = request.getProcess();
+        reservationService.reservationCancelRequest(userId, publicId, process);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
     }
@@ -86,10 +88,11 @@ public class ReservationController {
      * 관리자 예약 상태 변경
      */
     @PatchMapping("/{reservationPublicId}/process")
-    public ResponseEntity<ApiResponse<Void>> ChangeReservationProcess(@PathVariable("reservationPublicId") String publicId,
+    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
         Long userId = 2L;
-        reservationService.ChangeReservationProcess(userId, publicId, request);
+        Reservation.Process process = request.getProcess();
+        reservationService.changeReservationProcess(userId, publicId, process);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
     }
