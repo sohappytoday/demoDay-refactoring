@@ -44,7 +44,8 @@ public class DefaultSecurityConfig {
                         .anyRequest().authenticated())
                 .oauth2ResourceServer(resource -> resource.jwt(
                         jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
-                ));
+                ))
+                .logout(AbstractHttpConfigurer::disable);
 
 
 
