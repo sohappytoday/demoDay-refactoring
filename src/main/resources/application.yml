@@ -29,7 +29,7 @@ spring:
 logging:
   level:
     org:
-      hibernate.orm.jdbc.bind: trace
+      hibernate: info
 
 # Solapi SMS 설정
 solapi:

@@ -48,11 +48,8 @@ public class ShipService {
 
     @Transactional
     public void createShip(Long userId, String fishType, int price, int maxHeadCount, String notification) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
-        if (user.getGrade() != ADMIN) {
-            throw new InvalidUserGrade();
-        }
+        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         Ship ship = Ship.create(maxHeadCount, fishType, price, notification); // 객체 메서드를 객체에 받는 코드
         shipRepository.save(ship);  // DB에 저장
@@ -61,12 +58,8 @@ public class ShipService {
 
     @Transactional
     public void updateShip(Long userId, Long shipId, String fishType, Integer price, Integer maxHeadCount, String notification) {
+
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-
-        if (user.getGrade() != ADMIN) {
-            throw new InvalidUserGrade();
-        }
-
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
 
         if (fishType != null){
@@ -85,12 +78,8 @@ public class ShipService {
 
     @Transactional
     public void deleteShip(Long userId, List<Long> shipIds) {
+
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-
-        if (user.getGrade() != ADMIN) {
-            throw new InvalidUserGrade();
-        }
-
         List<Ship> ships = shipRepository.findAllById(shipIds);
 
         if (ships.size() != shipIds.size()) {
