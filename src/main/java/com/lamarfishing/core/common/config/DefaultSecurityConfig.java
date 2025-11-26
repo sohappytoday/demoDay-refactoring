@@ -3,9 +3,11 @@ package com.lamarfishing.core.common.config;
 import com.lamarfishing.core.common.CustomJwtAuthenticationToken;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.querydsl.core.annotations.Config;
+import org.springframework.boot.autoconfigure.security.servlet.PathRequest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.convert.converter.Converter;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,6 +18,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.servlet.handler.HandlerMappingIntrospector;
 
 import java.util.ArrayList;
 
@@ -28,13 +31,23 @@ public class DefaultSecurityConfig {
         http
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(request -> request.anyRequest().authenticated())
+                .authorizeHttpRequests(request -> request
+                        .requestMatchers("/schedules/*/reservation/normal", "/schedules/main", "schedules/sch*").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/schedules/*/reservation").permitAll()
+                        .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                        .requestMatchers("/", "/error").permitAll()
+                        .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
+                        .anyRequest().authenticated())
                 .oauth2ResourceServer(resource -> resource.jwt(
                         jwt -> jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
                 ));
 
         return http.build();
     }
+
+
+
+
 
     @Bean
     public Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
