@@ -9,10 +9,13 @@ import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateReq
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.service.ReservationService;
+import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
+import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import com.lamarfishing.core.reservation.domain.Reservation.Process;
 
@@ -26,6 +29,7 @@ public class ReservationController {
     private final ReservationQueryService reservationQueryService;
     private final ReservationService reservationService;
     private final CouponService couponService;
+    private final UserService userService;
 
     /**
      * 예약 상세 조회
@@ -40,8 +44,9 @@ public class ReservationController {
 
     //더미 컨트롤러
     @GetMapping("/{reservationPublicId}")
-    public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@PathVariable("reservationPublicId") String publicId){
-        Long userId = 1L;
+    public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                                                                       @PathVariable("reservationPublicId") String publicId){
+        Long userId = userService.findUserId(authenticatedUser);
         ReservationDetailResponse reservationDetailResponse = reservationService.getReservationDetail(userId, publicId);
 
         return ResponseEntity.ok(ApiResponse.success("예약 상세 조회에 성공하였습니다.",reservationDetailResponse));
@@ -58,8 +63,10 @@ public class ReservationController {
 //        return ResponseEntity.ok(ApiResponse.success("쿠폰을 발급하였습니다."));
 //    }
     @PostMapping("/{reservationPublicId}/coupon")
-    public ResponseEntity<ApiResponse<Void>> issueCoupon(@PathVariable("reservationPublicId") String publicId) {
-        Long userId = 2L;
+    public ResponseEntity<ApiResponse<Void>> issueCoupon(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                                         @PathVariable("reservationPublicId") String publicId) {
+
+        Long userId = userService.findUserId(authenticatedUser);
         couponService.issueCoupon(userId, publicId);
 
         return ResponseEntity.ok(ApiResponse.success("쿠폰을 발급하였습니다.",null));
@@ -77,9 +84,10 @@ public class ReservationController {
 //        return ResponseEntity.ok(ApiResponse.success("예약 상태 변경에 성공하였습니다."));
 //    }
     @PatchMapping("/{reservationPublicId}/cancel-request")
-    public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@PathVariable("reservationPublicId") String publicId,
+    public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                                                      @PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
-        Long userId = 1L;
+        Long userId = userService.findUserId(authenticatedUser);
         Process process = request.getProcess();
         reservationService.reservationCancelRequest(userId, publicId, process);
 
@@ -90,9 +98,10 @@ public class ReservationController {
      * 관리자 예약 상태 변경
      */
     @PatchMapping("/{reservationPublicId}/process")
-    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@PathVariable("reservationPublicId") String publicId,
+    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                                                      @PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
-        Long userId = 2L;
+        Long userId = userService.findUserId(authenticatedUser);
         Reservation.Process process = request.getProcess();
         reservationService.changeReservationProcess(userId, publicId, process);
 
@@ -102,8 +111,10 @@ public class ReservationController {
      * 예약 목록 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<ReservationSimpleDto>>> getReservations(Process process, LocalDateTime from, LocalDateTime to, Long shipId, Pageable pageable) {
+    public ResponseEntity<ApiResponse<PageResponse<ReservationSimpleDto>>> getReservations(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+                                                                                           Process process, LocalDateTime from, LocalDateTime to, Long shipId, Pageable pageable) {
 
+        Long userId = userService.findUserId(authenticatedUser);
         Page<ReservationSimpleDto> pageResult = reservationQueryService.getReservations(process, from, to, shipId, pageable);
 
         return ResponseEntity.ok(ApiResponse.success("예약 목록 조회에 성공하였습니다.", PageResponse.from(pageResult)));
