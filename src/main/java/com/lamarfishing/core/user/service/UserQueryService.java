@@ -10,6 +10,7 @@ import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,6 +24,7 @@ public class UserQueryService {
     private final UserRepository userRepository;
     private final CouponRepository couponRepository;
 
+    @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BASIC', 'GRADE_VIP')")
     public MyProfileDto getMyProfile(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);

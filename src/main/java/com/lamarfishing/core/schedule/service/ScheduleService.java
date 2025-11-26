@@ -27,6 +27,7 @@ import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -68,6 +69,7 @@ public class ScheduleService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void createSchedule(Long userId, LocalDate startDate, LocalDate endDate, Long shipId, Type scheduleType) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
@@ -98,6 +100,7 @@ public class ScheduleService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void deleteSchedule(Long userId, String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
@@ -113,6 +116,7 @@ public class ScheduleService {
         scheduleRepository.delete(schedule);
     }
 
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
@@ -150,6 +154,7 @@ public class ScheduleService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void updateDepartureTime(Long userId, String publicId, LocalTime updateTime) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);

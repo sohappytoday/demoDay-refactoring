@@ -33,6 +33,7 @@ import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -57,6 +58,7 @@ public class ReservationPopupService {
     /**
      * 선예약 팝업 조회
      */
+    @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
     public EarlyReservationPopupResponse getEarlyReservationPopup(Long userId, String publicId) {
         if (!publicId.startsWith("sch")) {
             throw new InvalidSchedulePublicId();
@@ -86,6 +88,7 @@ public class ReservationPopupService {
     /**
      * 일반예약 팝업 조회 (회원, 관리자)
      */
+    @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
     public NormalReservationPopupResponse getNormalReservationPopupUser(Long userId, String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
@@ -108,7 +111,7 @@ public class ReservationPopupService {
     /**
      * 비회원 예약 팝업 조회
      */
-    public NormalReservationPopupResponse getNormalReservationPopupGuest(String publicId) {
+   public NormalReservationPopupResponse getNormalReservationPopupGuest(String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
 
@@ -130,6 +133,7 @@ public class ReservationPopupService {
      * 회원 예약
      */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
     public ReservationCreateResponse createReservationUser(
             Long userId, String publicId,
             String username, String nickname, String phone, int headCount, String userRequest, Long couponId) {
