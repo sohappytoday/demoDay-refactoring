@@ -10,6 +10,7 @@ import com.solapi.sdk.message.service.DefaultMessageService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,6 +36,7 @@ public class MessageService {
         this.messageService = SolapiClient.INSTANCE.createInstance(apiKey, apiSecret);
     }
 
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public List<MessageCommonDto> sendMessage(List<String> phones, Status status) {
 
         List<String> failedPhones = new ArrayList<>();
@@ -61,6 +63,7 @@ public class MessageService {
         return results;
     }
 
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public List<MessageCommonDto> sendMessage(List<String> phones, String content) {
 
         List<String> failedPhones = new ArrayList<>();

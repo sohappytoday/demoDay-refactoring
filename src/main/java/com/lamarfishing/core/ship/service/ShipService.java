@@ -17,6 +17,7 @@ import com.lamarfishing.core.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -32,6 +33,7 @@ public class ShipService {
     private final ShipRepository shipRepository;
     private final UserRepository userRepository;
 
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public PageResponse<ShipDetailResponse> getShips(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
@@ -47,6 +49,7 @@ public class ShipService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void createShip(Long userId, String fishType, int price, int maxHeadCount, String notification) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
@@ -57,6 +60,7 @@ public class ShipService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void updateShip(Long userId, Long shipId, String fishType, Integer price, Integer maxHeadCount, String notification) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
@@ -77,6 +81,7 @@ public class ShipService {
     }
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void deleteShip(Long userId, List<Long> shipIds) {
 
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);

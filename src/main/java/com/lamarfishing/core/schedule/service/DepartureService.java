@@ -20,6 +20,7 @@ import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -35,14 +36,17 @@ public class DepartureService {
     private final MessageService messageService;
 
     //출항 확정
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public DepartureResponse confirmation(Long userId, String publicId, Status scheduleStatus) {
         return processDeparture(userId, publicId, scheduleStatus, Status.CONFIRMED);
     }
 
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public DepartureResponse cancel(Long userId, String publicId, Status scheduleStatus) {
         return processDeparture(userId, publicId, scheduleStatus, Status.CANCELED);
     }
 
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public DepartureResponse delay(Long userId, String publicId, Status scheduleStatus) {
         return processDeparture(userId, publicId, scheduleStatus, Status.DELAYED);
     }

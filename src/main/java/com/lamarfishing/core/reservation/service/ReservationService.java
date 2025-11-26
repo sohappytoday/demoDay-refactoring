@@ -26,6 +26,7 @@ import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
 import com.lamarfishing.core.reservation.domain.Reservation.Process;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,6 +48,7 @@ public class ReservationService {
     private final MessageService messageService;
     private final StatisticRepository statisticRepository;
 
+    @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BAISC','GRADE_VIP')")
     public ReservationDetailResponse getReservationDetail(Long userId, String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
@@ -78,6 +80,7 @@ public class ReservationService {
      * 일반 유저가 예약
      */
     @Transactional
+    @PreAuthorize("hasAnyAuthority('GRADE_BASIC', 'GRADE_VIP')")
     public void reservationCancelRequest(Long userId, String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
@@ -96,6 +99,7 @@ public class ReservationService {
      * Admin이 예약 상태 변경
      */
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void changeReservationProcess(Long userId, String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);

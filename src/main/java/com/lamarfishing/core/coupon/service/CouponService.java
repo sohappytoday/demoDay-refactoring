@@ -14,6 +14,7 @@ import com.lamarfishing.core.user.exception.UserNotFound;
 import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class CouponService {
     private final CouponRepository couponRepository;
 
     @Transactional
+    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public void issueCoupon(Long userId, String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);

@@ -111,10 +111,8 @@ public class ReservationController {
      * 예약 목록 조회
      */
     @GetMapping
-    public ResponseEntity<ApiResponse<PageResponse<ReservationSimpleDto>>> getReservations(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                                                           Process process, LocalDateTime from, LocalDateTime to, Long shipId, Pageable pageable) {
+    public ResponseEntity<ApiResponse<PageResponse<ReservationSimpleDto>>> getReservations(Process process, LocalDateTime from, LocalDateTime to, Long shipId, Pageable pageable) {
 
-        Long userId = userService.findUserId(authenticatedUser);
         Page<ReservationSimpleDto> pageResult = reservationQueryService.getReservations(process, from, to, shipId, pageable);
 
         return ResponseEntity.ok(ApiResponse.success("예약 목록 조회에 성공하였습니다.", PageResponse.from(pageResult)));
