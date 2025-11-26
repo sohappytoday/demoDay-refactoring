@@ -4,17 +4,21 @@ import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
+import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.dto.response.MyProfileResponse;
 import com.lamarfishing.core.user.service.UserQueryService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import com.lamarfishing.core.reservation.domain.Reservation.Process;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/users")
@@ -38,5 +42,11 @@ public class UserController {
         Page<ReservationSimpleDto> pageResult = reservationQueryService.getMyReservations(1L, process, pageable);
 
         return ResponseEntity.ok(ApiResponse.success("나의 예약 목록 조회를 성공하였습니다.", PageResponse.from(pageResult)));
+    }
+
+    @GetMapping("/token/test")
+    public ResponseEntity<ApiResponse<String>> testToken(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
+
+        return ResponseEntity.ok().body(ApiResponse.success("ok", authenticatedUser.toString()));
     }
 }

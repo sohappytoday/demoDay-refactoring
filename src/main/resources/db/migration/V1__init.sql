@@ -5,7 +5,7 @@ CREATE TABLE users
 (
     user_id       BIGINT       NOT NULL AUTO_INCREMENT,
     user_sub      VARCHAR(255) NULL,
-    user_provider SMALLINT     NULL,
+    user_provider VARCHAR(255) NULL,
     user_username VARCHAR(255) NULL,
     user_nickname VARCHAR(255) NULL,
     user_grade    VARCHAR(255) NULL,
@@ -61,11 +61,11 @@ CREATE TABLE manifests
 
 CREATE TABLE message_logs
 (
-    message_log_id            BIGINT       NOT NULL AUTO_INCREMENT,
-    message_log_time_stamp    datetime     NULL,
+    message_log_id              BIGINT       NOT NULL AUTO_INCREMENT,
+    message_log_time_stamp      datetime     NULL,
     message_log_recipient_phone VARCHAR(255) NULL,
-    message_log_content       VARCHAR(255) NULL,
-    message_log_result        VARCHAR(255) NULL,
+    message_log_content         VARCHAR(255) NULL,
+    message_log_result          VARCHAR(255) NULL,
     CONSTRAINT pk_message_logs PRIMARY KEY (message_log_id)
 );
 
@@ -186,6 +186,3 @@ ALTER TABLE reservations
 
 ALTER TABLE schedules
     ADD CONSTRAINT fk_schedules_ship FOREIGN KEY (ship_id) REFERENCES ships (ship_id);
-
-ALTER TABLE refresh_tokens
-    ADD CONSTRAINT fk_refresh_tokens_user FOREIGN KEY (refresh_token_user_id) REFERENCES users (user_id);

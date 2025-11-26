@@ -23,6 +23,7 @@ public class User {
     @Column(name = "user_sub")
     private String sub;
 
+    @Enumerated(EnumType.STRING)
     @Column(name = "user_provider")
     private Provider provider;
 
@@ -57,6 +58,15 @@ public class User {
                 .phone(phone)
                 .sub(sub)
                 .provider(provider)
+                .build();
+    }
+
+    public static User createAnonymous(String username, String nickname, String phone) {
+        return User.builder()
+                .username(username)
+                .nickname(nickname)
+                .grade(Grade.GUEST)
+                .phone(phone)
                 .build();
     }
 

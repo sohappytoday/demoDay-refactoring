@@ -25,6 +25,7 @@ spring:
       resourceserver:
         jwt:
           jwk-set-uri: https://jjubul-auth.duckdns.org/oauth2/jwks
+#          jwk-set-uri: http://localhost:9000/oauth2/jwks
 
 logging:
   level:
