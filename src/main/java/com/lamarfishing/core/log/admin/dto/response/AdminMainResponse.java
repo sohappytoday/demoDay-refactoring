@@ -39,7 +39,7 @@ public class AdminMainResponse {
 
         private FinalStatisticDto(StatisticDto dto) {
             this.dailyVisited = dto.getDailyVisited();
-            this.reservedRate = dto.getDailyVisited() == 0 ? 0 : (double) dto.getDailyReserved() / dto.getDailyVisited();
+            this.reservedRate = dto.getDailyVisited() == 0 ? 0 : (double) dto.getDailyReserved() / dto.getDailyVisited() * 100.0;
             this.dailySales = dto.getDailySales();
             this.monthlySales = dto.getMonthlySales();
         }
