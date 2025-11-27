@@ -2,6 +2,7 @@ package com.lamarfishing.core.ship.controller;
 
 import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
+import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
 import com.lamarfishing.core.ship.dto.request.CreateShipRequest;
 import com.lamarfishing.core.ship.dto.request.DeleteShipRequest;
 import com.lamarfishing.core.ship.dto.request.UpdateShipRequest;
@@ -10,6 +11,7 @@ import com.lamarfishing.core.ship.service.ShipService;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -39,9 +41,13 @@ public class ShipController {
                                                                                   Pageable pageable){
 
         Long userId = userService.findUserId(authenticatedUser);
-        PageResponse<ShipDetailResponse> shipListResponse = shipService.getShips(userId, pageable);
+        Page<ShipDetailDto> pageResult = shipService.getShips(userId, pageable);
+        /**
+         * 수정해야함 (뭘 수정해야하는지는 11월 27일을 기억할것)
+         */
+        Page<ShipDetailResponse> response = pageResult.map(ShipDetailResponse::from);
 
-        return ResponseEntity.ok(ApiResponse.success("배 리스트 조회에 성공하였습니다.",shipListResponse));
+        return ResponseEntity.ok(ApiResponse.success("배 리스트 조회에 성공하였습니다.",PageResponse.from(response)));
     }
 
     /**

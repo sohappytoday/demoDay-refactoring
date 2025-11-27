@@ -57,7 +57,8 @@ public class ReservationDummy {
             List<User> selectedUsers = shuffledUsers.subList(0, Math.min(5, shuffledUsers.size()));
 
             //10일 11일 reservation 제외
-            if(schedule.getDeparture().getDayOfMonth() == 10 || schedule.getDeparture().getDayOfMonth() == 11) {
+            if(schedule.getDeparture().getDayOfMonth() == 10 || schedule.getDeparture().getDayOfMonth() == 11
+             || schedule.getDeparture().getDayOfMonth() == 28) {
                 continue;
             }
             for (User user : selectedUsers) {
