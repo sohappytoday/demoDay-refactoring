@@ -25,15 +25,6 @@ public class ReservationPopupController {
     /**
      * 선예약 팝업 조회
      */
-//    @GetMapping("/early")
-//    public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getEarlyReservationPopup(@RequestHeader Long userId,
-//                                                                                    @PathVariable("schedulePublicId") String publicId){
-//
-//        EarlyReservationPopupResponse response = reservationPopupService.getEarlyReservationPopup(userId,publicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("예약 팝업 조회에 성공하였습니다",response));
-//    }
-
     @GetMapping("/early")
     public ResponseEntity<ApiResponse<EarlyReservationPopupResponse>> getEarlyReservationPopup(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                                @PathVariable("schedulePublicId") String publicId){
@@ -47,14 +38,6 @@ public class ReservationPopupController {
     /**
      * 일반예약 팝업 조회
      */
-//    @GetMapping("/normal")
-//    public ResponseEntity<ApiResponse<NormalReservationPopupResponse>> getNormalReservationPopup(@RequestHeader Long userId, @PathVariable("schedulePublicId") String publicId){
-//
-//        NormalReservationPopupResponse response = reservationPopupService.getNormalReservationPopup(userId,publicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("선예약 팝업 조회에 성공하였습니다",response));
-//    }
-
     @GetMapping("/normal")
     public ResponseEntity<ApiResponse<NormalReservationPopupResponse>> getNormalReservationPopup(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                                  @PathVariable("schedulePublicId") String publicId){

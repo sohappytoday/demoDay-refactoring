@@ -50,12 +50,6 @@ public class UserController {
         return ResponseEntity.ok(ApiResponse.success("나의 예약 목록 조회를 성공하였습니다.", PageResponse.from(pageResult)));
     }
 
-    @GetMapping("/token/test")
-    public ResponseEntity<ApiResponse<String>> testToken(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
-
-        return ResponseEntity.ok().body(ApiResponse.success("ok", authenticatedUser.toString()));
-    }
-
     @PatchMapping("/me/profile-nickname")
     public ResponseEntity<ApiResponse<Void>> changeNickname(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @RequestBody ChangeNicknameRequest req) {
 

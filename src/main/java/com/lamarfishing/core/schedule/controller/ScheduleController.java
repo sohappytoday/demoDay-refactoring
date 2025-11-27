@@ -48,14 +48,6 @@ public class ScheduleController {
     /**
      * 출항 일정 생성하기
      */
-//    @PostMapping
-//    public ResponseEntity<ApiResponse<Void>> createSchedule(@RequestHeader Long userId,
-//                                                            @RequestBody ScheduleCreateRequest scheduleCreateRequest) {
-//        scheduleService.createSchedule(userId,scheduleCreateRequest);
-//
-//        return ResponseEntity.ok(ApiResponse.success("출항 일정 생성에 성공하였습니다."));
-//
-//    }
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createSchedule(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                             @RequestBody ScheduleCreateRequest req) {
@@ -69,13 +61,6 @@ public class ScheduleController {
     /**
      * 출항 일정 삭제
      */
-//    @DeleteExchange("/{schedulePublicId}")
-//    public ResponseEntity<ApiResponse<Void>> deleteSchedule(@RequestHeader Long userId,
-//                                                            @PathVariable("schedulePublicId") String publicId) {
-//        scheduleService.deleteSchedule(userId,publicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("출항 일정 삭제에 성공하였습니다."));
-//    }
     @DeleteMapping("/{schedulePublicId}")
     public ResponseEntity<ApiResponse<Void>> deleteSchedule(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                             @PathVariable("schedulePublicId") String publicId) {
@@ -88,12 +73,6 @@ public class ScheduleController {
     /**
      * 관리자 : 메인페이지서 출항 시간 보기
      */
-//    @GetMapping("/departure-time")
-//    public ResponseEntity<ApiResponse<ViewDepartureTimeResponse>> getDepartureTime(@RequestHeader Long userId) {
-//        ViewDepartureTimeResponse viewDepartureTimeResponse =scheduleService.viewDepartureTime(userId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("출항 시간 조회에 성공하였습니다.",viewDepartureTimeResponse));
-//    }
     @GetMapping("/departure")
     public ResponseEntity<ApiResponse<ViewDepartureTimeResponse>> getDepartureTime(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
 
@@ -106,14 +85,6 @@ public class ScheduleController {
     /**
      * 출항 시간 변경 api
      * */
-//    @PatchMapping("/{schedulePublicId}/departure")
-//    public ResponseEntity<ApiResponse<Void>> UpdateDepartureTime(@RequestHeader Long userId,
-//                                                                 @PathVariable String publicId,
-//                                                                 @RequestBody UpdateDepartureTimeRequest request){
-//        scheduleService.UpdateDepartureTime(userId,publicId, request);
-//
-//        return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
-//    }
     @PatchMapping("/{schedulePublicId}/departure")
     public ResponseEntity<ApiResponse<Void>> updateDepartureTime(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                  @PathVariable String schedulePublicId,
@@ -124,24 +95,6 @@ public class ScheduleController {
 
         return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
     }
-
-//    /**
-//     * 선예약 마감 (없어짐)
-//     */
-//    @PatchMapping("/{schedulePublicId}/drawn")
-//    public ResponseEntity<ApiResponse<Void>> markAsDrawn(@RequestHeader Long userId,
-//                                                         @PathVariable String schedulePublicId) {
-//        scheduleService.markAsDrawn(userId, schedulePublicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("출항 일정 선예약 마감이 되었습니다."));
-//    }
-//    @PatchMapping("/{schedulePublicId}/drawn")
-//    public ResponseEntity<ApiResponse<Void>> markAsDrawn(@PathVariable String schedulePublicId) {
-//        Long userId = 2L;
-//        scheduleService.markAsDrawn(userId, schedulePublicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("출항 일정 선예약 마감이 되었습니다."));
-//    }
 
     @GetMapping("/main")
     public ResponseEntity<ApiResponse<ScheduleMainResponse>> getSchedules(LocalDateTime from, LocalDateTime to) {

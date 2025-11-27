@@ -34,14 +34,6 @@ public class ReservationController {
     /**
      * 예약 상세 조회
      */
-//    @GetMapping("/{reservationPublicId}")
-//    public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@RequestAttribute(name = "수정필요1") Long userId,
-//                                                                                       @PathVariable("reservationPublicId") String publicId){
-//        ReservationDetailResponse reservationDetailResponse = reservationService.getReservationDetail(userId, publicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("예약 상세 조회에 성공하였습니다.",reservationDetailResponse));
-//    }
-
     //더미 컨트롤러
     @GetMapping("/{reservationPublicId}")
     public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
@@ -55,13 +47,6 @@ public class ReservationController {
     /**
      * 쿠폰 발급
      */
-//    @PostMapping("/{reservationPublicId}/coupon")
-//    public ResponseEntity<ApiResponse<Void>> issueCoupon(@RequestHeader Long userId,
-//                                                         @PathVariable("reservationPublicId") String publicId) {
-//        couponService.issueCoupon(userId, publicId);
-//
-//        return ResponseEntity.ok(ApiResponse.success("쿠폰을 발급하였습니다."));
-//    }
     @PostMapping("/{reservationPublicId}/coupon")
     public ResponseEntity<ApiResponse<Void>> issueCoupon(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                          @PathVariable("reservationPublicId") String publicId) {
@@ -75,14 +60,6 @@ public class ReservationController {
     /**
      * 예약자 취소 예약 신청
      */
-//    @PatchMapping("/{reservationPublicId}/process")
-//    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@RequestHeader Long userId,
-//                                                           @PathVariable("reservationPublicId") String publicId,
-//                                                           @RequestBody ReservationProcessUpdateRequest request) {
-//        reservationService.changeReservationProcess(userId, publicId, request);
-//
-//        return ResponseEntity.ok(ApiResponse.success("예약 상태 변경에 성공하였습니다."));
-//    }
     @PatchMapping("/{reservationPublicId}/cancel-request")
     public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                       @PathVariable("reservationPublicId") String publicId,
