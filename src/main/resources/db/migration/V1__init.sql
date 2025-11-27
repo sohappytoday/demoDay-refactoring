@@ -156,12 +156,6 @@ ALTER TABLE reservations
 ALTER TABLE schedules
     ADD CONSTRAINT uc_schedules_schedule_public UNIQUE (schedule_public_id);
 
-ALTER TABLE users
-    ADD CONSTRAINT uc_users_user_nickname UNIQUE (user_nickname);
-
-ALTER TABLE users
-    ADD CONSTRAINT uc_users_user_phone UNIQUE (user_phone);
-
 ALTER TABLE oauth2_users
     ADD CONSTRAINT uc_oauth2_users_provider_sub UNIQUE (oauth2_user_provider, oauth2_user_sub);
 
