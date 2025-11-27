@@ -5,7 +5,9 @@ import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
+import com.lamarfishing.core.user.dto.request.ChangeNicknameRequest;
 import com.lamarfishing.core.user.dto.response.MyProfileResponse;
+import com.lamarfishing.core.user.service.UserCommandService;
 import com.lamarfishing.core.user.service.UserQueryService;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import com.lamarfishing.core.reservation.domain.Reservation.Process;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -28,6 +31,7 @@ public class UserController {
     private final UserQueryService userQueryService;
     private final ReservationQueryService reservationQueryService;
     private final UserService userService;
+    private final UserCommandService userCommandService;
 
     @GetMapping("/me/profile")
     public ResponseEntity<ApiResponse<MyProfileResponse>> getMyProfile(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
@@ -53,5 +57,14 @@ public class UserController {
     public ResponseEntity<ApiResponse<String>> testToken(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
 
         return ResponseEntity.ok().body(ApiResponse.success("ok", authenticatedUser.toString()));
+    }
+
+    @PatchMapping("/me/profile-nickname")
+    public ResponseEntity<ApiResponse<Void>> changeNickname(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, ChangeNicknameRequest req) {
+
+        Long userId=userService.findUserId(authenticatedUser);
+        userCommandService.changeNickname(userId, req.getNickname());
+
+        return ResponseEntity.ok().body(ApiResponse.success("나의 프로필 수정에 성공하였습니다."));
     }
 }

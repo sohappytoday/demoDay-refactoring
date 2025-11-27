@@ -48,6 +48,7 @@ dependencies {
 	implementation("org.flywaydb:flyway-core")//flyway
 	implementation("org.flywaydb:flyway-mysql")//flyway
 
+
 	// --- 테스트 ---
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
@@ -56,6 +57,10 @@ dependencies {
 
     // --- 외부 api ---
     implementation 'com.solapi:sdk:1.0.3'
+
+	// -- 모니터링 --
+	implementation 'org.springframework.boot:spring-boot-starter-actuator' //actuator 추가
+	implementation 'io.micrometer:micrometer-registry-prometheus' //프로메테우스 추가
 }
 
 tasks.named('test') {

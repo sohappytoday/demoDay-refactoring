@@ -78,4 +78,8 @@ public class User {
         this.nickname = nickname;
         this.phone = phone;
     }
+
+    public void changeNickname(String nickname){
+        this.nickname = nickname;
+    }
 }
