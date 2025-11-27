@@ -32,6 +32,17 @@ public class MessageLogAspect {
         messageLogRepository.saveAll(logs);
     }
 
+    @AfterReturning(
+            pointcut = "execution(* com.lamarfishing.core.message.service.MessageService.*(..)) && args(phones, content)"
+    )
+    public void successLog(List<String> phones, String content) {
+
+        List<MessageLog> logs = phones.stream().map(phone ->
+                MessageLog.create(phone, content, Result.SUCCESS)).toList();
+
+        messageLogRepository.saveAll(logs);
+    }
+
     @AfterThrowing(
             pointcut = "execution(* com.lamarfishing.core.message.service.MessageService.*(..)) && args(phones, status)",
             throwing = "ex"
