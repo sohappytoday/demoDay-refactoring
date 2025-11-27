@@ -27,6 +27,4 @@ public class AuthenticatedUser {
 
         return new AuthenticatedUser(provider, sub, grade);
     }
-
-
 }

@@ -56,7 +56,6 @@ public class DefaultSecurityConfig {
     public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
 
         http
-
                 .cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -82,14 +81,12 @@ public class DefaultSecurityConfig {
     @Bean
     public Converter<Jwt, ? extends AbstractAuthenticationToken> jwtAuthenticationConverter() {
 
-        JwtGrantedAuthoritiesConverter converter = new JwtGrantedAuthoritiesConverter();
-
         return new Converter<Jwt, AbstractAuthenticationToken>() {
 
             @Override
             public AbstractAuthenticationToken convert(Jwt jwt) {
 
-                ArrayList<GrantedAuthority> authorities = new ArrayList<>(converter.convert(jwt));
+                ArrayList<GrantedAuthority> authorities = new ArrayList<>();
                 authorities.add(new SimpleGrantedAuthority("GRADE_" + jwt.getClaim("grade").toString()));
 
                 AuthenticatedUser authenticatedUser = AuthenticatedUser.from(jwt);
