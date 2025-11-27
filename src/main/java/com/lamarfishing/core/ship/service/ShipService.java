@@ -2,6 +2,7 @@ package com.lamarfishing.core.ship.service;
 
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.ship.domain.Ship;
+import com.lamarfishing.core.ship.dto.command.ShipDetailDto;
 import com.lamarfishing.core.ship.dto.request.CreateShipRequest;
 import com.lamarfishing.core.ship.dto.request.DeleteShipRequest;
 import com.lamarfishing.core.ship.dto.request.UpdateShipRequest;
@@ -34,18 +35,17 @@ public class ShipService {
     private final UserRepository userRepository;
 
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public PageResponse<ShipDetailResponse> getShips(Long userId, Pageable pageable) {
+    public Page<ShipDetailDto> getShips(Long userId, Pageable pageable) {
         User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
 
-        Page<ShipDetailResponse> ships = shipRepository.findAll(pageable)
-                .map(ShipMapper::toShipDetailDto)
-                .map(ShipDetailResponse::from);
+        Page<ShipDetailDto> ships = shipRepository.findAll(pageable)
+                .map(ShipMapper::toShipDetailDto);
 
-        return PageResponse.from(ships);
+        return ships;
     }
 
     @Transactional
