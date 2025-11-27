@@ -27,11 +27,11 @@ public class DummyInitializer {
     @EventListener(ApplicationReadyEvent.class)
     public void init() {
 
-        userDummy.init();
+//        userDummy.init();
         shipDummy.init();
         scheduleDummy.init();
-        couponDummy.init();
-        reservationDummy.init();
+//        couponDummy.init();
+//        reservationDummy.init();
         statisticDummy.init();
 
     }
