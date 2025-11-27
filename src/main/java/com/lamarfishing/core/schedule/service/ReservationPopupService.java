@@ -6,6 +6,7 @@ import com.lamarfishing.core.coupon.exception.CouponNotFound;
 import com.lamarfishing.core.coupon.exception.UnauthorizedCouponAccess;
 import com.lamarfishing.core.coupon.mapper.CouponMapper;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
+import com.lamarfishing.core.log.statistic.service.StatisticService;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
@@ -38,6 +39,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -49,6 +51,7 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ReservationPopupService {
 
+    private final StatisticService statisticService;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final CouponRepository couponRepository;
@@ -167,6 +170,8 @@ public class ReservationPopupService {
 
         reservationService.sendReservationReceiptNotification(user, schedule, ship, totalPrice, headCount);
 
+        statisticService.afterReservation(LocalDate.now(), publicId, headCount);
+
         ReservationCreateResponse reservationCreateResponse = ReservationMapper.toReservationCreateResponse(reservation);
 
         return reservationCreateResponse;
@@ -200,6 +205,8 @@ public class ReservationPopupService {
         reservationRepository.save(reservation);
 
         reservationService.sendReservationReceiptNotification(user, schedule, ship, totalPrice, headCount);
+
+        statisticService.afterReservation(LocalDate.now(), publicId, headCount);
 
         ReservationCreateResponse reservationCreateResponse = ReservationMapper.toReservationCreateResponse(reservation);
 
