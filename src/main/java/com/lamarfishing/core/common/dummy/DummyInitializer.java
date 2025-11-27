@@ -30,8 +30,8 @@ public class DummyInitializer {
         userDummy.init();
         shipDummy.init();
         scheduleDummy.init();
-        couponDummy.init();
-        reservationDummy.init();
+//        couponDummy.init();
+//        reservationDummy.init();
         statisticDummy.init();
 
     }
