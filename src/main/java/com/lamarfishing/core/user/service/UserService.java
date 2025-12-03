@@ -23,4 +23,10 @@ public class UserService {
                 orElseThrow(UserNotFound::new);
         return user.getId();
     }
+
+    public User findUser(AuthenticatedUser authenticatedUser) {
+
+        return userRepository.findByProviderAndSub(authenticatedUser.getProvider(), authenticatedUser.getSub()).
+                orElseThrow(UserNotFound::new);
+    }
 }

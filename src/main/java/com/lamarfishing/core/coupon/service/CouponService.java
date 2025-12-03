@@ -32,11 +32,10 @@ public class CouponService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void issueCoupon(Long userId, String publicId) {
+    public void issueCoupon(String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Reservation reservation = reservationRepository.findByPublicId(publicId)
                 .orElseThrow(ReservationNotFound::new);
 
@@ -58,16 +57,6 @@ public class CouponService {
     private boolean isWeekend(LocalDateTime time) {
         DayOfWeek day = time.getDayOfWeek();
         return day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY;
-    }
-
-    private User findUser(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        return user;
-    }
-
-    private Reservation findReservation(String publicId) {
-        Reservation reservation = reservationRepository.findByPublicId(publicId).orElseThrow(ReservationNotFound::new);
-        return reservation;
     }
 
 }

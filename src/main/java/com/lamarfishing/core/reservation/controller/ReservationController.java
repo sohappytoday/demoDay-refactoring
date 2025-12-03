@@ -9,6 +9,7 @@ import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateReq
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.service.ReservationService;
+import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -38,8 +39,8 @@ public class ReservationController {
     @GetMapping("/{reservationPublicId}")
     public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                        @PathVariable("reservationPublicId") String publicId){
-        Long userId = userService.findUserId(authenticatedUser);
-        ReservationDetailResponse reservationDetailResponse = reservationService.getReservationDetail(userId, publicId);
+        User user = userService.findUser(authenticatedUser);
+        ReservationDetailResponse reservationDetailResponse = reservationService.getReservationDetail(user, publicId);
 
         return ResponseEntity.ok(ApiResponse.success("예약 상세 조회에 성공하였습니다.",reservationDetailResponse));
     }
@@ -51,8 +52,7 @@ public class ReservationController {
     public ResponseEntity<ApiResponse<Void>> issueCoupon(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                          @PathVariable("reservationPublicId") String publicId) {
 
-        Long userId = userService.findUserId(authenticatedUser);
-        couponService.issueCoupon(userId, publicId);
+        couponService.issueCoupon(publicId);
 
         return ResponseEntity.ok(ApiResponse.success("쿠폰을 발급하였습니다.",null));
     }
@@ -64,9 +64,9 @@ public class ReservationController {
     public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                       @PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
-        Long userId = userService.findUserId(authenticatedUser);
+        User user = userService.findUser(authenticatedUser);
         Process process = request.getProcess();
-        reservationService.reservationCancelRequest(userId, publicId, process);
+        reservationService.reservationCancelRequest(publicId, process);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
     }
@@ -78,9 +78,8 @@ public class ReservationController {
     public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                       @PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
-        Long userId = userService.findUserId(authenticatedUser);
         Reservation.Process process = request.getProcess();
-        reservationService.changeReservationProcess(userId, publicId, process);
+        reservationService.changeReservationProcess(publicId, process);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
     }

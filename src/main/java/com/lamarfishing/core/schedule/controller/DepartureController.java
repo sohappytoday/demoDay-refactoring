@@ -5,6 +5,7 @@ import com.lamarfishing.core.schedule.domain.Status;
 import com.lamarfishing.core.schedule.dto.request.DepartureRequest;
 import com.lamarfishing.core.schedule.dto.response.DepartureResponse;
 import com.lamarfishing.core.schedule.service.DepartureService;
+import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -28,9 +29,8 @@ public class DepartureController {
     public ResponseEntity<ApiResponse<DepartureResponse>> departureConfirm(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                            @PathVariable("schedulePublicId") String publicId,
                                                                            @RequestBody DepartureRequest request){
-        Long userId = userService.findUserId(authenticatedUser);
         Status status = request.getScheduleStatus();
-        DepartureResponse response = departureService.confirmation(userId, publicId, status);
+        DepartureResponse response = departureService.confirmation(publicId, status);
 
         return ResponseEntity.ok(ApiResponse.success("출항 확정 메시지를 보냈습니다.",response));
     }
@@ -43,9 +43,8 @@ public class DepartureController {
     public ResponseEntity<ApiResponse<DepartureResponse>> departureCancel(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                           @PathVariable("schedulePublicId") String publicId,
                                                                           @RequestBody DepartureRequest request){
-        Long userId = userService.findUserId(authenticatedUser);
         Status status = request.getScheduleStatus();
-        DepartureResponse response = departureService.cancel(userId, publicId, status);
+        DepartureResponse response = departureService.cancel(publicId, status);
 
         return ResponseEntity.ok(ApiResponse.success("출항 취소 메시지를 보냈습니다.",response));
     }
@@ -58,9 +57,8 @@ public class DepartureController {
     public ResponseEntity<ApiResponse<DepartureResponse>> departureDelay(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                          @PathVariable("schedulePublicId") String publicId,
                                                                          @RequestBody DepartureRequest request){
-        Long userId = userService.findUserId(authenticatedUser);
         Status status = request.getScheduleStatus();
-        DepartureResponse response = departureService.delay(userId, publicId, status);
+        DepartureResponse response = departureService.delay(publicId, status);
 
         return ResponseEntity.ok(ApiResponse.success("출항 보류 메시지를 보냈습니다.",response));
     }

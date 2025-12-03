@@ -16,8 +16,7 @@ public class UserCommandService {
     private final UserRepository userRepository;
 
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BASIC', 'GRADE_VIP')")
-    public void changeNickname(Long userId, String nickname){
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+    public void changeNickname(User user, String nickname){
         user.changeNickname(nickname);
     }
 }

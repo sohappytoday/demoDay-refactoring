@@ -35,9 +35,7 @@ public class ShipService {
     private final UserRepository userRepository;
 
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public Page<ShipDetailDto> getShips(Long userId, Pageable pageable) {
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-
+    public Page<ShipDetailDto> getShips(User user, Pageable pageable) {
         if (user.getGrade() != ADMIN) {
             throw new InvalidUserGrade();
         }
@@ -50,9 +48,7 @@ public class ShipService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void createShip(Long userId, String fishType, int price, int maxHeadCount, String notification) {
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+    public void createShip(User user, String fishType, int price, int maxHeadCount, String notification) {
 
         Ship ship = Ship.create(maxHeadCount, fishType, price, notification); // 객체 메서드를 객체에 받는 코드
         shipRepository.save(ship);  // DB에 저장
@@ -61,9 +57,8 @@ public class ShipService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void updateShip(Long userId, Long shipId, String fishType, Integer price, Integer maxHeadCount, String notification) {
+    public void updateShip(User user, Long shipId, String fishType, Integer price, Integer maxHeadCount, String notification) {
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
 
         if (fishType != null){
@@ -82,10 +77,9 @@ public class ShipService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void deleteShip(Long userId, List<Long> shipIds) {
+    public void deleteShip(List<Long> shipIds) {
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        List<Ship> ships = shipRepository.findAllById(shipIds);
+       List<Ship> ships = shipRepository.findAllById(shipIds);
 
         if (ships.size() != shipIds.size()) {
             throw new ShipNotFound();

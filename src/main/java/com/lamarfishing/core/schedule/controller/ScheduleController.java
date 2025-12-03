@@ -12,6 +12,7 @@ import com.lamarfishing.core.schedule.dto.response.ScheduleMainResponse;
 import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
 import com.lamarfishing.core.schedule.service.ScheduleQueryService;
 import com.lamarfishing.core.schedule.service.ScheduleService;
+import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -51,8 +52,8 @@ public class ScheduleController {
     @PostMapping
     public ResponseEntity<ApiResponse<Void>> createSchedule(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                             @RequestBody ScheduleCreateRequest req) {
-        Long userId = userService.findUserId(authenticatedUser);
-        scheduleService.createSchedule(userId, req.getStartDate(), req.getEndDate(), req.getShipId(), req.getScheduleType());
+        User user = userService.findUser(authenticatedUser);
+        scheduleService.createSchedule(user, req.getStartDate(), req.getEndDate(), req.getShipId(), req.getScheduleType());
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 생성에 성공하였습니다."));
 
@@ -64,8 +65,8 @@ public class ScheduleController {
     @DeleteMapping("/{schedulePublicId}")
     public ResponseEntity<ApiResponse<Void>> deleteSchedule(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                             @PathVariable("schedulePublicId") String publicId) {
-        Long userId = userService.findUserId(authenticatedUser);
-        scheduleService.deleteSchedule(userId, publicId);
+        User user = userService.findUser(authenticatedUser);
+        scheduleService.deleteSchedule(user, publicId);
 
         return ResponseEntity.ok(ApiResponse.success("출항 일정 삭제에 성공하였습니다.",null));
     }
@@ -76,8 +77,8 @@ public class ScheduleController {
     @GetMapping("/departure")
     public ResponseEntity<ApiResponse<ViewDepartureTimeResponse>> getDepartureTime(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
 
-        Long userId = userService.findUserId(authenticatedUser);
-        ViewDepartureTimeResponse viewDepartureTimeResponse = scheduleService.viewDepartureTime(userId);
+        User user = userService.findUser(authenticatedUser);
+        ViewDepartureTimeResponse viewDepartureTimeResponse = scheduleService.viewDepartureTime(user);
 
         return ResponseEntity.ok(ApiResponse.success("출항 시간 조회에 성공하였습니다.", viewDepartureTimeResponse));
     }
@@ -90,8 +91,8 @@ public class ScheduleController {
                                                                  @PathVariable String schedulePublicId,
                                                                  @RequestBody UpdateDepartureTimeRequest req){
 
-        Long userId = userService.findUserId(authenticatedUser);
-        scheduleService.updateDepartureTime(userId,schedulePublicId, req.getDepartureTime());
+        User user = userService.findUser(authenticatedUser);
+        scheduleService.updateDepartureTime(user,schedulePublicId, req.getDepartureTime());
 
         return ResponseEntity.ok(ApiResponse.success("출항 시간 수정에 성공하였습니다."));
     }

@@ -70,9 +70,7 @@ public class ScheduleService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void createSchedule(Long userId, LocalDate startDate, LocalDate endDate, Long shipId, Type scheduleType) {
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+    public void createSchedule(User user, LocalDate startDate, LocalDate endDate, Long shipId, Type scheduleType) {
 
         Ship ship = shipRepository.findById(shipId).orElseThrow(ShipNotFound::new);
 
@@ -101,11 +99,10 @@ public class ScheduleService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void deleteSchedule(Long userId, String publicId) {
+    public void deleteSchedule(User user, String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
 
         boolean hasReservations = reservationRepository.existsBySchedule(schedule);
@@ -117,9 +114,7 @@ public class ScheduleService {
     }
 
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public ViewDepartureTimeResponse viewDepartureTime(Long userId) {
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+    public ViewDepartureTimeResponse viewDepartureTime(User user) {
 
         LocalDateTime now = LocalDateTime.now();
         LocalDate todayDate = now.toLocalDate();
@@ -155,11 +150,10 @@ public class ScheduleService {
 
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void updateDepartureTime(Long userId, String publicId, LocalTime updateTime) {
+    public void updateDepartureTime(User user, String publicId, LocalTime updateTime) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
 
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
 
         LocalDate departureDate = schedule.getDeparture().toLocalDate();
@@ -168,25 +162,4 @@ public class ScheduleService {
         schedule.updateDeparture(updateDeparture);
     }
 
-//    /**
-//     * 선예약 마감
-//     */
-//    @Transactional
-//    public void markAsDrawn(Long userId, String publicId) {
-//        if (!publicId.startsWith("sch")) {
-//            throw new InvalidSchedulePublicId();
-//        }
-//
-//        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-//        if (user.getGrade() != User.Grade.ADMIN) {
-//            throw new InvalidUserGrade();
-//        }
-//
-//        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
-//        //선예약 시에만
-//        if (schedule.getType() == Type.EARLY) {
-//            schedule.changeType(Type.DRAWN);
-//        }
-//        throw new InvalidScheduleType();
-//    }
 }
