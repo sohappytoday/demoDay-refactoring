@@ -4,6 +4,7 @@ import com.lamarfishing.core.common.dto.response.ApiResponse;
 import com.lamarfishing.core.common.dto.response.PageResponse;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
+import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.dto.request.ChangeNicknameRequest;
 import com.lamarfishing.core.user.dto.response.MyProfileResponse;
@@ -33,8 +34,8 @@ public class UserController {
     @GetMapping("/me/profile")
     public ResponseEntity<ApiResponse<MyProfileResponse>> getMyProfile(@AuthenticationPrincipal AuthenticatedUser authenticatedUser) {
 
-        Long userId = userService.findUserId(authenticatedUser);
-        MyProfileResponse response = MyProfileResponse.from(userQueryService.getMyProfile(userId));
+        User user = userService.findUser(authenticatedUser);
+        MyProfileResponse response = MyProfileResponse.from(userQueryService.getMyProfile(user));
 
         return ResponseEntity.ok(ApiResponse.success("프로필 조회에 성공하였습니다.", response));
     }
@@ -53,8 +54,8 @@ public class UserController {
     @PatchMapping("/me/profile-nickname")
     public ResponseEntity<ApiResponse<Void>> changeNickname(@AuthenticationPrincipal AuthenticatedUser authenticatedUser, @RequestBody ChangeNicknameRequest req) {
 
-        Long userId=userService.findUserId(authenticatedUser);
-        userCommandService.changeNickname(userId, req.getNickname());
+        User user = userService.findUser(authenticatedUser);
+        userCommandService.changeNickname(user, req.getNickname());
 
         return ResponseEntity.ok().body(ApiResponse.success("나의 프로필 수정에 성공하였습니다."));
     }

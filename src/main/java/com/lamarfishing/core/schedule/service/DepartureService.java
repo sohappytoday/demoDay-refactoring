@@ -37,21 +37,21 @@ public class DepartureService {
 
     //출항 확정
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public DepartureResponse confirmation(Long userId, String publicId, Status scheduleStatus) {
-        return processDeparture(userId, publicId, scheduleStatus, Status.CONFIRMED);
+    public DepartureResponse confirmation(String publicId, Status scheduleStatus) {
+        return processDeparture(publicId, scheduleStatus, Status.CONFIRMED);
     }
 
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public DepartureResponse cancel(Long userId, String publicId, Status scheduleStatus) {
-        return processDeparture(userId, publicId, scheduleStatus, Status.CANCELED);
+    public DepartureResponse cancel(String publicId, Status scheduleStatus) {
+        return processDeparture(publicId, scheduleStatus, Status.CANCELED);
     }
 
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public DepartureResponse delay(Long userId, String publicId, Status scheduleStatus) {
-        return processDeparture(userId, publicId, scheduleStatus, Status.DELAYED);
+    public DepartureResponse delay(String publicId, Status scheduleStatus) {
+        return processDeparture(publicId, scheduleStatus, Status.DELAYED);
     }
 
-    private DepartureResponse processDeparture(Long userId, String publicId,
+    private DepartureResponse processDeparture(String publicId,
                                                Status requestStatus, Status expectedStatus) {
 
         if (requestStatus != expectedStatus) {
@@ -59,7 +59,6 @@ public class DepartureService {
         }
 
         ValidatePublicId.validateSchedulePublicId(publicId);
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         // 스케줄 조회
         Schedule schedule = scheduleRepository.findByPublicId(publicId)

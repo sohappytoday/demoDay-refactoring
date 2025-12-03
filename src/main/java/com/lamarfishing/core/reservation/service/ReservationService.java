@@ -49,11 +49,10 @@ public class ReservationService {
     private final StatisticRepository statisticRepository;
 
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BAISC','GRADE_VIP')")
-    public ReservationDetailResponse getReservationDetail(Long userId, String publicId) {
+    public ReservationDetailResponse getReservationDetail(User user, String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
-        User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
 
         boolean isAdmin = user.getGrade() == Grade.ADMIN;
@@ -81,11 +80,10 @@ public class ReservationService {
      */
     @Transactional
     @PreAuthorize("hasAnyAuthority('GRADE_BASIC', 'GRADE_VIP')")
-    public void reservationCancelRequest(Long userId, String publicId, Process requestProcess) {
+    public void reservationCancelRequest(String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
-        User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
 
         if (requestProcess != Reservation.Process.CANCEL_REQUESTED) {
@@ -100,11 +98,10 @@ public class ReservationService {
      */
     @Transactional
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void changeReservationProcess(Long userId, String publicId, Process requestProcess) {
+    public void changeReservationProcess(String publicId, Process requestProcess) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
-        User user = findUser(userId);
         Reservation reservation = findReservation(publicId);
 
         if(requestProcess == Reservation.Process.CANCEL_REQUESTED) {
@@ -131,10 +128,6 @@ public class ReservationService {
     /**
      * private Method
      */
-    private User findUser(Long userId){
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        return user;
-    }
 
     private Reservation findReservation(String pubilcId){
         Reservation reservation = reservationRepository.findByPublicId(pubilcId).orElseThrow(ReservationNotFound::new);

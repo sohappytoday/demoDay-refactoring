@@ -25,9 +25,7 @@ public class UserQueryService {
     private final CouponRepository couponRepository;
 
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BASIC', 'GRADE_VIP')")
-    public MyProfileDto getMyProfile(Long userId) {
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
+    public MyProfileDto getMyProfile(User user) {
 
         List<Coupon> coupons = couponRepository.findByUserAndStatus(user,Coupon.Status.AVAILABLE);
         

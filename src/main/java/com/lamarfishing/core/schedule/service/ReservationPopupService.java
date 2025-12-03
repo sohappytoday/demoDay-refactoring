@@ -62,14 +62,9 @@ public class ReservationPopupService {
      * 선예약 팝업 조회
      */
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
-    public EarlyReservationPopupResponse getEarlyReservationPopup(Long userId, String publicId) {
+    public EarlyReservationPopupResponse getEarlyReservationPopup(User user, String publicId) {
         if (!publicId.startsWith("sch")) {
             throw new InvalidSchedulePublicId();
-        }
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
-        if (user.getGrade() == Grade.GUEST){
-            throw new UnauthorizedPopupAccess();
         }
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
@@ -92,11 +87,9 @@ public class ReservationPopupService {
      * 일반예약 팝업 조회 (회원, 관리자)
      */
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
-    public NormalReservationPopupResponse getNormalReservationPopupUser(Long userId, String publicId) {
+    public NormalReservationPopupResponse getNormalReservationPopupUser(User user, String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         if (schedule.getType() != Type.NORMAL){
@@ -138,12 +131,10 @@ public class ReservationPopupService {
     @Transactional
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
     public ReservationCreateResponse createReservationUser(
-            Long userId, String publicId,
+            User user, String publicId,
             String username, String nickname, String phone, int headCount, String userRequest, Long couponId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
-
-        User user = userRepository.findById(userId).orElseThrow(UserNotFound::new);
 
         Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
         Ship ship = schedule.getShip();

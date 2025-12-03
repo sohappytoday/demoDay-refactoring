@@ -8,6 +8,7 @@ import com.lamarfishing.core.ship.dto.request.DeleteShipRequest;
 import com.lamarfishing.core.ship.dto.request.UpdateShipRequest;
 import com.lamarfishing.core.ship.dto.response.ShipDetailResponse;
 import com.lamarfishing.core.ship.service.ShipService;
+import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
@@ -33,8 +34,8 @@ public class ShipController {
     public ResponseEntity<ApiResponse<PageResponse<ShipDetailResponse>>> getShips(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                   Pageable pageable){
 
-        Long userId = userService.findUserId(authenticatedUser);
-        Page<ShipDetailDto> pageResult = shipService.getShips(userId, pageable);
+        User user = userService.findUser(authenticatedUser);
+        Page<ShipDetailDto> pageResult = shipService.getShips(user, pageable);
         /**
          * 수정해야함 (뭘 수정해야하는지는 11월 27일을 기억할것)
          */
@@ -50,8 +51,8 @@ public class ShipController {
     public ResponseEntity<ApiResponse<Void>> createShip(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                         @RequestBody CreateShipRequest req){
 
-        Long userId = userService.findUserId(authenticatedUser);
-        shipService.createShip(userId, req.getFishType(), req.getPrice(), req.getMaxHeadCount(), req.getNotification());
+        User user = userService.findUser(authenticatedUser);
+        shipService.createShip(user, req.getFishType(), req.getPrice(), req.getMaxHeadCount(), req.getNotification());
         return ResponseEntity.ok(ApiResponse.success("배 생성에 성공하였습니다."));
     }
 
@@ -63,8 +64,8 @@ public class ShipController {
                                                         @RequestBody UpdateShipRequest req,
                                                         @PathVariable Long shipId){
 
-        Long userId = userService.findUserId(authenticatedUser);
-        shipService.updateShip(userId, shipId, req.getFishType(), req.getPrice(), req.getMaxHeadCount(), req.getNotification());
+        User user = userService.findUser(authenticatedUser);
+        shipService.updateShip(user, shipId, req.getFishType(), req.getPrice(), req.getMaxHeadCount(), req.getNotification());
 
         return ResponseEntity.ok(ApiResponse.success("배 수정에 성공"));
     }
@@ -73,12 +74,10 @@ public class ShipController {
      * 배 삭제 api
      */
     @PostMapping("/delete")
-    public ResponseEntity<ApiResponse<Void>> deleteShip(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                        @RequestBody DeleteShipRequest request){
+    public ResponseEntity<ApiResponse<Void>> deleteShip(@RequestBody DeleteShipRequest request){
 
-        Long userId = userService.findUserId(authenticatedUser);
         List<Long> shipIds = request.getShipIds();
-        shipService.deleteShip(userId, shipIds);
+        shipService.deleteShip(shipIds);
 
         return ResponseEntity.ok(ApiResponse.success("배 삭제에 성공하였습니다."));
     }
