@@ -42,8 +42,7 @@ out/
 gradlew
 gradlew.bat
 settings.gradle
-application.yml
-src/main/resources/application.yml
+
 
 /**/build/
 /**/generated/
