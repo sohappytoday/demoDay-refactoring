@@ -37,6 +37,11 @@ out/
 .vscode/
 
 .env
+.gradle
+.gitignore
+gradlew
+gradlew.bat
+settings.gradle
 application.yml
 src/main/resources/application.yml
 
