@@ -43,7 +43,7 @@ public class ReservationCommandService {
     /**
      * 일반 유저가 예약
      */
-    @PreAuthorize("hasAnyAuthority('GRADE_BASIC', 'GRADE_VIP')")
+    // @PreAuthorize("hasAnyAuthority('GRADE_BASIC', 'GRADE_VIP')")
     public void reservationCancelRequest(String publicId, ReservationProcessUpdateCommand command) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
@@ -61,20 +61,20 @@ public class ReservationCommandService {
     /**
      * Admin이 예약 상태 변경
      */
-    @Transactional
-    @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void changeReservationProcess(String publicId, Process requestProcess) {
+    // @PreAuthorize("hasAuthority('GRADE_ADMIN')")
+    public void changeReservationProcess(String publicId, ReservationProcessUpdateCommand command) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         Reservation reservation = findReservation(publicId);
+        Process process = command.getProcess();
 
-        if(requestProcess == Reservation.Process.CANCEL_REQUESTED) {
+        if(process == Reservation.Process.CANCEL_REQUESTED) {
             throw new InvalidRequestContent();
         }
 
-        if (requestProcess == Reservation.Process.CANCEL_COMPLETED) {
-            reservation.changeProcess(requestProcess);
+        if (process == Reservation.Process.CANCEL_COMPLETED) {
+            reservation.changeProcess(process);
 
             Schedule schedule = reservation.getSchedule();
             schedule.decreaseCurrentHeadCount(reservation.getHeadCount());
@@ -83,12 +83,12 @@ public class ReservationCommandService {
         }
 
         // 예약 완료
-        if(requestProcess == Process.RESERVE_COMPLETED) {
-            reservation.changeProcess(requestProcess);
+        if(process == Process.RESERVE_COMPLETED) {
+            reservation.changeProcess(process);
             return;
         }
         // 입금 완료
-        reservation.changeProcess(requestProcess);
+        reservation.changeProcess(process);
     }
     /**
      * private Method

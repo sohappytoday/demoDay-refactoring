@@ -78,11 +78,11 @@ public class ReservationController {
      * 관리자 예약 상태 변경
      */
     @PatchMapping("/{reservationPublicId}/process")
-    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                                      @PathVariable("reservationPublicId") String publicId,
+    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@PathVariable("reservationPublicId") String publicId,
                                                                       @RequestBody ReservationProcessUpdateRequest request) {
-        Reservation.Process process = request.getProcess();
-        reservationCommandService.changeReservationProcess(publicId, process);
+
+        ReservationProcessUpdateCommand command = ReservationProcessUpdateCommand.from(request);
+        reservationCommandService.changeReservationProcess(publicId, command);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
     }
