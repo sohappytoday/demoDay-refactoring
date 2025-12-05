@@ -7,6 +7,7 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationSimpleDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
+import com.lamarfishing.core.reservation.dto.result.ReservationDetailResult;
 import com.lamarfishing.core.reservation.service.ReservationQueryService;
 import com.lamarfishing.core.reservation.service.ReservationService;
 import com.lamarfishing.core.user.domain.User;
@@ -40,9 +41,9 @@ public class ReservationController {
     public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                        @PathVariable("reservationPublicId") String publicId){
         User user = userService.findUser(authenticatedUser);
-        ReservationDetailResponse reservationDetailResponse = reservationService.getReservationDetail(user, publicId);
+        ReservationDetailResult result = reservationService.getReservationDetail(user, publicId);
 
-        return ResponseEntity.ok(ApiResponse.success("예약 상세 조회에 성공하였습니다.",reservationDetailResponse));
+        return ResponseEntity.ok(ApiResponse.success("예약 상세 조회에 성공하였습니다.", ReservationDetailResponse.from(result)));
     }
 
     /**

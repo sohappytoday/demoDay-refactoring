@@ -7,6 +7,7 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.command.ReservationDetailDto;
 import com.lamarfishing.core.reservation.dto.request.ReservationProcessUpdateRequest;
 import com.lamarfishing.core.reservation.dto.response.ReservationDetailResponse;
+import com.lamarfishing.core.reservation.dto.result.ReservationDetailResult;
 import com.lamarfishing.core.reservation.exception.InvalidRequestContent;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
@@ -49,7 +50,7 @@ public class ReservationService {
     private final StatisticRepository statisticRepository;
 
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BAISC','GRADE_VIP')")
-    public ReservationDetailResponse getReservationDetail(User user, String publicId) {
+    public ReservationDetailResult getReservationDetail(User user, String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
@@ -68,7 +69,7 @@ public class ReservationService {
         ReservationDetailDto reservationDetailDto = ReservationMapper.toReservationDetailDto(reservation);
         ReservationDetailScheduleDto reservationDetailScheduleDto = ScheduleMapper.toReservationDetailScheduleDto(schedule);
 
-        return ReservationDetailResponse.from(
+        return ReservationDetailResult.from(
                 reservationDetailShipDto,
                 reservationDetailDto,
                 reservationDetailScheduleDto
