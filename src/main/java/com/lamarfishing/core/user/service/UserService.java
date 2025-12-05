@@ -29,4 +29,16 @@ public class UserService {
         return userRepository.findByProviderAndSub(authenticatedUser.getProvider(), authenticatedUser.getSub()).
                 orElseThrow(UserNotFound::new);
     }
+
+    public User findBasicUser(){
+        return userRepository.findById(1L).orElseThrow(UserNotFound::new);
+    }
+
+    public User findAdminUser(){
+        return userRepository.findById(2L).orElseThrow(UserNotFound::new);
+    }
+
+    public User findGuestUser(){
+        return userRepository.findById(4L).orElseThrow(UserNotFound::new);
+    }
 }

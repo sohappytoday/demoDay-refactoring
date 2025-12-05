@@ -38,9 +38,10 @@ public class ReservationController {
      */
     //더미 컨트롤러
     @GetMapping("/{reservationPublicId}")
-    public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+    public ResponseEntity<ApiResponse<ReservationDetailResponse>> getReservationDetail(// @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                        @PathVariable("reservationPublicId") String publicId){
-        User user = userService.findUser(authenticatedUser);
+        // User user = userService.findUser(authenticatedUser);
+        User user = userService.findBasicUser();
         ReservationDetailResult result = reservationService.getReservationDetail(user, publicId);
 
         return ResponseEntity.ok(ApiResponse.success("예약 상세 조회에 성공하였습니다.", ReservationDetailResponse.from(result)));
