@@ -1,4 +1,4 @@
-package com.lamarfishing.core.reservation.dto.response;
+package com.lamarfishing.core.reservation.dto.common;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.user.domain.Grade;
 import lombok.Builder;

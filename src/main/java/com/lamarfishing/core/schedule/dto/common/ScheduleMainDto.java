@@ -1,11 +1,10 @@
-package com.lamarfishing.core.schedule.dto.command;
+package com.lamarfishing.core.schedule.dto.common;
 
 import com.lamarfishing.core.schedule.domain.Status;
 import com.lamarfishing.core.schedule.domain.Type;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
-import java.awt.*;
 import java.time.LocalDateTime;
 
 @Data

@@ -1,11 +1,10 @@
 package com.lamarfishing.core.schedule.dto.response;
 
-import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
+import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
 import lombok.Builder;
 import lombok.Data;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Data

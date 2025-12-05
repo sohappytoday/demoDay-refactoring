@@ -1,16 +1,12 @@
 package com.lamarfishing.core.schedule.repository;
 
 import com.lamarfishing.core.schedule.domain.QSchedule;
-import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
-import com.lamarfishing.core.schedule.dto.command.TodayScheduleDto;
+import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
+import com.lamarfishing.core.schedule.dto.common.TodayScheduleDto;
 import com.lamarfishing.core.ship.domain.QShip;
 import com.querydsl.core.types.Projections;
-import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.support.PageableExecutionUtils;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;

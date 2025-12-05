@@ -1,4 +1,4 @@
-package com.lamarfishing.core.schedule.dto.command;
+package com.lamarfishing.core.schedule.dto.common;
 
 import lombok.Builder;
 import lombok.Data;

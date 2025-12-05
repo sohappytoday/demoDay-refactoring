@@ -1,9 +1,8 @@
 package com.lamarfishing.core.schedule.mapper;
 
 import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.dto.command.ReservationDetailScheduleDto;
-import com.lamarfishing.core.schedule.dto.command.ScheduleDetailDto;
-import com.lamarfishing.core.schedule.dto.response.ViewDepartureTimeResponse;
+import com.lamarfishing.core.schedule.dto.common.ReservationDetailScheduleDto;
+import com.lamarfishing.core.schedule.dto.common.ScheduleDetailDto;
 import lombok.Builder;
 import lombok.Getter;
 

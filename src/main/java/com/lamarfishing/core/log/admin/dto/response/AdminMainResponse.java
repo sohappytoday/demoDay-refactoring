@@ -3,7 +3,7 @@ package com.lamarfishing.core.log.admin.dto.response;
 import com.lamarfishing.core.log.statistic.dto.MainInfoDto;
 import com.lamarfishing.core.log.statistic.dto.StatisticDto;
 import com.lamarfishing.core.log.statistic.dto.TodayInfoDto;
-import com.lamarfishing.core.schedule.dto.command.TodayScheduleDto;
+import com.lamarfishing.core.schedule.dto.common.TodayScheduleDto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

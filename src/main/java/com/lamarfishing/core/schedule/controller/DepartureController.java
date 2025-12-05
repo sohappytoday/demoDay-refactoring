@@ -26,8 +26,7 @@ public class DepartureController {
 
     //더미 컨트롤러
     @PostMapping("/{schedulePublicId}/departure/confirmation")
-    public ResponseEntity<ApiResponse<DepartureResponse>> departureConfirm(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                                           @PathVariable("schedulePublicId") String publicId,
+    public ResponseEntity<ApiResponse<DepartureResponse>> departureConfirm(@PathVariable("schedulePublicId") String publicId,
                                                                            @RequestBody DepartureRequest request){
         Status status = request.getScheduleStatus();
         DepartureResponse response = departureService.confirmation(publicId, status);

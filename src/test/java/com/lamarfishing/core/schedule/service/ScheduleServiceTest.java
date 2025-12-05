@@ -1,7 +1,7 @@
 package com.lamarfishing.core.schedule.service;
 
 import com.lamarfishing.core.reservation.domain.Reservation;
-import com.lamarfishing.core.reservation.dto.response.ReservationCommonDto;
+import com.lamarfishing.core.reservation.dto.common.ReservationCommonDto;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.domain.Status;

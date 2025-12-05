@@ -1,8 +1,8 @@
 package com.lamarfishing.core.reservation.mapper;
 
 import com.lamarfishing.core.reservation.domain.Reservation;
-import com.lamarfishing.core.reservation.dto.response.ReservationCommonDto;
-import com.lamarfishing.core.reservation.dto.response.ReservationDetailDto;
+import com.lamarfishing.core.reservation.dto.common.ReservationCommonDto;
+import com.lamarfishing.core.reservation.dto.common.ReservationDetailDto;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.user.domain.Grade;
 

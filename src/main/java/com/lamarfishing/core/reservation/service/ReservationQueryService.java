@@ -1,14 +1,14 @@
 package com.lamarfishing.core.reservation.service;
 
 import com.lamarfishing.core.reservation.domain.Reservation;
-import com.lamarfishing.core.reservation.dto.response.ReservationDetailDto;
+import com.lamarfishing.core.reservation.dto.common.ReservationDetailDto;
 import com.lamarfishing.core.reservation.dto.result.ReservationDetailResult;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
-import com.lamarfishing.core.reservation.dto.response.ReservationSimpleDto;
+import com.lamarfishing.core.reservation.dto.common.ReservationSimpleDto;
 import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.dto.command.ReservationDetailScheduleDto;
+import com.lamarfishing.core.schedule.dto.common.ReservationDetailScheduleDto;
 import com.lamarfishing.core.schedule.mapper.ScheduleMapper;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.command.ReservationDetailShipDto;

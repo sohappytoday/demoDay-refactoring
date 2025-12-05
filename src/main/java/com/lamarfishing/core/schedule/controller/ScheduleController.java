@@ -1,10 +1,7 @@
 package com.lamarfishing.core.schedule.controller;
 
 import com.lamarfishing.core.common.dto.response.ApiResponse;
-import com.lamarfishing.core.common.dto.response.PageResponse;
-import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.domain.Type;
-import com.lamarfishing.core.schedule.dto.command.ScheduleMainDto;
+import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.request.ScheduleCreateRequest;
 import com.lamarfishing.core.schedule.dto.request.UpdateDepartureTimeRequest;
 import com.lamarfishing.core.schedule.dto.response.ScheduleDetailResponse;
@@ -16,14 +13,10 @@ import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
 import com.lamarfishing.core.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.service.annotation.DeleteExchange;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
