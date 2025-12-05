@@ -6,6 +6,7 @@ import com.lamarfishing.core.schedule.dto.response.EarlyReservationPopupResponse
 import com.lamarfishing.core.schedule.dto.response.NormalReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.result.EarlyReservationPopupResult;
+import com.lamarfishing.core.schedule.dto.result.NormalReservationPopupResult;
 import com.lamarfishing.core.schedule.service.query.ReservationPopupQueryService;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.AuthenticatedUser;
@@ -44,12 +45,12 @@ public class ReservationPopupController {
                                                                                                  @PathVariable("schedulePublicId") String publicId){
 
         if(authenticatedUser==null){
-            NormalReservationPopupResponse response = reservationPopupQueryService.getNormalReservationPopupGuest(publicId);
-            return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",response));
+            NormalReservationPopupResult result = reservationPopupQueryService.getNormalReservationPopupGuest(publicId);
+            return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",NormalReservationPopupResponse.from(result)));
         }
         User user = userService.findUser(authenticatedUser);
-        NormalReservationPopupResponse response = reservationPopupQueryService.getNormalReservationPopupUser(user,publicId);
-        return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",response));
+        NormalReservationPopupResult result = reservationPopupQueryService.getNormalReservationPopupUser(user,publicId);
+        return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",NormalReservationPopupResponse.from(result)));
     }
 
     /**

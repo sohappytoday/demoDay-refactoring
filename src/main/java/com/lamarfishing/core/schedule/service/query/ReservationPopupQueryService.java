@@ -16,6 +16,7 @@ import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.response.NormalReservationPopupResponse;
 import com.lamarfishing.core.schedule.dto.response.ReservationCreateResponse;
 import com.lamarfishing.core.schedule.dto.result.EarlyReservationPopupResult;
+import com.lamarfishing.core.schedule.dto.result.NormalReservationPopupResult;
 import com.lamarfishing.core.schedule.exception.InvalidHeadCount;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.exception.UnauthorizedPopupAccess;
@@ -81,8 +82,8 @@ public class ReservationPopupQueryService {
     /**
      * 일반예약 팝업 조회 (회원, 관리자)
      */
-    @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
-    public NormalReservationPopupResponse getNormalReservationPopupUser(User user, String publicId) {
+    // @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_VIP','GRADE_BASIC')")
+    public NormalReservationPopupResult getNormalReservationPopupUser(User user, String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
 
@@ -95,14 +96,14 @@ public class ReservationPopupQueryService {
         Integer remainHeadCount = schedule.getShip().getMaxHeadCount() - schedule.getCurrentHeadCount();
 
         NormalReservationUserDto normalReservationUserDto = UserMapper.toNormalReservationUserDto(user);
-        return NormalReservationPopupResponse.from(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
+        return NormalReservationPopupResult.of(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
 
     }
 
     /**
      * 비회원 예약 팝업 조회
      */
-   public NormalReservationPopupResponse getNormalReservationPopupGuest(String publicId) {
+   public NormalReservationPopupResult getNormalReservationPopupGuest(String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
 
@@ -116,7 +117,7 @@ public class ReservationPopupQueryService {
 
         NormalReservationUserDto normalReservationUserDto = UserMapper.toNormalReservationUserDto();
 
-        return NormalReservationPopupResponse.from(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
+        return NormalReservationPopupResult.of(schedule,remainHeadCount, normalReservationUserDto,reservationShipDto);
 
     }
 
