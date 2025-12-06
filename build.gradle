@@ -2,6 +2,7 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '3.5.6'
 	id 'io.spring.dependency-management' version '1.1.7'
+    id "org.sonarqube" version "7.2.0.6526"
 }
 
 group = 'com.lamarfishing'
@@ -61,6 +62,14 @@ dependencies {
 	// -- 모니터링 --
 	implementation 'org.springframework.boot:spring-boot-starter-actuator' //actuator 추가
 	implementation 'io.micrometer:micrometer-registry-prometheus' //프로메테우스 추가
+}
+
+sonarqube {
+    properties {
+        property "sonar.projectKey", "sohappytoday_demoDay-refactoring"
+        property "sonar.organization", "sohappytoday"
+        property "sonar.host.url", "https://sonarcloud.io"
+    }
 }
 
 tasks.named('test') {
