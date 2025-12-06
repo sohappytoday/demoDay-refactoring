@@ -31,8 +31,7 @@ jobs:
         run: ./gradlew clean build --no-daemon --build-cache
 
       - name: SonarQube Static analysis
-        uses: SonarSource/sonarcloud-github-action@v2
+        run: ./gradlew sonarqube --no-daemon
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
