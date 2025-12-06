@@ -1,0 +1,54 @@
+feat: dev CI 파이프라인 및 SonarQube 정적 분석 연동
+  
+  ### 변경 사항
+  - GitHub Actions 기반 dev CI 파이프라인 구축
+  - Gradle 빌드 캐시 적용
+  - PR 시 SonarQube Static Analysis 연동
+  
+  ### 목적
+  - feature → dev PR 단계에서 자동 품질 검증
+  - main 배포 전 품질 게이트 확보
+  
+  ### 비고
+  - 배포용 main CD 파이프라인과 분리하여 운영 예정
+
+
+
+# workflow name
+name: CI Pipeline
+
+# dev 브랜치에 PR이나 Merge시 작동
+on:
+  pull_request:
+    branches: ["dev"]
+
+  push:
+    branches: ["dev"]
+
+jobs:
+  ci:
+    #Github ubuntu 리눅스 서버에서 실행
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: GitHub 저장소 코드를 GitHub Actions 서버로 가져오기
+        uses: actions/checkout@v3
+
+      - name: Gradle + JDK 21 + 캐시 자동 설정
+        uses:  gradle/actions/setup-gradle@v3
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+
+      - name: Gradle 실행 권한 부여
+        run: chmod +x gradlew
+
+      - name: 빌드 및 JUnit 테스트
+        run: ./gradlew clean build --no-daemon --build-cache
+
+      - name: SonarQube Static analysis
+        run: ./gradlew sonar --no-daemon
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
