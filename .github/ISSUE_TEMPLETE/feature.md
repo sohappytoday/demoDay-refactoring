@@ -3,6 +3,7 @@ title: "[Feature] "
 about: 새로운 기능 개발 또는 개선 요청
 branch: feature/{issue_number}-{short-description}
 assignees: '이름'
+
 ---
 
 ## 목적
