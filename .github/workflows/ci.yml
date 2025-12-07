@@ -10,7 +10,7 @@ on:
     branches: ["dev"]
 
 jobs:
-  ci:
+  dev-ci:
     #Github ubuntu 리눅스 서버에서 실행
     runs-on: ubuntu-latest
 
