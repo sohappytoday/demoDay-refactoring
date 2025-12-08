@@ -45,7 +45,7 @@ class ShipQueryServiceTest {
         Page<ShipDetailDto> result = shipQueryService.getShips(pageable);
 
         // then
-        assertThat(result).isNull();
+        assertThat(result).isNotNull();
         assertThat(result.getContent().size()).isEqualTo(2);
 
         verify(shipRepository, times(1)).findAll(pageable);
