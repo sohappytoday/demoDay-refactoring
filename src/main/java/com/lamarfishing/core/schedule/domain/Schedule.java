@@ -1,5 +1,6 @@
 package com.lamarfishing.core.schedule.domain;
 
+import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.common.uuid.Uuid;
 import com.lamarfishing.core.ship.domain.Ship;
 import jakarta.persistence.*;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "schedules")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Schedule {
+public class Schedule extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "schedule_id")

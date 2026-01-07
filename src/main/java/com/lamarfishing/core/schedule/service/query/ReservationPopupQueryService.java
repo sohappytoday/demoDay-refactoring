@@ -21,7 +21,7 @@ import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
 import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
-import com.lamarfishing.core.validate.ValidatePublicId;
+import com.lamarfishing.core.common.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

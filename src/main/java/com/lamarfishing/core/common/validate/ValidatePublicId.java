@@ -1,4 +1,4 @@
-package com.lamarfishing.core.validate;
+package com.lamarfishing.core.common.validate;
 
 
 import com.lamarfishing.core.reservation.exception.InvalidReservationPublicId;

@@ -1,5 +1,6 @@
 package com.lamarfishing.core.manifest.domain;
 
+import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -14,7 +15,7 @@ import java.time.LocalDateTime;
 @Table(name = "manifests")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Manifest {
+public class Manifest extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "manifest_id")

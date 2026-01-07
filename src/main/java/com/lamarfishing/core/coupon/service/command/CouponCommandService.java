@@ -6,7 +6,7 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.user.domain.User;
-import com.lamarfishing.core.validate.ValidatePublicId;
+import com.lamarfishing.core.common.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;

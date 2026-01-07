@@ -16,7 +16,7 @@ import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
-import com.lamarfishing.core.validate.ValidatePublicId;
+import com.lamarfishing.core.common.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -13,7 +13,7 @@ import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.repository.UserRepository;
-import com.lamarfishing.core.validate.ValidatePublicId;
+import com.lamarfishing.core.common.validate.ValidatePublicId;
 import com.lamarfishing.core.reservation.domain.Reservation.Process;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

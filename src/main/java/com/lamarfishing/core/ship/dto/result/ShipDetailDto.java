@@ -16,4 +16,11 @@ public class ShipDetailDto {
     private Integer maxHeadCount;
     private String notification;
 
+    public ShipDetailDto(Long shipId, String fishType, Integer price, Integer maxHeadCount, String notification) {
+        this.shipId = shipId;
+        this.fishType = fishType;
+        this.price = price;
+        this.maxHeadCount = maxHeadCount;
+        this.notification = notification;
+    }
 }

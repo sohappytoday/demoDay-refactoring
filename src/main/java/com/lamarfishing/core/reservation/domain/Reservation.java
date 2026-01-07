@@ -1,5 +1,6 @@
 package com.lamarfishing.core.reservation.domain;
 
+import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.common.uuid.Uuid;
 import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.schedule.domain.Schedule;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Getter
 @Table(name = "reservations")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Reservation {
+public class Reservation extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "reservation_id")

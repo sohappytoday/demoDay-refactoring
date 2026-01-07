@@ -1,5 +1,6 @@
 package com.lamarfishing.core.ship.domain;
 
+import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -9,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "ships")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Ship {
+public class Ship extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "ship_id")

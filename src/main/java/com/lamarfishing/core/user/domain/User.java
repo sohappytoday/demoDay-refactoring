@@ -1,5 +1,6 @@
 package com.lamarfishing.core.user.domain;
 
+import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.user.exception.InvalidUserGrade;
@@ -14,7 +15,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User {
+public class User extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")

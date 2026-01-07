@@ -1,5 +1,6 @@
 package com.lamarfishing.core.coupon.domain;
 
+import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.coupon.exception.InvalidCouponStatus;
 import com.lamarfishing.core.user.domain.User;
 import jakarta.persistence.*;
@@ -13,7 +14,7 @@ import java.time.LocalDateTime;
 @Getter
 @Table(name = "coupons")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Coupon {
+public class Coupon extends BaseTimeEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "coupon_id")
