@@ -9,7 +9,12 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleRepositoryCustom {
+
     Optional<Schedule> findByPublicId(String publicId);
+
+    @Query("select s.id from Schedule s where s.publicId = :publicId")
+    Optional<Long> findIdByPublicId(@Param("publicId") String publicId);
+
     Optional<Schedule> findFirstByDepartureBetween(LocalDateTime start, LocalDateTime end);
     boolean existsByDepartureBetween(LocalDateTime start, LocalDateTime end);
 

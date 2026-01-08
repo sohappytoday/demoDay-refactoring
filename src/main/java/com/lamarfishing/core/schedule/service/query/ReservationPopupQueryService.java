@@ -4,17 +4,21 @@ import com.lamarfishing.core.coupon.domain.Coupon;
 import com.lamarfishing.core.coupon.dto.query.CouponCommonDto;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.log.statistic.service.StatisticService;
+import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.reservation.service.command.ReservationCommandService;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.domain.Type;
+import com.lamarfishing.core.schedule.dto.query.EarlyReservationPopupFlatDto;
 import com.lamarfishing.core.schedule.dto.result.EarlyReservationPopupResult;
 import com.lamarfishing.core.schedule.dto.result.NormalReservationPopupResult;
 import com.lamarfishing.core.schedule.exception.ScheduleNotFound;
 import com.lamarfishing.core.schedule.exception.UnauthorizedPopupAccess;
 import com.lamarfishing.core.schedule.repository.ScheduleRepository;
+import com.lamarfishing.core.schedule.resolver.ScheduleResolver;
 import com.lamarfishing.core.ship.dto.result.ReservationShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
+import com.lamarfishing.core.ship.repository.ShipRepository;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.query.EarlyReservationUserDto;
 import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
@@ -37,12 +41,10 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ReservationPopupQueryService {
 
-    private final StatisticService statisticService;
     private final ScheduleRepository scheduleRepository;
     private final UserRepository userRepository;
     private final CouponRepository couponRepository;
-    private final ReservationRepository reservationRepository;
-    private final ReservationCommandService reservationCommandService;
+    private final ScheduleResolver scheduleResolver;
 
     /**
      * 선예약 팝업 조회
@@ -51,21 +53,22 @@ public class ReservationPopupQueryService {
     public EarlyReservationPopupResult getEarlyReservationPopup(User user, String publicId) {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
+        Long scheduleId = scheduleResolver.resolve(publicId);
 
-        // schedule
-        Schedule schedule = scheduleRepository.findScheduleWithShip(publicId).orElseThrow(ScheduleNotFound::new);
-        if (schedule.getType() != Type.EARLY){
-            throw new UnauthorizedPopupAccess();
-        }
+        EarlyReservationPopupFlatDto flatDto = scheduleRepository.getScheduleAndShipPopup(scheduleId);
+        ReservationShipDto shipDto = ReservationShipDto.from(flatDto);
 
-        ReservationShipDto reservationShipDto = ShipMapper.toReservationShipDto(schedule.getShip());
+        List<CouponCommonDto> coupons = couponRepository.findAvailableByUserId(user.getId());
+        EarlyReservationUserDto userDto = EarlyReservationUserDto.builder()
+                        .username(user.getUsername())
+                        .nickname(user.getNickname())
+                        .grade(user.getGrade())
+                        .phone(user.getPhone())
+                        .coupons(coupons)
+                        .build();
 
-        List<CouponCommonDto> coupons = couponRepository.getAvailableByUser(user);
-        EarlyReservationUserDto earlyReservationUserDto = UserMapper.toEarlyReservationUserDto(user,coupons);
+        return EarlyReservationPopupResult.of(flatDto, shipDto, userDto);
 
-        Integer remainHeadCount = schedule.getShip().getMaxHeadCount() - schedule.getCurrentHeadCount();
-
-        return EarlyReservationPopupResult.of(schedule,remainHeadCount, earlyReservationUserDto,reservationShipDto);
     }
 
     /**
@@ -110,12 +113,4 @@ public class ReservationPopupQueryService {
 
     }
 
-    private Coupon.Type getCouponTypeByDeparture(LocalDateTime departure) {
-        DayOfWeek day = departure.getDayOfWeek();
-
-        if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
-            return Coupon.Type.WEEKEND;
-        }
-        return Coupon.Type.WEEKDAY;
-    }
 }

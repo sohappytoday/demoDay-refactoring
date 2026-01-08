@@ -1,5 +1,6 @@
 package com.lamarfishing.core.ship.service.query;
 
+import com.lamarfishing.core.ship.domain.Ship;
 import com.lamarfishing.core.ship.dto.result.ShipDetailDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.ship.repository.ShipRepository;
@@ -9,6 +10,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor

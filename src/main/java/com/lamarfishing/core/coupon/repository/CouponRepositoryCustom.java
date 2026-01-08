@@ -6,5 +6,5 @@ import com.lamarfishing.core.user.domain.User;
 import java.util.List;
 
 public interface CouponRepositoryCustom {
-    List<CouponCommonDto> getAvailableByUser(User user);
+    List<CouponCommonDto> findAvailableByUserId(Long userId);
 }

@@ -17,7 +17,6 @@ public class NormalReservationPopupResult {
     private String schedulePublicId;
     private Integer remainHeadCount;
     private LocalDateTime departure;
-    private DayOfWeek dayOfWeek;
     private Integer tide;
 
     public static NormalReservationPopupResult of(Schedule schedule, Integer remainHeadCount, NormalReservationUserDto user, ReservationShipDto ship) {
@@ -27,7 +26,6 @@ public class NormalReservationPopupResult {
                 .schedulePublicId(schedule.getPublicId())
                 .remainHeadCount(remainHeadCount)
                 .departure(schedule.getDeparture())
-                .dayOfWeek(schedule.getDeparture().getDayOfWeek())
                 .tide(schedule.getTide())
                 .build();
     }

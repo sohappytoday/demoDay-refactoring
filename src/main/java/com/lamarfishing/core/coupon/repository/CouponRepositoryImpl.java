@@ -18,15 +18,15 @@ public class CouponRepositoryImpl implements CouponRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
     @Override
-    public List<CouponCommonDto> getAvailableByUser(User user){
+    public List<CouponCommonDto> findAvailableByUserId(Long userId){
         List<CouponCommonDto> mainQuery = queryFactory
                 .select(Projections.constructor(CouponCommonDto.class,
                         coupon.id,
-                        coupon.status,
+                        coupon.type,
                         coupon.expiresAt))
                 .from(coupon)
                 .where(
-                        coupon.user.eq(user),
+                        coupon.user.id.eq(userId),
                         coupon.status.eq(Status.AVAILABLE),
                         coupon.expiresAt.after(LocalDateTime.now()))
                 .fetch();

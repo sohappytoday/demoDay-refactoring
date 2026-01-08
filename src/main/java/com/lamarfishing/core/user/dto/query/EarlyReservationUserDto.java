@@ -4,10 +4,11 @@ import com.lamarfishing.core.coupon.dto.query.CouponCommonDto;
 import com.lamarfishing.core.user.domain.Grade;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class EarlyReservationUserDto {
 

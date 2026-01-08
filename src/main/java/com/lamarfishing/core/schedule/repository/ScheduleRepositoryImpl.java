@@ -2,9 +2,11 @@ package com.lamarfishing.core.schedule.repository;
 
 import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.common.TodayScheduleDto;
+import com.lamarfishing.core.schedule.dto.query.EarlyReservationPopupFlatDto;
 import com.lamarfishing.core.schedule.dto.query.ScheduleDetailFlat;
 import com.lamarfishing.core.schedule.dto.result.DepartureTimeResult;
 import com.lamarfishing.core.ship.domain.QShip;
+import com.lamarfishing.core.ship.dto.result.ReservationShipDto;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -16,6 +18,7 @@ import java.util.List;
 
 import static com.lamarfishing.core.schedule.domain.QSchedule.schedule;
 import static com.lamarfishing.core.ship.domain.QShip.ship;
+import static com.lamarfishing.core.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
@@ -87,6 +90,24 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .where(schedule.id.eq(id))
                 .fetchOne();
     }
+
+    @Override
+    public EarlyReservationPopupFlatDto getScheduleAndShipPopup(Long scheduleId) {
+        return queryFactory.select(Projections.constructor(EarlyReservationPopupFlatDto.class,
+                        ship.fishType,
+                        ship.price,
+                        ship.notification,
+                        schedule.publicId,
+                        ship.maxHeadCount.subtract(schedule.currentHeadCount),
+                        schedule.departure,
+                        schedule.tide
+                ))
+                .from(schedule)
+                .join(schedule.ship, ship)
+                .where(schedule.id.eq(scheduleId))
+                .fetchOne();
+    }
+
 
 
 }

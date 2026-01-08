@@ -12,8 +12,7 @@ public class ScheduleResolver {
     private final ScheduleRepository scheduleRepository;
 
     public Long resolve(String publicId) {
-        return scheduleRepository.findByPublicId(publicId)
-                .orElseThrow(ScheduleNotFound::new)
-                .getId();
+        return scheduleRepository.findIdByPublicId(publicId)
+                .orElseThrow(ScheduleNotFound::new);
     }
 }

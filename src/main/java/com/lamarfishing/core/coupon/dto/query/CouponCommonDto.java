@@ -12,4 +12,10 @@ public class CouponCommonDto {
     private Long couponId;
     private Coupon.Type type;
     private LocalDateTime expiresAt;
+
+    public CouponCommonDto(Long couponId, Coupon.Type type, LocalDateTime expiresAt) {
+        this.couponId = couponId;
+        this.type = type;
+        this.expiresAt = expiresAt;
+    }
 }

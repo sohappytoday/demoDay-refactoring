@@ -30,7 +30,7 @@ public class NormalReservationPopupResponse {
                 .schedulePublicId(result.getSchedulePublicId())
                 .remainHeadCount(result.getRemainHeadCount())
                 .departure(result.getDeparture())
-                .dayOfWeek(result.getDayOfWeek())
+                .dayOfWeek(result.getDeparture().getDayOfWeek())
                 .tide(result.getTide())
                 .build();
     }
