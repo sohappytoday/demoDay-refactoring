@@ -98,6 +98,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                         ship.price,
                         ship.notification,
                         schedule.publicId,
+                        schedule.type,
                         ship.maxHeadCount.subtract(schedule.currentHeadCount),
                         schedule.departure,
                         schedule.tide

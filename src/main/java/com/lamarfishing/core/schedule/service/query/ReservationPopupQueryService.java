@@ -8,6 +8,7 @@ import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.reservation.service.command.ReservationCommandService;
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Status;
 import com.lamarfishing.core.schedule.domain.Type;
 import com.lamarfishing.core.schedule.dto.query.EarlyReservationPopupFlatDto;
 import com.lamarfishing.core.schedule.dto.result.EarlyReservationPopupResult;
@@ -26,6 +27,7 @@ import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
 import com.lamarfishing.core.common.validate.ValidatePublicId;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -56,6 +58,9 @@ public class ReservationPopupQueryService {
         Long scheduleId = scheduleResolver.resolve(publicId);
 
         EarlyReservationPopupFlatDto flatDto = scheduleRepository.getScheduleAndShipPopup(scheduleId);
+        if(flatDto.getScheduleType() != Type.EARLY){
+            throw new UnauthorizedPopupAccess();
+        }
         ReservationShipDto shipDto = ReservationShipDto.from(flatDto);
 
         List<CouponCommonDto> coupons = couponRepository.findAvailableByUserId(user.getId());
