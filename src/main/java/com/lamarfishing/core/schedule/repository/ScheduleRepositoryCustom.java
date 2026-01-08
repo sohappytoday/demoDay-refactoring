@@ -9,4 +9,5 @@ import java.util.List;
 public interface ScheduleRepositoryCustom {
     List<ScheduleMainDto> getSchedules(LocalDateTime from, LocalDateTime to);
     public TodayScheduleDto getTodaySchedule();
+
 }

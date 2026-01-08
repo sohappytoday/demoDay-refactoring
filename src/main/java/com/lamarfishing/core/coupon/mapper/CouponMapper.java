@@ -1,7 +1,7 @@
 package com.lamarfishing.core.coupon.mapper;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
-import com.lamarfishing.core.coupon.dto.CouponCommonDto;
+import com.lamarfishing.core.coupon.dto.query.CouponCommonDto;
 import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
 
 public class CouponMapper {

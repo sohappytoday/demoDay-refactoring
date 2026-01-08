@@ -1,4 +1,4 @@
-package com.lamarfishing.core.coupon.dto;
+package com.lamarfishing.core.coupon.dto.query;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
 import lombok.Builder;

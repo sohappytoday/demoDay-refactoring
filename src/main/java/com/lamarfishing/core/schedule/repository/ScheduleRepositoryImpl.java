@@ -55,4 +55,6 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .limit(1)
                 .fetchOne();
     }
+
+
 }

@@ -1,8 +1,7 @@
 package com.lamarfishing.core.schedule.service.query;
 
 import com.lamarfishing.core.coupon.domain.Coupon;
-import com.lamarfishing.core.coupon.dto.CouponCommonDto;
-import com.lamarfishing.core.coupon.mapper.CouponMapper;
+import com.lamarfishing.core.coupon.dto.query.CouponCommonDto;
 import com.lamarfishing.core.coupon.repository.CouponRepository;
 import com.lamarfishing.core.log.statistic.service.StatisticService;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
@@ -17,7 +16,7 @@ import com.lamarfishing.core.schedule.repository.ScheduleRepository;
 import com.lamarfishing.core.ship.dto.result.ReservationShipDto;
 import com.lamarfishing.core.ship.mapper.ShipMapper;
 import com.lamarfishing.core.user.domain.User;
-import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
+import com.lamarfishing.core.user.dto.query.EarlyReservationUserDto;
 import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 import com.lamarfishing.core.user.mapper.UserMapper;
 import com.lamarfishing.core.user.repository.UserRepository;
@@ -53,17 +52,17 @@ public class ReservationPopupQueryService {
 
         ValidatePublicId.validateSchedulePublicId(publicId);
 
-        Schedule schedule = scheduleRepository.findByPublicId(publicId).orElseThrow(ScheduleNotFound::new);
+        // schedule
+        Schedule schedule = scheduleRepository.findScheduleWithShip(publicId).orElseThrow(ScheduleNotFound::new);
         if (schedule.getType() != Type.EARLY){
             throw new UnauthorizedPopupAccess();
         }
 
         ReservationShipDto reservationShipDto = ShipMapper.toReservationShipDto(schedule.getShip());
-        List<CouponCommonDto> coupons = couponRepository.findByUserAndStatusAndType(user, Coupon.Status.AVAILABLE,getCouponTypeByDeparture(schedule.getDeparture()))
-                .stream()
-                .map(CouponMapper::toCouponCommonDto)
-                .toList();
+
+        List<CouponCommonDto> coupons = couponRepository.getAvailableByUser(user);
         EarlyReservationUserDto earlyReservationUserDto = UserMapper.toEarlyReservationUserDto(user,coupons);
+
         Integer remainHeadCount = schedule.getShip().getMaxHeadCount() - schedule.getCurrentHeadCount();
 
         return EarlyReservationPopupResult.of(schedule,remainHeadCount, earlyReservationUserDto,reservationShipDto);
