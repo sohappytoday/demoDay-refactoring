@@ -1,8 +1,8 @@
 package com.lamarfishing.core.schedule.repository;
 
-import com.lamarfishing.core.schedule.domain.QSchedule;
 import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.common.TodayScheduleDto;
+import com.lamarfishing.core.schedule.dto.result.DepartureTimeResult;
 import com.lamarfishing.core.ship.domain.QShip;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,6 +11,8 @@ import lombok.RequiredArgsConstructor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import static com.lamarfishing.core.schedule.domain.QSchedule.schedule;
 
 @RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
@@ -22,14 +24,14 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
         List<ScheduleMainDto> mainQuery = queryFactory
                 .select(Projections.constructor(ScheduleMainDto.class,
-                        QSchedule.schedule.publicId, QSchedule.schedule.departure,
-                        QShip.ship.maxHeadCount.subtract(QSchedule.schedule.currentHeadCount),
-                        QSchedule.schedule.tide, QSchedule.schedule.status, QSchedule.schedule.type,
+                        schedule.publicId, schedule.departure,
+                        QShip.ship.maxHeadCount.subtract(schedule.currentHeadCount),
+                        schedule.tide, schedule.status, schedule.type,
                         QShip.ship.fishType, QShip.ship.price))
-                .from(QSchedule.schedule)
-                .leftJoin(QShip.ship).on(QShip.ship.id.eq(QSchedule.schedule.ship.id))
-                .where(QSchedule.schedule.departure.after(from).and(QSchedule.schedule.departure.before(to)))
-                .orderBy(QSchedule.schedule.departure.desc())
+                .from(schedule)
+                .leftJoin(QShip.ship).on(QShip.ship.id.eq(schedule.ship.id))
+                .where(schedule.departure.after(from).and(schedule.departure.before(to)))
+                .orderBy(schedule.departure.desc())
                 .fetch();
 
         return mainQuery;
@@ -43,18 +45,28 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
 
         return  queryFactory
                 .select(Projections.constructor(TodayScheduleDto.class,
-                        QSchedule.schedule.currentHeadCount, QSchedule.schedule.departure,
-                        QSchedule.schedule.status,
+                        schedule.currentHeadCount, schedule.departure,
+                        schedule.status,
                         Projections.constructor(TodayScheduleDto.ShipDto.class,
-                                QSchedule.schedule.ship.fishType, QSchedule.schedule.ship.price,
-                                QSchedule.schedule.ship.notification, QSchedule.schedule.ship.maxHeadCount)))
-                .from(QSchedule.schedule)
-                .leftJoin(QShip.ship).on(QShip.ship.id.eq(QSchedule.schedule.ship.id))
-                .where(QSchedule.schedule.departure.goe(start), QSchedule.schedule.departure.lt(end))
-                .orderBy(QSchedule.schedule.departure.desc())
+                                schedule.ship.fishType, schedule.ship.price,
+                                schedule.ship.notification, schedule.ship.maxHeadCount)))
+                .from(schedule)
+                .leftJoin(QShip.ship).on(QShip.ship.id.eq(schedule.ship.id))
+                .where(schedule.departure.goe(start), schedule.departure.lt(end))
+                .orderBy(schedule.departure.desc())
                 .limit(1)
                 .fetchOne();
     }
 
+    @Override
+    public DepartureTimeResult findNextDeparture() {
+        return queryFactory.select(Projections.constructor(DepartureTimeResult.class,
+                        schedule.publicId,
+                        schedule.departure
+                        ))
+                .from(schedule)
+                .where(schedule.departure.after(LocalDateTime.now()))
+                .fetchFirst();
+    }
 
 }
