@@ -1,13 +1,22 @@
 package com.lamarfishing.core.schedule.repository;
 
 import com.lamarfishing.core.schedule.domain.Schedule;
+import com.lamarfishing.core.schedule.domain.Type;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
 
 public interface ScheduleRepository extends JpaRepository<Schedule, Long>, ScheduleRepositoryCustom {
+
     Optional<Schedule> findByPublicId(String publicId);
+
+    @Query("select s.id from Schedule s where s.publicId = :publicId")
+    Optional<Long> findIdByPublicId(@Param("publicId") String publicId);
+
     Optional<Schedule> findFirstByDepartureBetween(LocalDateTime start, LocalDateTime end);
     boolean existsByDepartureBetween(LocalDateTime start, LocalDateTime end);
+
 }

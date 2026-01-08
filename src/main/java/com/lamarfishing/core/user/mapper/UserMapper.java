@@ -1,11 +1,11 @@
 package com.lamarfishing.core.user.mapper;
 
-import com.lamarfishing.core.coupon.dto.CouponCommonDto;
+import com.lamarfishing.core.coupon.dto.query.CouponCommonDto;
 import com.lamarfishing.core.coupon.dto.ProfileCouponDto;
 import com.lamarfishing.core.user.domain.Grade;
 import com.lamarfishing.core.user.domain.User;
 import com.lamarfishing.core.user.dto.command.MyProfileDto;
-import com.lamarfishing.core.user.dto.command.EarlyReservationUserDto;
+import com.lamarfishing.core.user.dto.query.EarlyReservationUserDto;
 import com.lamarfishing.core.user.dto.command.NormalReservationUserDto;
 
 import java.util.List;

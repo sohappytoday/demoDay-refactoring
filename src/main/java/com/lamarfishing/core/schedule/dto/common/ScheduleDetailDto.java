@@ -1,6 +1,7 @@
 package com.lamarfishing.core.schedule.dto.common;
 
 import com.lamarfishing.core.schedule.domain.Type;
+import com.lamarfishing.core.schedule.dto.query.ScheduleDetailFlat;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,4 +19,21 @@ public class ScheduleDetailDto {
     private Integer remainCount;
     private Type type;
 
+    private ScheduleDetailDto(String schedulePublicId, LocalDateTime departure, Integer tide, Integer remainCount, Type type) {
+        this.schedulePublicId = schedulePublicId;
+        this.departure = departure;
+        this.tide = tide;
+        this.remainCount = remainCount;
+        this.type = type;
+    }
+
+    public static ScheduleDetailDto from(ScheduleDetailFlat dto){
+        return ScheduleDetailDto.builder()
+                .schedulePublicId(dto.getSchedulePublicId())
+                .departure(dto.getDeparture())
+                .tide(dto.getTide())
+                .remainCount(dto.getRemainHeadCount())
+                .type(dto.getType())
+                .build();
+    }
 }

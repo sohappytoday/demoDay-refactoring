@@ -1,6 +1,8 @@
 package com.lamarfishing.core.ship.repository;
 
+import com.lamarfishing.core.schedule.domain.QSchedule;
 import com.lamarfishing.core.ship.domain.QShip;
+import com.lamarfishing.core.ship.dto.result.ReservationShipDto;
 import com.lamarfishing.core.ship.dto.result.ShipDetailDto;
 import com.querydsl.core.QueryFactory;
 import com.querydsl.core.types.Projections;
@@ -14,6 +16,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
+import static com.lamarfishing.core.schedule.domain.QSchedule.schedule;
 import static com.lamarfishing.core.ship.domain.QShip.ship;
 
 @RequiredArgsConstructor
@@ -42,4 +45,6 @@ public class ShipRepositoryImpl implements ShipRepositoryCustom{
 
         return PageableExecutionUtils.getPage(mainQuery, pageable, countQuery::fetchOne);
     }
+
+
 }

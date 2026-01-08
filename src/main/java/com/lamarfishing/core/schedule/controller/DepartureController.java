@@ -14,7 +14,8 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/schedules")
 @RequiredArgsConstructor
-public class DepartureController {
+public class
+DepartureController {
 
     private final DepartureCommandService departureCommandService;
     private final UserService userService;

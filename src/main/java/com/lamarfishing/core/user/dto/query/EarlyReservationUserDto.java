@@ -1,14 +1,14 @@
-package com.lamarfishing.core.user.dto.command;
+package com.lamarfishing.core.user.dto.query;
 
-import com.lamarfishing.core.coupon.dto.CouponCommonDto;
+import com.lamarfishing.core.coupon.dto.query.CouponCommonDto;
 import com.lamarfishing.core.user.domain.Grade;
-import com.lamarfishing.core.user.domain.User;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 
 import java.util.List;
 
-@Data
+@Getter
 @Builder
 public class EarlyReservationUserDto {
 
