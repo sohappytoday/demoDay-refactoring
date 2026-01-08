@@ -19,11 +19,6 @@ public class ShipQueryService {
 
     @PreAuthorize("hasAuthority('GRADE_ADMIN')")
     public Page<ShipDetailDto> getShips(Pageable pageable) {
-
-
-        Page<ShipDetailDto> ships = shipRepository.findAll(pageable)
-                .map(ShipMapper::toShipDetailDto);
-
-        return ships;
+        return shipRepository.getShips(pageable);
     }
 }
