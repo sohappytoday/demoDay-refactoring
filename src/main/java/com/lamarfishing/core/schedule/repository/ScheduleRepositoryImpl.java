@@ -2,9 +2,11 @@ package com.lamarfishing.core.schedule.repository;
 
 import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.common.TodayScheduleDto;
+import com.lamarfishing.core.schedule.dto.query.ScheduleDetailFlat;
 import com.lamarfishing.core.schedule.dto.result.DepartureTimeResult;
 import com.lamarfishing.core.ship.domain.QShip;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.dsl.NumberExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -13,6 +15,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 import static com.lamarfishing.core.schedule.domain.QSchedule.schedule;
+import static com.lamarfishing.core.ship.domain.QShip.ship;
 
 @RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
@@ -25,11 +28,11 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
         List<ScheduleMainDto> mainQuery = queryFactory
                 .select(Projections.constructor(ScheduleMainDto.class,
                         schedule.publicId, schedule.departure,
-                        QShip.ship.maxHeadCount.subtract(schedule.currentHeadCount),
+                        ship.maxHeadCount.subtract(schedule.currentHeadCount),
                         schedule.tide, schedule.status, schedule.type,
-                        QShip.ship.fishType, QShip.ship.price))
+                        ship.fishType, ship.price))
                 .from(schedule)
-                .leftJoin(QShip.ship).on(QShip.ship.id.eq(schedule.ship.id))
+                .leftJoin(ship).on(ship.id.eq(schedule.ship.id))
                 .where(schedule.departure.after(from).and(schedule.departure.before(to)))
                 .orderBy(schedule.departure.desc())
                 .fetch();
@@ -51,7 +54,7 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                                 schedule.ship.fishType, schedule.ship.price,
                                 schedule.ship.notification, schedule.ship.maxHeadCount)))
                 .from(schedule)
-                .leftJoin(QShip.ship).on(QShip.ship.id.eq(schedule.ship.id))
+                .leftJoin(ship).on(ship.id.eq(schedule.ship.id))
                 .where(schedule.departure.goe(start), schedule.departure.lt(end))
                 .orderBy(schedule.departure.desc())
                 .limit(1)
@@ -68,5 +71,22 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .where(schedule.departure.after(LocalDateTime.now()))
                 .fetchFirst();
     }
+
+    @Override
+    public ScheduleDetailFlat findScheduleDetailFlat(Long id){
+
+        NumberExpression<Integer> remainHeadcount =
+                ship.maxHeadCount.subtract(schedule.currentHeadCount);
+
+        return queryFactory.select(Projections.constructor(ScheduleDetailFlat.class,
+                ship.id, ship.fishType, ship.price, ship.maxHeadCount, ship.notification,
+                schedule.publicId, schedule.departure, schedule.tide, remainHeadcount, schedule.type)
+            )
+                .from(schedule)
+                .join(schedule.ship, ship)
+                .where(schedule.id.eq(id))
+                .fetchOne();
+    }
+
 
 }

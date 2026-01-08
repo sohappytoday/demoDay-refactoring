@@ -1,6 +1,6 @@
 package com.lamarfishing.core.schedule.dto.result;
 
-import com.lamarfishing.core.reservation.dto.common.ReservationCommonDto;
+import com.lamarfishing.core.reservation.dto.query.ReservationCommonDto;
 import com.lamarfishing.core.schedule.dto.common.ScheduleDetailDto;
 import com.lamarfishing.core.ship.dto.result.ShipDetailDto;
 import lombok.Builder;

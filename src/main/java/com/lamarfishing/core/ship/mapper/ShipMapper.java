@@ -7,15 +7,6 @@ import com.lamarfishing.core.ship.dto.result.ReservationShipDto;
 
 public class ShipMapper {
 
-    public static ShipDetailDto toShipDetailDto(Ship ship){
-        return ShipDetailDto.builder()
-                .shipId(ship.getId())
-                .fishType(ship.getFishType())
-                .price(ship.getPrice())
-                .maxHeadCount(ship.getMaxHeadCount())
-                .notification(ship.getNotification())
-                .build();
-    }
 
     public static ReservationShipDto toReservationShipDto(Ship ship){
         return ReservationShipDto.builder()

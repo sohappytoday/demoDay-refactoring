@@ -1,7 +1,7 @@
 package com.lamarfishing.core.schedule.dto.response;
 
 
-import com.lamarfishing.core.reservation.dto.common.ReservationCommonDto;
+import com.lamarfishing.core.reservation.dto.query.ReservationCommonDto;
 import com.lamarfishing.core.schedule.dto.common.ScheduleDetailDto;
 import com.lamarfishing.core.schedule.dto.result.ScheduleDetailResult;
 import com.lamarfishing.core.ship.dto.result.ShipDetailDto;
