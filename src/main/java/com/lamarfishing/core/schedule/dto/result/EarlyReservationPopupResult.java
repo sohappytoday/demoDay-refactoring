@@ -1,13 +1,11 @@
 package com.lamarfishing.core.schedule.dto.result;
 
-import com.lamarfishing.core.schedule.domain.Schedule;
-import com.lamarfishing.core.schedule.dto.query.EarlyReservationPopupFlatDto;
+import com.lamarfishing.core.schedule.dto.query.ReservationPopupFlatDto;
 import com.lamarfishing.core.ship.dto.result.ReservationShipDto;
 import com.lamarfishing.core.user.dto.query.EarlyReservationUserDto;
 import lombok.Builder;
 import lombok.Data;
 
-import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 
 @Data
@@ -20,7 +18,7 @@ public class EarlyReservationPopupResult {
     private LocalDateTime departure;
     private Integer tide;
 
-    public static EarlyReservationPopupResult of(EarlyReservationPopupFlatDto flatDto,
+    public static EarlyReservationPopupResult of(ReservationPopupFlatDto flatDto,
                                                  ReservationShipDto shipDto,
                                                  EarlyReservationUserDto userDto){
         return EarlyReservationPopupResult.builder()

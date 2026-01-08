@@ -46,14 +46,13 @@ public class ReservationPopupController {
      * 일반예약 팝업 조회
      */
     @GetMapping("/normal")
-    public ResponseEntity<ApiResponse<NormalReservationPopupResponse>> getNormalReservationPopup(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
+    public ResponseEntity<ApiResponse<NormalReservationPopupResponse>> getNormalReservationPopup(// @AuthenticationPrincipal AuthenticatedUser authenticatedUser,
                                                                                                  @PathVariable("schedulePublicId") String publicId){
+//        User user = userService.findGuestUser();
+//        NormalReservationPopupResult result = reservationPopupQueryService.getNormalReservationPopupGuest(publicId);
+//        return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",NormalReservationPopupResponse.from(result)));
 
-        if(authenticatedUser==null){
-            NormalReservationPopupResult result = reservationPopupQueryService.getNormalReservationPopupGuest(publicId);
-            return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",NormalReservationPopupResponse.from(result)));
-        }
-        User user = userService.findUser(authenticatedUser);
+        User user = userService.findBasicUser();
         NormalReservationPopupResult result = reservationPopupQueryService.getNormalReservationPopupUser(user,publicId);
         return ResponseEntity.ok(ApiResponse.success("일반예약 팝업 조회에 성공하였습니다",NormalReservationPopupResponse.from(result)));
     }
