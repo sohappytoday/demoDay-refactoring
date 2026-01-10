@@ -13,7 +13,7 @@ public class ReservationDetailResult {
     private ReservationDetailDto reservation;
     private ReservationDetailScheduleDto schedule;
 
-    public static ReservationDetailResult from(ReservationDetailShipDto ship, ReservationDetailDto reservation, ReservationDetailScheduleDto schedule) {
+    public static ReservationDetailResult of(ReservationDetailShipDto ship, ReservationDetailDto reservation, ReservationDetailScheduleDto schedule) {
         return ReservationDetailResult.builder()
                 .ship(ship)
                 .reservation(reservation)

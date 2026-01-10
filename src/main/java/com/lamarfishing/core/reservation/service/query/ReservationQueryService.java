@@ -2,11 +2,14 @@ package com.lamarfishing.core.reservation.service.query;
 
 import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.common.ReservationDetailDto;
+import com.lamarfishing.core.reservation.dto.query.ReservationDetailFlat;
 import com.lamarfishing.core.reservation.dto.result.ReservationDetailResult;
 import com.lamarfishing.core.reservation.exception.ReservationNotFound;
 import com.lamarfishing.core.reservation.mapper.ReservationMapper;
 import com.lamarfishing.core.reservation.repository.ReservationRepository;
 import com.lamarfishing.core.reservation.dto.common.ReservationSimpleDto;
+import com.lamarfishing.core.reservation.resolver.ReservationResolver;
+import com.lamarfishing.core.reservation.service.policy.ReservationAccessPolicy;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.common.ReservationDetailScheduleDto;
 import com.lamarfishing.core.schedule.mapper.ScheduleMapper;
@@ -33,6 +36,8 @@ import java.time.LocalDateTime;
 public class ReservationQueryService {
 
     private final ReservationRepository reservationRepository;
+    private final ReservationResolver reservationResolver;
+    private final ReservationAccessPolicy reservationAccessPolicy;
 
     @PreAuthorize("hasAnyAuthority('GRADE_ADMIN','GRADE_BASIC', 'GRADE_VIP')")
     public Page<ReservationSimpleDto> getMyReservations(Long userId, Process process, Pageable pageable) {
@@ -49,30 +54,17 @@ public class ReservationQueryService {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
-        Reservation reservation = findReservation(publicId);
+        //redis 사용시 치환
+        Long reservationId = reservationResolver.resolve(publicId);
 
-        boolean isAdmin = user.getGrade() == Grade.ADMIN;
-        boolean isOwner = reservation.getUser().equals(user);
-        if (!isAdmin && !isOwner) {
-            throw new InvalidUserGrade();
-        }
+        // 내 reservation인지 확인
+        reservationAccessPolicy.validateOwnerOrAdmin(reservationId, user.getId());
 
-        Schedule schedule = reservation.getSchedule();
-        Ship ship = schedule.getShip();
+        ReservationDetailFlat flatDto = reservationRepository.getReservationDetail(reservationId);
+        ReservationDetailShipDto shipDto = ReservationDetailShipDto.from(flatDto);
+        ReservationDetailDto detailDto = ReservationDetailDto.from(flatDto);
+        ReservationDetailScheduleDto scheduleDto = ReservationDetailScheduleDto.from(flatDto);
 
-        ReservationDetailShipDto reservationDetailShipDto = ShipMapper.toReservationDetailShipDto(ship);
-        ReservationDetailDto reservationDetailDto = ReservationMapper.toReservationDetailDto(reservation);
-        ReservationDetailScheduleDto reservationDetailScheduleDto = ScheduleMapper.toReservationDetailScheduleDto(schedule);
-
-        return ReservationDetailResult.from(
-                reservationDetailShipDto,
-                reservationDetailDto,
-                reservationDetailScheduleDto
-        );
-    }
-
-    private Reservation findReservation(String pubilcId){
-        Reservation reservation = reservationRepository.findByPublicId(pubilcId).orElseThrow(ReservationNotFound::new);
-        return reservation;
+        return ReservationDetailResult.of(shipDto, detailDto, scheduleDto);
     }
 }

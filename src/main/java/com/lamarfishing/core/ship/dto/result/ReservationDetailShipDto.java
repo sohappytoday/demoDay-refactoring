@@ -1,5 +1,6 @@
 package com.lamarfishing.core.ship.dto.result;
 
+import com.lamarfishing.core.reservation.dto.query.ReservationDetailFlat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -11,4 +12,11 @@ import lombok.Data;
 public class ReservationDetailShipDto {
     private String fishType;
     private String notification;
+
+    public static ReservationDetailShipDto from(ReservationDetailFlat dto){
+        return ReservationDetailShipDto.builder()
+                .fishType(dto.getFishType())
+                .notification(dto.getNotification())
+                .build();
+    }
 }

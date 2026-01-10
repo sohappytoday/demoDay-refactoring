@@ -1,8 +1,10 @@
 package com.lamarfishing.core.reservation.repository;
 
 import com.lamarfishing.core.reservation.dto.query.ReservationCommonDto;
+import com.lamarfishing.core.reservation.dto.query.ReservationDetailFlat;
 import com.lamarfishing.core.ship.domain.QShip;
 import com.lamarfishing.core.reservation.dto.common.ReservationSimpleDto;
+import com.querydsl.core.Tuple;
 import com.querydsl.core.types.Projections;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -16,8 +18,10 @@ import com.lamarfishing.core.reservation.domain.Reservation.Process;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import static com.lamarfishing.core.coupon.domain.QCoupon.coupon;
 import static com.lamarfishing.core.reservation.domain.QReservation.reservation;
 import static com.lamarfishing.core.schedule.domain.QSchedule.schedule;
+import static com.lamarfishing.core.ship.domain.QShip.ship;
 import static com.lamarfishing.core.user.domain.QUser.user;
 
 @RequiredArgsConstructor
@@ -42,7 +46,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.schedule.departure))
                 .from(reservation)
                 .leftJoin(schedule).on(schedule.id.eq(reservation.schedule.id))
-                .leftJoin(QShip.ship).on(QShip.ship.id.eq(reservation.schedule.id))
+                .leftJoin(ship).on(ship.id.eq(reservation.schedule.id))
                 .where(userIdEq(userId), processEq(process), fromGoe(from), toLoe(to), shipIdEq(shipId))
                 .orderBy(reservation.schedule.departure.desc())
                 .offset(pageable.getOffset())
@@ -73,6 +77,30 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .orderBy(reservation.createdAt.asc())
                 .fetch();
 
+    }
+
+    @Override
+    public ReservationDetailFlat getReservationDetail(Long reservationId){
+        return queryFactory.select(Projections.constructor(ReservationDetailFlat.class,
+                        ship.fishType,
+                        ship.notification,
+                        user.username,
+                        user.nickname,
+                        user.phone,
+                        reservation.headCount,
+                        coupon.id,
+                        reservation.request,
+                        reservation.totalPrice,
+                        reservation.process,
+                        schedule.departure,
+                        schedule.tide)
+                )
+                .from(reservation)
+                .join(reservation.user, user)
+                .join(reservation.schedule, schedule)
+                .join(reservation.coupon, coupon)
+                .where(reservation.id.eq(reservationId))
+                .fetchOne();
     }
 
     private BooleanExpression processEq(Process process) {

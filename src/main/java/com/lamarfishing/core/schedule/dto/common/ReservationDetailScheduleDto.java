@@ -1,5 +1,7 @@
 package com.lamarfishing.core.schedule.dto.common;
 
+import com.lamarfishing.core.reservation.dto.common.ReservationDetailDto;
+import com.lamarfishing.core.reservation.dto.query.ReservationDetailFlat;
 import lombok.Builder;
 import lombok.Data;
 
@@ -15,4 +17,12 @@ public class ReservationDetailScheduleDto {
     private LocalDateTime departure;
     private DayOfWeek dayOfWeek;
     private Integer tide;
+
+    public static ReservationDetailScheduleDto from(ReservationDetailFlat dto) {
+        return ReservationDetailScheduleDto.builder()
+                .departure(dto.getDeparture())
+                .dayOfWeek(dto.getDeparture().getDayOfWeek())
+                .tide(dto.getTide())
+                .build();
+    }
 }
