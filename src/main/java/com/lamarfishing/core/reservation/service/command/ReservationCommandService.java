@@ -31,30 +31,21 @@ import java.util.Locale;
 @Transactional
 public class ReservationCommandService {
 
-    private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ScheduleRepository scheduleRepository;
     private final MessageCommandService messageCommandService;
     private final StatisticRepository statisticRepository;
 
-
-
     /**
      * 일반 유저가 예약
      */
     // @PreAuthorize("hasAnyAuthority('GRADE_BASIC', 'GRADE_VIP')")
-    public void reservationCancelRequest(String publicId, ReservationProcessUpdateCommand command) {
+    public void reservationCancelRequest(String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         Reservation reservation = findReservation(publicId);
-        Process process = command.getProcess();
-
-        if (process != Reservation.Process.CANCEL_REQUESTED) {
-            throw new InvalidRequestContent();
-        }
-
-        reservation.changeProcess(process);
+        reservation.requestCancel();
     }
 
     /**

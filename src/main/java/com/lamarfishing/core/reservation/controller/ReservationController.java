@@ -64,11 +64,9 @@ public class ReservationController {
      */
     @PatchMapping("/{reservationPublicId}/cancel-request")
     public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                                      @PathVariable("reservationPublicId") String publicId,
-                                                                      @RequestBody ReservationProcessUpdateRequest request) {
+                                                                      @PathVariable("reservationPublicId") String publicId) {
         User user = userService.findUser(authenticatedUser);
-        ReservationProcessUpdateCommand command = ReservationProcessUpdateCommand.from(request);
-        reservationCommandService.reservationCancelRequest(publicId, command);
+        reservationCommandService.reservationCancelRequest(publicId);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다.", null));
     }

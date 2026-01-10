@@ -3,6 +3,7 @@ package com.lamarfishing.core.reservation.domain;
 import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.common.uuid.Uuid;
 import com.lamarfishing.core.coupon.domain.Coupon;
+import com.lamarfishing.core.reservation.exception.InvalidRequestContent;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.user.domain.User;
 import jakarta.persistence.*;
@@ -82,7 +83,15 @@ public class Reservation extends BaseTimeEntity {
                 .build();
     }
 
-    public void changeProcess(Process process) {
-        this.process = process;
+    public void requestCancel() {
+        if (!canRequestCancel()) {
+            throw new InvalidRequestContent();
+        }
+
+        this.process = Process.CANCEL_REQUESTED;
+    }
+
+    private boolean canRequestCancel() {
+        return this.process == Process.CANCEL_REQUESTED;
     }
 }
