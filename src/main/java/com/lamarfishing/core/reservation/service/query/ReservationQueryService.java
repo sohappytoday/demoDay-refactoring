@@ -67,9 +67,4 @@ public class ReservationQueryService {
 
         return ReservationDetailResult.of(shipDto, detailDto, scheduleDto);
     }
-
-    private Reservation findReservation(String pubilcId){
-        Reservation reservation = reservationRepository.findByPublicId(pubilcId).orElseThrow(ReservationNotFound::new);
-        return reservation;
-    }
 }
