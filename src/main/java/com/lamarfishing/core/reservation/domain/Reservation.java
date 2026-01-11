@@ -127,7 +127,7 @@ public class Reservation extends BaseTimeEntity {
     }
 
     private boolean canCompleteCancel() {
-        return this.process == Process.CANCEL_REQUESTED;
+        return this.process == Process.CANCEL_REQUESTED || this.process == Process.RESERVE_COMPLETED;
     }
 
 }

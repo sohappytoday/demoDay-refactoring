@@ -153,25 +153,22 @@ public class ReservationCommandService {
         LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 25일 오전 0시
         LocalDateTime scheduleEnd = deadline.atTime(23,59,59);
 
-        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
-                .orElse(null);
-
-        if (schedule == null) {
+        Optional<LocalDateTime> optionalScheduleDate = reservationRepository.findDeparture(scheduleStart, scheduleEnd);
+        if (optionalScheduleDate.isEmpty()) {
             return;
         }
 
-        List<Reservation> reservations = reservationRepository
-                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
+        List<String> phones = reservationRepository.findPhonesByDeparture(scheduleStart, scheduleEnd);
+        List<Reservation> reservations = reservationRepository.findReservationByDeparture(scheduleStart, scheduleEnd);
 
-        List<String> phones = new ArrayList<>();
         for (Reservation reservation : reservations) {
-            phones.add(reservation.getUser().getPhone());
-            expireReservation(reservation);         //reservation 취소
+            reservation.completeCancel();
         }
 
-        String msg = createPaymentExpiredMessage(schedule);
+        String msg = createPaymentExpiredMessage(optionalScheduleDate.get());
 
-        messageCommandService.sendMessage(phones,msg);
+//        메시지 전송 주석 처리
+//        messageCommandService.sendMessage(phones,msg);
     }
 
     public void sendReservationReceiptNotification(User user,Schedule schedule,Ship ship,int totalPrice, int headCount){
@@ -224,15 +221,8 @@ public class ReservationCommandService {
         return String.format("%,d", number);
     }
 
-    private void expireReservation(Reservation reservation) {
-//        reservation.changeProcess(Reservation.Process.CANCEL_COMPLETED);
-
-        Schedule schedule = reservation.getSchedule();
-        schedule.decreaseCurrentHeadCount(reservation.getHeadCount());
-    }
-
-    private String createPaymentExpiredMessage(Schedule schedule) {
-        LocalDate msgScheduleDate = schedule.getDeparture().toLocalDate();
+    private String createPaymentExpiredMessage(LocalDateTime scheduleDate) {
+        LocalDate msgScheduleDate = scheduleDate.toLocalDate();
         String msgScheduleDay = getKoreanDay(msgScheduleDate);
 
         return "안녕하세요 쭈불 낚시입니다.\n" +

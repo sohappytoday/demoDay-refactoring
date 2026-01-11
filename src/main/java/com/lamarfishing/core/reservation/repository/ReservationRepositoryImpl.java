@@ -47,7 +47,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.schedule.ship.fishType,
                         reservation.schedule.departure))
                 .from(reservation)
-                .leftJoin(schedule).on(schedule.id.eq(reservation.schedule.id))
+                .leftJoin(schedule).on(schedule.id.eq(reservation.schedule.ship.id))
                 .leftJoin(ship).on(ship.id.eq(reservation.schedule.id))
                 .where(userIdEq(userId), processEq(process), fromGoe(from), toLoe(to), shipIdEq(shipId))
                 .orderBy(reservation.schedule.departure.desc())
@@ -146,7 +146,7 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
 
     @Override
     public Optional<LocalDateTime> findDeparture(LocalDateTime start, LocalDateTime end) {
-        return queryFactory.select(schedule.departure)
+        LocalDateTime query = queryFactory.select(schedule.departure)
                 .from(reservation)
                 .join(reservation.schedule, schedule)
                 .where(
@@ -155,7 +155,24 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                         reservation.process.eq(Process.RESERVE_COMPLETED)
                 )
                 .fetchFirst();
+
+        return Optional.ofNullable(query);
     }
+
+    @Override
+    public List<Reservation> findReservationByDeparture(LocalDateTime start, LocalDateTime end) {
+        return queryFactory.select(reservation)
+                .from(reservation)
+                .join(reservation.schedule, schedule)
+                .where(
+                        schedule.departure.goe(start),
+                        schedule.departure.lt(end),
+                        reservation.process.eq(Process.RESERVE_COMPLETED)
+                )
+                .fetch();
+    }
+
+
 
     private BooleanExpression processEq(Process process) {
         return process == null ? null : reservation.process.eq(process);
