@@ -25,70 +25,57 @@ import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 @Transactional
 public class ReservationCommandService {
 
-    private final UserRepository userRepository;
     private final ReservationRepository reservationRepository;
     private final ScheduleRepository scheduleRepository;
     private final MessageCommandService messageCommandService;
     private final StatisticRepository statisticRepository;
 
-
-
     /**
      * 일반 유저가 예약
      */
     // @PreAuthorize("hasAnyAuthority('GRADE_BASIC', 'GRADE_VIP')")
-    public void reservationCancelRequest(String publicId, ReservationProcessUpdateCommand command) {
+    public void cancelRequest(String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         Reservation reservation = findReservation(publicId);
-        Process process = command.getProcess();
-
-        if (process != Reservation.Process.CANCEL_REQUESTED) {
-            throw new InvalidRequestContent();
-        }
-
-        reservation.changeProcess(process);
+        reservation.requestCancel();
     }
 
     /**
-     * Admin이 예약 상태 변경
+     * 입금 완료
      */
-    // @PreAuthorize("hasAuthority('GRADE_ADMIN')")
-    public void changeReservationProcess(String publicId, ReservationProcessUpdateCommand command) {
+    public void completeDeposit(String publicId) {
 
         ValidatePublicId.validateReservationPublicId(publicId);
 
         Reservation reservation = findReservation(publicId);
-        Process process = command.getProcess();
-
-        if(process == Reservation.Process.CANCEL_REQUESTED) {
-            throw new InvalidRequestContent();
-        }
-
-        if (process == Reservation.Process.CANCEL_COMPLETED) {
-            reservation.changeProcess(process);
-
-            Schedule schedule = reservation.getSchedule();
-            schedule.decreaseCurrentHeadCount(reservation.getHeadCount());
-            sendReservationCanceledNotification(reservation);
-            return;
-        }
-
-        // 예약 완료
-        if(process == Process.RESERVE_COMPLETED) {
-            reservation.changeProcess(process);
-            return;
-        }
-        // 입금 완료
-        reservation.changeProcess(process);
+        reservation.completeDeposit();
     }
+
+    /**
+     * 예약 취소 완료
+     */
+    public void completeCancel(String publicId) {
+
+        ValidatePublicId.validateReservationPublicId(publicId);
+
+        Reservation reservation = reservationRepository.findByPublicIdWithSchedule(publicId)
+                .orElseThrow(ReservationNotFound::new);
+
+        reservation.completeCancel();
+
+//        메시지 전송 주석 처리
+//        sendReservationCanceledNotification(reservation);
+    }
+
     /**
      * private Method
      */
@@ -107,53 +94,31 @@ public class ReservationCommandService {
      * 입금 만료 마감 통계 분석
      */
 
-    @Transactional
     public void statisticPaymentDeadlineWarning(){
         LocalDate today = LocalDate.now();  //11월 22일
         LocalDate deadline = today.plusDays(4); //11월 26일
 
-        LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 26일 오전 0시
-        LocalDateTime scheduleEnd = deadline.atTime(23,59,59);  //11월 26일 23시 59분 59초
+        LocalDateTime start = deadline.atStartOfDay();
+        LocalDateTime end = deadline.plusDays(1).atStartOfDay();
 
-        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
-                .orElse(null);
-
-        if (schedule == null) {
-            return;
-        }
-
-        List<Reservation> reservations = reservationRepository
-                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
+        Long count = reservationRepository.countReservationBetweenDeparture(start, end);
 
         Statistic statistic = statisticRepository.findByDate(today);
-        for (Reservation reservation : reservations) {
-            statistic.addDeposit24Hour();
-        }
-
+        statistic.addDeposit24Hour(count);
     }
 
-    @Transactional
     public void statisticPaymentExpiredNotification(){
         LocalDate today = LocalDate.now();  //11월 22일
-        LocalDate deadline = today.plusDays(3); //11월 25일
+        LocalDate deadline = today.plusDays(4); //11월 26일
 
-        LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 25일 오전 0시
-        LocalDateTime scheduleEnd = deadline.atTime(23,59,59);
+        LocalDateTime start = deadline.atStartOfDay();
+        LocalDateTime end = deadline.plusDays(1).atStartOfDay();
 
-        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
-                .orElse(null);
-
-        if (schedule == null) {
-            return;
-        }
-
-        List<Reservation> reservations = reservationRepository
-                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
+        Long count = reservationRepository.countReservationBetweenDeparture(start, end);
 
         Statistic statistic = statisticRepository.findByDate(today);
-        for (Reservation reservation : reservations) {
-            statistic.addDepositExpired();
-        }
+        statistic.addDepositExpired(count);
+
     }
 
     /**
@@ -164,24 +129,16 @@ public class ReservationCommandService {
         LocalDate deadline = today.plusDays(4); //11월 26일
 
         LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 26일 오전 0시
-        LocalDateTime scheduleEnd = deadline.atTime(23,59,59);  //11월 26일 23시 59분 59초
+        LocalDateTime scheduleEnd = scheduleStart.plusDays(1);
 
-        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
-                .orElse(null);
-
-        if (schedule == null) {
+        Optional<LocalDateTime> optionalScheduleDate = reservationRepository.findDeparture(scheduleStart, scheduleEnd);
+        if (optionalScheduleDate.isEmpty()) {
             return;
         }
 
-        List<Reservation> reservations = reservationRepository
-                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
-
-        List<String> phones = new ArrayList<>();
-        for (Reservation reservation : reservations) {
-            phones.add(reservation.getUser().getPhone());
-        }
-
-        String msg = createPaymentWarningMessage(schedule);
+        List<String> phones = reservationRepository.findPhonesByDeparture(scheduleStart, scheduleEnd);
+        LocalDateTime scheduleDate = optionalScheduleDate.get();
+        String msg = createPaymentWarningMessage(scheduleDate);
 
         messageCommandService.sendMessage(phones,msg);
     }
@@ -189,7 +146,6 @@ public class ReservationCommandService {
     /**
      * 입금 만료
      */
-    @Transactional
     public void sendPaymentExpiredNotification(){
         LocalDate today = LocalDate.now();  //11월 22일
         LocalDate deadline = today.plusDays(3); //11월 25일
@@ -197,25 +153,22 @@ public class ReservationCommandService {
         LocalDateTime scheduleStart = deadline.atStartOfDay();  //11월 25일 오전 0시
         LocalDateTime scheduleEnd = deadline.atTime(23,59,59);
 
-        Schedule schedule = scheduleRepository.findFirstByDepartureBetween(scheduleStart,scheduleEnd)
-                .orElse(null);
-
-        if (schedule == null) {
+        Optional<LocalDateTime> optionalScheduleDate = reservationRepository.findDeparture(scheduleStart, scheduleEnd);
+        if (optionalScheduleDate.isEmpty()) {
             return;
         }
 
-        List<Reservation> reservations = reservationRepository
-                .findByScheduleAndProcess(schedule, Reservation.Process.RESERVE_COMPLETED);
+        List<String> phones = reservationRepository.findPhonesByDeparture(scheduleStart, scheduleEnd);
+        List<Reservation> reservations = reservationRepository.findReservationByDeparture(scheduleStart, scheduleEnd);
 
-        List<String> phones = new ArrayList<>();
         for (Reservation reservation : reservations) {
-            phones.add(reservation.getUser().getPhone());
-            expireReservation(reservation);         //reservation 취소
+            reservation.completeCancel();
         }
 
-        String msg = createPaymentExpiredMessage(schedule);
+        String msg = createPaymentExpiredMessage(optionalScheduleDate.get());
 
-        messageCommandService.sendMessage(phones,msg);
+//        메시지 전송 주석 처리
+//        messageCommandService.sendMessage(phones,msg);
     }
 
     public void sendReservationReceiptNotification(User user,Schedule schedule,Ship ship,int totalPrice, int headCount){
@@ -268,15 +221,8 @@ public class ReservationCommandService {
         return String.format("%,d", number);
     }
 
-    private void expireReservation(Reservation reservation) {
-        reservation.changeProcess(Reservation.Process.CANCEL_COMPLETED);
-
-        Schedule schedule = reservation.getSchedule();
-        schedule.decreaseCurrentHeadCount(reservation.getHeadCount());
-    }
-
-    private String createPaymentExpiredMessage(Schedule schedule) {
-        LocalDate msgScheduleDate = schedule.getDeparture().toLocalDate();
+    private String createPaymentExpiredMessage(LocalDateTime scheduleDate) {
+        LocalDate msgScheduleDate = scheduleDate.toLocalDate();
         String msgScheduleDay = getKoreanDay(msgScheduleDate);
 
         return "안녕하세요 쭈불 낚시입니다.\n" +
@@ -284,8 +230,8 @@ public class ReservationCommandService {
                 "쭈갑 예약 입금기한이 만료되어 예약이 자동 취소되었습니다.\n";
     }
 
-    private String createPaymentWarningMessage(Schedule schedule) {
-        LocalDate msgScheduleDate = schedule.getDeparture().toLocalDate();
+    private String createPaymentWarningMessage(LocalDateTime scheduleDate) {
+        LocalDate msgScheduleDate = scheduleDate.toLocalDate();
         String msgScheduleDay = getKoreanDay(msgScheduleDate);
 
         return "안녕하세요 쭈불 낚시입니다.\n" +

@@ -3,6 +3,7 @@ package com.lamarfishing.core.reservation.domain;
 import com.lamarfishing.core.common.domain.BaseTimeEntity;
 import com.lamarfishing.core.common.uuid.Uuid;
 import com.lamarfishing.core.coupon.domain.Coupon;
+import com.lamarfishing.core.reservation.exception.InvalidRequestContent;
 import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.user.domain.User;
 import jakarta.persistence.*;
@@ -82,7 +83,51 @@ public class Reservation extends BaseTimeEntity {
                 .build();
     }
 
-    public void changeProcess(Process process) {
-        this.process = process;
+    // 상태 변경 메서드
+    public void requestCancel() {
+        if (this.process == Process.CANCEL_REQUESTED) {
+            return;
+        }
+        if (!canRequestCancel()) {
+            throw new InvalidRequestContent();
+        }
+
+        this.process = Process.CANCEL_REQUESTED;
     }
+
+    public void completeDeposit(){
+        if (this.process == Process.DEPOSIT_COMPLETED) {
+            return;
+        }
+
+        if (!canCompleteDeposit()) {
+            throw new InvalidRequestContent();
+        }
+        this.process = Process.DEPOSIT_COMPLETED;
+    }
+
+    public void completeCancel(){
+        if (this.process == Process.CANCEL_COMPLETED) {
+            return;
+        }
+
+        if (!canCompleteCancel()){
+            throw new InvalidRequestContent();
+        }
+        this.process = Process.CANCEL_COMPLETED;
+        this.schedule.decreaseCurrentHeadCount(this.headCount);
+    }
+
+    private boolean canRequestCancel() {
+        return this.process == Process.RESERVE_COMPLETED;
+    }
+
+    private boolean canCompleteDeposit() {
+        return this.process == Process.RESERVE_COMPLETED;
+    }
+
+    private boolean canCompleteCancel() {
+        return this.process == Process.CANCEL_REQUESTED || this.process == Process.RESERVE_COMPLETED;
+    }
+
 }

@@ -1,5 +1,6 @@
 package com.lamarfishing.core.schedule.repository;
 
+import com.lamarfishing.core.schedule.domain.Schedule;
 import com.lamarfishing.core.schedule.dto.common.ScheduleMainDto;
 import com.lamarfishing.core.schedule.dto.common.TodayScheduleDto;
 import com.lamarfishing.core.schedule.dto.query.ReservationPopupFlatDto;

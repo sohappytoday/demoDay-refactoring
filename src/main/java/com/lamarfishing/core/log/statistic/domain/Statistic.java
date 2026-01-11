@@ -84,8 +84,18 @@ public class Statistic {
         this.depositExpired++;
     }
 
+    public void addDepositExpired(Long count) {
+        this.depositExpired++;
+    }
+
     //입금마감 24시간전
     public void addDeposit24Hour() {
         this.deposit24Hour++;
     }
+
+    public void addDeposit24Hour(Long count){
+        this.deposit24Hour += count;
+    }
+
+
 }

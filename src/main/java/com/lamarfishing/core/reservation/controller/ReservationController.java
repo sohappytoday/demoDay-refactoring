@@ -62,29 +62,35 @@ public class ReservationController {
     /**
      * 예약자 취소 예약 신청
      */
-    @PatchMapping("/{reservationPublicId}/cancel-request")
-    public ResponseEntity<ApiResponse<Void>> reservationCancelRequest(@AuthenticationPrincipal AuthenticatedUser authenticatedUser,
-                                                                      @PathVariable("reservationPublicId") String publicId,
-                                                                      @RequestBody ReservationProcessUpdateRequest request) {
-        User user = userService.findUser(authenticatedUser);
-        ReservationProcessUpdateCommand command = ReservationProcessUpdateCommand.from(request);
-        reservationCommandService.reservationCancelRequest(publicId, command);
+    @PostMapping("/{reservationPublicId}/cancel/request")
+    public ResponseEntity<ApiResponse<Void>> reservationRequestCancel(@PathVariable("reservationPublicId") String publicId) {
+        reservationCommandService.cancelRequest(publicId);
 
         return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다.", null));
     }
 
     /**
-     * 관리자 예약 상태 변경
+     * 관리자 - 예약자 입금 완료
      */
-    @PatchMapping("/{reservationPublicId}/process")
-    public ResponseEntity<ApiResponse<Void>> changeReservationProcess(@PathVariable("reservationPublicId") String publicId,
-                                                                      @RequestBody ReservationProcessUpdateRequest request) {
+    @PostMapping("/{reservationPublicId}/deposit/complete")
+    public ResponseEntity<ApiResponse<Void>> reservationCompleteDeposit(@PathVariable("reservationPublicId") String publicId) {
 
-        ReservationProcessUpdateCommand command = ReservationProcessUpdateCommand.from(request);
-        reservationCommandService.changeReservationProcess(publicId, command);
+        reservationCommandService.completeDeposit(publicId);
 
-        return ResponseEntity.ok(ApiResponse.success("예약 취소에 성공하였습니다."));
+        return ResponseEntity.ok(ApiResponse.success("입금 완료로 변경하였습니다.", null));
     }
+
+    /**
+     * 관리자 - 예약자 취소 완료
+     */
+    @PostMapping("/{reservationPublicId}/cancel/complete")
+    public ResponseEntity<ApiResponse<Void>> reservationCompleteCancel(@PathVariable("reservationPublicId") String publicId) {
+
+        reservationCommandService.completeCancel(publicId);
+
+        return ResponseEntity.ok(ApiResponse.success("예약 취소로 변경하였습니다.", null));
+    }
+
     /**
      * 예약 목록 조회
      */
