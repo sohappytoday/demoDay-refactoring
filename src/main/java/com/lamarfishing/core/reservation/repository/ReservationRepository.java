@@ -19,4 +19,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Long>,
     Optional<Long> findIdByPublicId(@Param("publicId") String publicId);
 
     Boolean existsByIdAndUserId(Long reservationId, Long userId);
+
+    @Query("select r from Reservation r join fetch r.schedule where r.publicId = :publicId")
+    Optional<Reservation> findByPublicIdWithSchedule(@Param("publicId") String publicId);
 }

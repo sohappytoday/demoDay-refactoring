@@ -1,5 +1,6 @@
 package com.lamarfishing.core.reservation.repository;
 
+import com.lamarfishing.core.reservation.domain.Reservation;
 import com.lamarfishing.core.reservation.dto.query.ReservationCommonDto;
 import com.lamarfishing.core.reservation.dto.query.ReservationDetailFlat;
 import com.lamarfishing.core.ship.domain.QShip;
@@ -17,6 +18,7 @@ import com.lamarfishing.core.reservation.domain.Reservation.Process;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 import static com.lamarfishing.core.coupon.domain.QCoupon.coupon;
 import static com.lamarfishing.core.reservation.domain.QReservation.reservation;
@@ -101,6 +103,58 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
                 .join(reservation.coupon, coupon)
                 .where(reservation.id.eq(reservationId))
                 .fetchOne();
+    }
+
+    @Override
+    public List<Reservation> findReservationBetweenDeparture(LocalDateTime start, LocalDateTime end){
+            return queryFactory.selectFrom(reservation)
+                    .join(reservation.schedule, schedule)
+                    .where(
+                            schedule.departure.goe(start),
+                            schedule.departure.lt(end),
+                            reservation.process.eq(Process.RESERVE_COMPLETED)
+                            )
+                    .fetch();
+    }
+
+    @Override
+    public Long countReservationBetweenDeparture(LocalDateTime start, LocalDateTime end){
+        return queryFactory.select(reservation.count())
+                .from(reservation)
+                .join(reservation.schedule, schedule)
+                .where(
+                        schedule.departure.goe(start),
+                        schedule.departure.lt(end),
+                        reservation.process.eq(Process.RESERVE_COMPLETED)
+                )
+                .fetchOne();
+    }
+
+    @Override
+    public List<String> findPhonesByDeparture(LocalDateTime start, LocalDateTime end) {
+        return queryFactory.select(user.phone)
+                .from(reservation)
+                .join(reservation.schedule, schedule)
+                .join(reservation.user, user)
+                .where(
+                        schedule.departure.goe(start),
+                        schedule.departure.lt(end),
+                        reservation.process.eq(Process.RESERVE_COMPLETED)
+                )
+                .fetch();
+    }
+
+    @Override
+    public Optional<LocalDateTime> findDeparture(LocalDateTime start, LocalDateTime end) {
+        return queryFactory.select(schedule.departure)
+                .from(reservation)
+                .join(reservation.schedule, schedule)
+                .where(
+                        schedule.departure.goe(start),
+                        schedule.departure.lt(end),
+                        reservation.process.eq(Process.RESERVE_COMPLETED)
+                )
+                .fetchFirst();
     }
 
     private BooleanExpression processEq(Process process) {

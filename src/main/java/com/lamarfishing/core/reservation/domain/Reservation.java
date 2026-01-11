@@ -83,7 +83,11 @@ public class Reservation extends BaseTimeEntity {
                 .build();
     }
 
+    // 상태 변경 메서드
     public void requestCancel() {
+        if (this.process == Process.CANCEL_REQUESTED) {
+            return;
+        }
         if (!canRequestCancel()) {
             throw new InvalidRequestContent();
         }
@@ -91,7 +95,39 @@ public class Reservation extends BaseTimeEntity {
         this.process = Process.CANCEL_REQUESTED;
     }
 
+    public void completeDeposit(){
+        if (this.process == Process.DEPOSIT_COMPLETED) {
+            return;
+        }
+
+        if (!canCompleteDeposit()) {
+            throw new InvalidRequestContent();
+        }
+        this.process = Process.DEPOSIT_COMPLETED;
+    }
+
+    public void completeCancel(){
+        if (this.process == Process.CANCEL_COMPLETED) {
+            return;
+        }
+
+        if (!canCompleteCancel()){
+            throw new InvalidRequestContent();
+        }
+        this.process = Process.CANCEL_COMPLETED;
+        this.schedule.decreaseCurrentHeadCount(this.headCount);
+    }
+
     private boolean canRequestCancel() {
+        return this.process == Process.RESERVE_COMPLETED;
+    }
+
+    private boolean canCompleteDeposit() {
+        return this.process == Process.RESERVE_COMPLETED;
+    }
+
+    private boolean canCompleteCancel() {
         return this.process == Process.CANCEL_REQUESTED;
     }
+
 }
