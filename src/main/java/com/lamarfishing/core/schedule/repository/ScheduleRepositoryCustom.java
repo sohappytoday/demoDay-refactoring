@@ -20,4 +20,5 @@ public interface ScheduleRepositoryCustom {
     DepartureTimeResult findNextDeparture();
     ScheduleDetailFlat findScheduleDetailFlat(Long id);
     ReservationPopupFlatDto getScheduleAndShipPopup(Long scheduleId);
+
 }

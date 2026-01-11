@@ -173,6 +173,15 @@ public class ReservationRepositoryImpl implements ReservationRepositoryCustom {
     }
 
 
+    @Override
+    public List<String> findPhonesByScheduleId(Long scheduleId) {
+        return queryFactory.select(user.phone)
+                .from(reservation)
+                .join(reservation.schedule, schedule)
+                .join(reservation.user, user)
+                .where(schedule.id.eq(scheduleId))
+                .fetch();
+    }
 
     private BooleanExpression processEq(Process process) {
         return process == null ? null : reservation.process.eq(process);

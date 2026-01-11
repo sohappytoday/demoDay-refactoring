@@ -60,13 +60,7 @@ public class DepartureCommandService {
         schedule.changeStatus(expectedStatus);
 
         // 예약 조회
-        List<Reservation> reservations = reservationRepository.findBySchedule(schedule);
-
-        // 폰 번호 추출
-        List<String> phones = new ArrayList<>();
-        for (Reservation reservation : reservations) {
-            phones.add(reservation.getUser().getPhone());
-        }
+        List<String> phones = reservationRepository.findPhonesByScheduleId(schedule.getId());
 
         // 메시지 발송
         List<MessageCommonDto> dto = messageCommandService.sendMessage(phones, expectedStatus);

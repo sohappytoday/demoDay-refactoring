@@ -23,4 +23,5 @@ public interface ReservationRepositoryCustom {
     List<String> findPhonesByDeparture(LocalDateTime start, LocalDateTime end);
     Optional<LocalDateTime> findDeparture(LocalDateTime start, LocalDateTime end);
     List<Reservation> findReservationByDeparture(LocalDateTime start, LocalDateTime end);
+    List<String> findPhonesByScheduleId(Long scheduleId);
 }

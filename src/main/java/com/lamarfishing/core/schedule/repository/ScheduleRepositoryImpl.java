@@ -16,6 +16,7 @@ import java.util.List;
 
 import static com.lamarfishing.core.schedule.domain.QSchedule.schedule;
 import static com.lamarfishing.core.ship.domain.QShip.ship;
+import static com.lamarfishing.core.user.domain.QUser.user;
 
 @RequiredArgsConstructor
 public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
@@ -105,6 +106,8 @@ public class ScheduleRepositoryImpl implements ScheduleRepositoryCustom {
                 .where(schedule.id.eq(scheduleId))
                 .fetchOne();
     }
+
+
 
 
 
