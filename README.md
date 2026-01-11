@@ -12,8 +12,9 @@
 `demoDay-refactoring`은 resource-server를 clone해 왔습니다.
 나의 프로필 보기, 나의 쿠폰 리스트 보기를 제외한 모든 리소스 서버 코드는 제가 작성하였습니다.
 - prev (branch) : organization에서 가져온 초기 원본 코드를 보관
-- main (barnch) : 리팩토링한 최신 버전 코드
-
+- dev (barnch) : 리팩토링한 최신 버전 코드
+- main (branch) : 리팩토링을 완전히 다 끝냈을 때 배포까지 완료한 버전 코드
+  
 ---
 ## 기술 스택
 - **Java 21 / Spring Boot 3.5.6**
@@ -54,3 +55,4 @@
 - Request DTO와 Service 내부 Input 모델(Command DTO) 분리
 - Response/Detail/Common DTO 구조 재정비로 재사용성 향상
 - 읽기/쓰기 로직을 CommandService / QueryService로 구분 (CQRS)
+- Querydsl Projection을 이용하여 query 최적화 진행
